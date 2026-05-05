@@ -647,6 +647,103 @@ class AppLocalizationsVi extends AppLocalizations {
   String get insightsBody => 'Dashboard, so sánh và hộp thư insight rule-based là các mốc UI tiếp theo.';
 
   @override
+  String get insightsLoadErrorTitle => 'Không thể tải phân tích và insight';
+
+  @override
+  String get insightsLoadErrorBody => 'Vui lòng thử tải lại phần phân tích và insight.';
+
+  @override
+  String get insightsRetry => 'Thử lại';
+
+  @override
+  String get insightsEmptyTitle => 'Chưa có dữ liệu analytics';
+
+  @override
+  String get insightsEmptyBody => 'Hãy thêm và đóng giao dịch để tạo dữ liệu dashboard analytics.';
+
+  @override
+  String get insightsDashboardTitle => 'Dashboard tổng quan';
+
+  @override
+  String get insightsMetricTrades => 'Số giao dịch';
+
+  @override
+  String get insightsMetricWinRate => 'Tỷ lệ thắng';
+
+  @override
+  String get insightsMetricNetPnl => 'Net PnL';
+
+  @override
+  String get insightsMetricAvgR => 'R trung bình';
+
+  @override
+  String get insightsMetricRiskViolationRate => 'Tỷ lệ vi phạm rủi ro';
+
+  @override
+  String get insightsGroupedAnalysisTitle => 'Phân tích theo nhóm';
+
+  @override
+  String get insightsGroupedEmpty => 'Chưa có dữ liệu phân nhóm.';
+
+  @override
+  String get insightsGroupStrategy => 'Theo chiến lược';
+
+  @override
+  String get insightsGroupTime => 'Theo thời gian';
+
+  @override
+  String get insightsGroupInstrument => 'Theo mã';
+
+  @override
+  String get insightsGroupBehavior => 'Theo tag hành vi';
+
+  @override
+  String get insightsGroupEmotion => 'Theo cảm xúc';
+
+  @override
+  String get insightsGroupUnknown => 'Không xác định';
+
+  @override
+  String insightsGroupStats(int count, String winRate, String avgPnl) {
+    return '$count giao dịch | Thắng $winRate | PnL TB $avgPnl';
+  }
+
+  @override
+  String get insightsInboxTitle => 'Hộp thư insight';
+
+  @override
+  String get insightsInboxEmpty => 'Không có insight đang hoạt động.';
+
+  @override
+  String get insightsDismiss => 'Bỏ qua insight';
+
+  @override
+  String insightsRecommendation(String recommendation) {
+    return 'Khuyến nghị: $recommendation';
+  }
+
+  @override
+  String get weekdayMonday => 'Thứ Hai';
+
+  @override
+  String get weekdayTuesday => 'Thứ Ba';
+
+  @override
+  String get weekdayWednesday => 'Thứ Tư';
+
+  @override
+  String get weekdayThursday => 'Thứ Năm';
+
+  @override
+  String get weekdayFriday => 'Thứ Sáu';
+
+  @override
+  String get weekdaySaturday => 'Thứ Bảy';
+
+  @override
+  String get weekdaySunday => 'Chủ Nhật';
+
+  @override
   String modulePlaceholder(String module) {
     return 'Module $module sẽ sớm có mặt.';
   }

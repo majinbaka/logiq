@@ -647,6 +647,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightsBody => 'Dashboard, comparisons, and rule-based insight inbox are the next UI milestones.';
 
   @override
+  String get insightsLoadErrorTitle => 'Could not load analytics and insights';
+
+  @override
+  String get insightsLoadErrorBody => 'Please retry loading analytics and insights.';
+
+  @override
+  String get insightsRetry => 'Retry';
+
+  @override
+  String get insightsEmptyTitle => 'No analytics facts yet';
+
+  @override
+  String get insightsEmptyBody => 'Add and close trades to populate your analytics dashboard.';
+
+  @override
+  String get insightsDashboardTitle => 'Overview Dashboard';
+
+  @override
+  String get insightsMetricTrades => 'Trades';
+
+  @override
+  String get insightsMetricWinRate => 'Win rate';
+
+  @override
+  String get insightsMetricNetPnl => 'Net PnL';
+
+  @override
+  String get insightsMetricAvgR => 'Avg R';
+
+  @override
+  String get insightsMetricRiskViolationRate => 'Risk violations';
+
+  @override
+  String get insightsGroupedAnalysisTitle => 'Grouped Analysis';
+
+  @override
+  String get insightsGroupedEmpty => 'No grouped analytics yet.';
+
+  @override
+  String get insightsGroupStrategy => 'By strategy';
+
+  @override
+  String get insightsGroupTime => 'By time';
+
+  @override
+  String get insightsGroupInstrument => 'By instrument';
+
+  @override
+  String get insightsGroupBehavior => 'By behavior tag';
+
+  @override
+  String get insightsGroupEmotion => 'By emotion';
+
+  @override
+  String get insightsGroupUnknown => 'Unknown';
+
+  @override
+  String insightsGroupStats(int count, String winRate, String avgPnl) {
+    return '$count trades | Win $winRate | Avg PnL $avgPnl';
+  }
+
+  @override
+  String get insightsInboxTitle => 'Insight Inbox';
+
+  @override
+  String get insightsInboxEmpty => 'No active insights.';
+
+  @override
+  String get insightsDismiss => 'Dismiss insight';
+
+  @override
+  String insightsRecommendation(String recommendation) {
+    return 'Recommendation: $recommendation';
+  }
+
+  @override
+  String get weekdayMonday => 'Monday';
+
+  @override
+  String get weekdayTuesday => 'Tuesday';
+
+  @override
+  String get weekdayWednesday => 'Wednesday';
+
+  @override
+  String get weekdayThursday => 'Thursday';
+
+  @override
+  String get weekdayFriday => 'Friday';
+
+  @override
+  String get weekdaySaturday => 'Saturday';
+
+  @override
+  String get weekdaySunday => 'Sunday';
+
+  @override
   String modulePlaceholder(String module) {
     return '$module module is coming soon.';
   }

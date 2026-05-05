@@ -1343,6 +1343,192 @@ abstract class AppLocalizations {
   /// **'Dashboard, comparisons, and rule-based insight inbox are the next UI milestones.'**
   String get insightsBody;
 
+  /// No description provided for @insightsLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load analytics and insights'**
+  String get insightsLoadErrorTitle;
+
+  /// No description provided for @insightsLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading analytics and insights.'**
+  String get insightsLoadErrorBody;
+
+  /// No description provided for @insightsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get insightsRetry;
+
+  /// No description provided for @insightsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No analytics facts yet'**
+  String get insightsEmptyTitle;
+
+  /// No description provided for @insightsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and close trades to populate your analytics dashboard.'**
+  String get insightsEmptyBody;
+
+  /// No description provided for @insightsDashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview Dashboard'**
+  String get insightsDashboardTitle;
+
+  /// No description provided for @insightsMetricTrades.
+  ///
+  /// In en, this message translates to:
+  /// **'Trades'**
+  String get insightsMetricTrades;
+
+  /// No description provided for @insightsMetricWinRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Win rate'**
+  String get insightsMetricWinRate;
+
+  /// No description provided for @insightsMetricNetPnl.
+  ///
+  /// In en, this message translates to:
+  /// **'Net PnL'**
+  String get insightsMetricNetPnl;
+
+  /// No description provided for @insightsMetricAvgR.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg R'**
+  String get insightsMetricAvgR;
+
+  /// No description provided for @insightsMetricRiskViolationRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk violations'**
+  String get insightsMetricRiskViolationRate;
+
+  /// No description provided for @insightsGroupedAnalysisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grouped Analysis'**
+  String get insightsGroupedAnalysisTitle;
+
+  /// No description provided for @insightsGroupedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No grouped analytics yet.'**
+  String get insightsGroupedEmpty;
+
+  /// No description provided for @insightsGroupStrategy.
+  ///
+  /// In en, this message translates to:
+  /// **'By strategy'**
+  String get insightsGroupStrategy;
+
+  /// No description provided for @insightsGroupTime.
+  ///
+  /// In en, this message translates to:
+  /// **'By time'**
+  String get insightsGroupTime;
+
+  /// No description provided for @insightsGroupInstrument.
+  ///
+  /// In en, this message translates to:
+  /// **'By instrument'**
+  String get insightsGroupInstrument;
+
+  /// No description provided for @insightsGroupBehavior.
+  ///
+  /// In en, this message translates to:
+  /// **'By behavior tag'**
+  String get insightsGroupBehavior;
+
+  /// No description provided for @insightsGroupEmotion.
+  ///
+  /// In en, this message translates to:
+  /// **'By emotion'**
+  String get insightsGroupEmotion;
+
+  /// No description provided for @insightsGroupUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get insightsGroupUnknown;
+
+  /// Grouped analysis stats row
+  ///
+  /// In en, this message translates to:
+  /// **'{count} trades | Win {winRate} | Avg PnL {avgPnl}'**
+  String insightsGroupStats(int count, String winRate, String avgPnl);
+
+  /// No description provided for @insightsInboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insight Inbox'**
+  String get insightsInboxTitle;
+
+  /// No description provided for @insightsInboxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No active insights.'**
+  String get insightsInboxEmpty;
+
+  /// No description provided for @insightsDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss insight'**
+  String get insightsDismiss;
+
+  /// Insight recommendation label
+  ///
+  /// In en, this message translates to:
+  /// **'Recommendation: {recommendation}'**
+  String insightsRecommendation(String recommendation);
+
+  /// No description provided for @weekdayMonday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get weekdayMonday;
+
+  /// No description provided for @weekdayTuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get weekdayTuesday;
+
+  /// No description provided for @weekdayWednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get weekdayWednesday;
+
+  /// No description provided for @weekdayThursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get weekdayThursday;
+
+  /// No description provided for @weekdayFriday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get weekdayFriday;
+
+  /// No description provided for @weekdaySaturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get weekdaySaturday;
+
+  /// No description provided for @weekdaySunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get weekdaySunday;
+
   /// Placeholder for shell destination
   ///
   /// In en, this message translates to:

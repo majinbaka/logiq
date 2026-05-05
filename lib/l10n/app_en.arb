@@ -270,6 +270,59 @@
   "insightsTitle": "Analytics and Insights",
   "insightsSubtitle": "Turn trade history into measurable improvements.",
   "insightsBody": "Dashboard, comparisons, and rule-based insight inbox are the next UI milestones.",
+  "insightsLoadErrorTitle": "Could not load analytics and insights",
+  "insightsLoadErrorBody": "Please retry loading analytics and insights.",
+  "insightsRetry": "Retry",
+  "insightsEmptyTitle": "No analytics facts yet",
+  "insightsEmptyBody": "Add and close trades to populate your analytics dashboard.",
+  "insightsDashboardTitle": "Overview Dashboard",
+  "insightsMetricTrades": "Trades",
+  "insightsMetricWinRate": "Win rate",
+  "insightsMetricNetPnl": "Net PnL",
+  "insightsMetricAvgR": "Avg R",
+  "insightsMetricRiskViolationRate": "Risk violations",
+  "insightsGroupedAnalysisTitle": "Grouped Analysis",
+  "insightsGroupedEmpty": "No grouped analytics yet.",
+  "insightsGroupStrategy": "By strategy",
+  "insightsGroupTime": "By time",
+  "insightsGroupInstrument": "By instrument",
+  "insightsGroupBehavior": "By behavior tag",
+  "insightsGroupEmotion": "By emotion",
+  "insightsGroupUnknown": "Unknown",
+  "insightsGroupStats": "{count} trades | Win {winRate} | Avg PnL {avgPnl}",
+  "@insightsGroupStats": {
+    "description": "Grouped analysis stats row",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "winRate": {
+        "type": "String"
+      },
+      "avgPnl": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsInboxTitle": "Insight Inbox",
+  "insightsInboxEmpty": "No active insights.",
+  "insightsDismiss": "Dismiss insight",
+  "insightsRecommendation": "Recommendation: {recommendation}",
+  "@insightsRecommendation": {
+    "description": "Insight recommendation label",
+    "placeholders": {
+      "recommendation": {
+        "type": "String"
+      }
+    }
+  },
+  "weekdayMonday": "Monday",
+  "weekdayTuesday": "Tuesday",
+  "weekdayWednesday": "Wednesday",
+  "weekdayThursday": "Thursday",
+  "weekdayFriday": "Friday",
+  "weekdaySaturday": "Saturday",
+  "weekdaySunday": "Sunday",
   "modulePlaceholder": "{module} module is coming soon.",
   "@modulePlaceholder": {
     "description": "Placeholder for shell destination",

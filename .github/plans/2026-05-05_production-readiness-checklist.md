@@ -150,11 +150,11 @@ Date: 2026-05-05
 
 ### Analytics + Insights
 
-- [ ] Task A1: Analytics overview dashboard
+- [x] Task A1: Analytics overview dashboard
   - AC: Dashboard renders core metrics from analytics facts and handles empty state.
-- [ ] Task A2: Grouped analysis views
+- [x] Task A2: Grouped analysis views
   - AC: User can view grouped performance by strategy/time/instrument/behavior/emotion.
-- [ ] Task A3: Insight inbox + dismiss action
+- [x] Task A3: Insight inbox + dismiss action
   - AC: User can list generated insights and dismiss an insight without deleting source data.
 
 ### Cross-Cutting Release
