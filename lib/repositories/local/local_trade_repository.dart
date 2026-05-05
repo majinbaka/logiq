@@ -100,6 +100,8 @@ class LocalTradeRepository implements TradeRepository {
       avgExitPrice: trade.avgExitPrice,
       totalFee: trade.totalFee,
       totalTax: trade.totalTax,
+      planNote: trade.planNote,
+      reviewNote: trade.reviewNote,
       grossPnl: trade.grossPnl,
       netPnl: trade.netPnl,
       pnlPercent: trade.pnlPercent,

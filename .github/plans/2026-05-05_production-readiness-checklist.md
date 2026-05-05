@@ -99,7 +99,7 @@ Date: 2026-05-05
 
 ### Trades
 
-- [ ] Task T1: Trades detail screen + richer model fields
+- [x] Task T1: Trades detail screen + richer model fields
   - AC: User can open a trade detail page from list and view/edit `quantity`, `entry/exit`, `fee`, `tax`, `plan/review` fields.
 - [x] Task T2: Replace free-text IDs with selectors
   - AC: Create/Edit trade form uses account and instrument pickers; invalid IDs cannot be submitted.

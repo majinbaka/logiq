@@ -16,6 +16,8 @@ class TradeModel {
     this.avgExitPrice,
     this.totalFee,
     this.totalTax,
+    this.planNote,
+    this.reviewNote,
     this.grossPnl,
     this.netPnl,
     this.pnlPercent,
@@ -39,6 +41,8 @@ class TradeModel {
   final DbDecimal? avgExitPrice;
   final DbDecimal? totalFee;
   final DbDecimal? totalTax;
+  final String? planNote;
+  final String? reviewNote;
   final DbDecimal? grossPnl;
   final DbDecimal? netPnl;
   final DbDecimal? pnlPercent;
@@ -62,6 +66,8 @@ class TradeModel {
     avgExitPrice: parseDecimal(map['avg_exit_price']),
     totalFee: parseDecimal(map['total_fee']),
     totalTax: parseDecimal(map['total_tax']),
+    planNote: parseString(map['plan_note']),
+    reviewNote: parseString(map['review_note']),
     grossPnl: parseDecimal(map['gross_pnl']),
     netPnl: parseDecimal(map['net_pnl']),
     pnlPercent: parseDecimal(map['pnl_percent']),
@@ -86,6 +92,8 @@ class TradeModel {
     'avg_exit_price': avgExitPrice,
     'total_fee': totalFee,
     'total_tax': totalTax,
+    'plan_note': planNote,
+    'review_note': reviewNote,
     'gross_pnl': grossPnl,
     'net_pnl': netPnl,
     'pnl_percent': pnlPercent,

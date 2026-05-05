@@ -157,6 +157,8 @@ class _TradesCrudViewState extends State<TradesCrudView> {
         avgExitPrice: result.avgExitPrice,
         totalFee: result.totalFee,
         totalTax: result.totalTax,
+        planNote: result.planNote,
+        reviewNote: result.reviewNote,
       );
       return;
     }
@@ -173,6 +175,8 @@ class _TradesCrudViewState extends State<TradesCrudView> {
       avgExitPrice: result.avgExitPrice,
       totalFee: result.totalFee,
       totalTax: result.totalTax,
+      planNote: result.planNote,
+      reviewNote: result.reviewNote,
     );
   }
 

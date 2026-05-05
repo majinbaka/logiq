@@ -79,6 +79,8 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
+    String? planNote,
+    String? reviewNote,
   }) async {
     final normalizedDirection = direction.toLowerCase();
     final draft = await _repository.saveTradeDraft(
@@ -103,6 +105,8 @@ class TradesCrudViewModel extends ChangeNotifier {
         avgExitPrice: avgExitPrice,
         totalFee: totalFee,
         totalTax: totalTax,
+        planNote: planNote,
+        reviewNote: reviewNote,
         grossPnl: draft.grossPnl,
         netPnl: draft.netPnl,
         pnlPercent: draft.pnlPercent,
@@ -128,6 +132,8 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
+    String? planNote,
+    String? reviewNote,
   }) async {
     await _repository.upsertTrade(
       TradeModel(
@@ -145,6 +151,8 @@ class TradesCrudViewModel extends ChangeNotifier {
         avgExitPrice: avgExitPrice,
         totalFee: totalFee,
         totalTax: totalTax,
+        planNote: planNote,
+        reviewNote: reviewNote,
         grossPnl: trade.grossPnl,
         netPnl: trade.netPnl,
         pnlPercent: trade.pnlPercent,
