@@ -210,6 +210,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get psychologyBody => 'Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.';
 
   @override
+  String get psychologyDisciplineSectionTitle => 'Discipline Reviews';
+
+  @override
+  String get psychologyDisciplineSectionSubtitle => 'Capture self-review notes and filter by trade or journal scope.';
+
+  @override
+  String get psychologyFilterLabel => 'Filter by scope';
+
+  @override
+  String get psychologyFilterAll => 'All';
+
+  @override
+  String get psychologyFilterTrade => 'Trade';
+
+  @override
+  String get psychologyFilterJournal => 'Journal';
+
+  @override
+  String get psychologyEmptyDiscipline => 'No discipline reviews yet.';
+
+  @override
+  String get psychologyAddReviewButton => 'Add Review';
+
+  @override
+  String get psychologyCreateReviewTitle => 'Create self-review';
+
+  @override
+  String get psychologyScopeLabel => 'Scope';
+
+  @override
+  String get psychologyDisciplineScoreLabel => 'Discipline score';
+
+  @override
+  String get psychologySelfReviewLabel => 'Self-review note';
+
+  @override
+  String get psychologyCancel => 'Cancel';
+
+  @override
+  String get psychologySave => 'Save';
+
+  @override
+  String get psychologyValidationMessage => 'Please enter a self-review note.';
+
+  @override
+  String psychologyScoreLabel(int score) {
+    return 'Discipline score: $score/10';
+  }
+
+  @override
   String get insightsTitle => 'Analytics and Insights';
 
   @override

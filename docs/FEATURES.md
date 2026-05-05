@@ -258,6 +258,20 @@ Da bo sung nen tang cho feature phase tiep theo:
 
 ## 12. Phase 03 Portfolio + Daily Journal (2026-05-05)
 
+## 13. Phase 04 Psychology Discipline Review (2026-05-05)
+
+Da bo sung luong UI cho discipline/self-review trong tab Tam ly:
+
+- Tao ban ghi tu danh gia gom:
+  - Pham vi (`Giao dich` hoac `Nhat ky`)
+  - Diem ky luat (1-10)
+  - Ghi chu tu danh gia
+- Loc danh sach tu danh gia theo pham vi:
+  - Tat ca
+  - Giao dich
+  - Nhat ky
+- Co thong bao validation khi luu ma khong nhap ghi chu.
+
 ## 13. Phase 05 Analytics + Insights (2026-05-05)
 
 Da bo sung nen tang service cho analytics va insight rebuild:

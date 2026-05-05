@@ -70,6 +70,30 @@
   "psychologyTitle": "Trading Psychology",
   "psychologySubtitle": "Record emotions, behavior tags, and discipline signals.",
   "psychologyBody": "Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.",
+  "psychologyDisciplineSectionTitle": "Discipline Reviews",
+  "psychologyDisciplineSectionSubtitle": "Capture self-review notes and filter by trade or journal scope.",
+  "psychologyFilterLabel": "Filter by scope",
+  "psychologyFilterAll": "All",
+  "psychologyFilterTrade": "Trade",
+  "psychologyFilterJournal": "Journal",
+  "psychologyEmptyDiscipline": "No discipline reviews yet.",
+  "psychologyAddReviewButton": "Add Review",
+  "psychologyCreateReviewTitle": "Create self-review",
+  "psychologyScopeLabel": "Scope",
+  "psychologyDisciplineScoreLabel": "Discipline score",
+  "psychologySelfReviewLabel": "Self-review note",
+  "psychologyCancel": "Cancel",
+  "psychologySave": "Save",
+  "psychologyValidationMessage": "Please enter a self-review note.",
+  "psychologyScoreLabel": "Discipline score: {score}/10",
+  "@psychologyScoreLabel": {
+    "description": "Label showing discipline score out of ten",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
   "insightsTitle": "Analytics and Insights",
   "insightsSubtitle": "Turn trade history into measurable improvements.",
   "insightsBody": "Dashboard, comparisons, and rule-based insight inbox are the next UI milestones.",

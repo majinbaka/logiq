@@ -210,6 +210,56 @@ class AppLocalizationsVi extends AppLocalizations {
   String get psychologyBody => 'Màn hình emotion log và phân tích hành vi sẽ được nối repository trong các lát cắt tiếp theo.';
 
   @override
+  String get psychologyDisciplineSectionTitle => 'Tự đánh giá kỷ luật';
+
+  @override
+  String get psychologyDisciplineSectionSubtitle => 'Ghi chú tự đánh giá và lọc theo phạm vi giao dịch hoặc nhật ký.';
+
+  @override
+  String get psychologyFilterLabel => 'Lọc theo phạm vi';
+
+  @override
+  String get psychologyFilterAll => 'Tất cả';
+
+  @override
+  String get psychologyFilterTrade => 'Giao dịch';
+
+  @override
+  String get psychologyFilterJournal => 'Nhật ký';
+
+  @override
+  String get psychologyEmptyDiscipline => 'Chưa có bản tự đánh giá.';
+
+  @override
+  String get psychologyAddReviewButton => 'Thêm đánh giá';
+
+  @override
+  String get psychologyCreateReviewTitle => 'Tạo tự đánh giá';
+
+  @override
+  String get psychologyScopeLabel => 'Phạm vi';
+
+  @override
+  String get psychologyDisciplineScoreLabel => 'Điểm kỷ luật';
+
+  @override
+  String get psychologySelfReviewLabel => 'Ghi chú tự đánh giá';
+
+  @override
+  String get psychologyCancel => 'Hủy';
+
+  @override
+  String get psychologySave => 'Lưu';
+
+  @override
+  String get psychologyValidationMessage => 'Vui lòng nhập ghi chú tự đánh giá.';
+
+  @override
+  String psychologyScoreLabel(int score) {
+    return 'Điểm kỷ luật: $score/10';
+  }
+
+  @override
   String get insightsTitle => 'Phân tích và insight';
 
   @override

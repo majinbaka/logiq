@@ -497,6 +497,102 @@ abstract class AppLocalizations {
   /// **'Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.'**
   String get psychologyBody;
 
+  /// No description provided for @psychologyDisciplineSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discipline Reviews'**
+  String get psychologyDisciplineSectionTitle;
+
+  /// No description provided for @psychologyDisciplineSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture self-review notes and filter by trade or journal scope.'**
+  String get psychologyDisciplineSectionSubtitle;
+
+  /// No description provided for @psychologyFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by scope'**
+  String get psychologyFilterLabel;
+
+  /// No description provided for @psychologyFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get psychologyFilterAll;
+
+  /// No description provided for @psychologyFilterTrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade'**
+  String get psychologyFilterTrade;
+
+  /// No description provided for @psychologyFilterJournal.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal'**
+  String get psychologyFilterJournal;
+
+  /// No description provided for @psychologyEmptyDiscipline.
+  ///
+  /// In en, this message translates to:
+  /// **'No discipline reviews yet.'**
+  String get psychologyEmptyDiscipline;
+
+  /// No description provided for @psychologyAddReviewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Review'**
+  String get psychologyAddReviewButton;
+
+  /// No description provided for @psychologyCreateReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create self-review'**
+  String get psychologyCreateReviewTitle;
+
+  /// No description provided for @psychologyScopeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope'**
+  String get psychologyScopeLabel;
+
+  /// No description provided for @psychologyDisciplineScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Discipline score'**
+  String get psychologyDisciplineScoreLabel;
+
+  /// No description provided for @psychologySelfReviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-review note'**
+  String get psychologySelfReviewLabel;
+
+  /// No description provided for @psychologyCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get psychologyCancel;
+
+  /// No description provided for @psychologySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get psychologySave;
+
+  /// No description provided for @psychologyValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a self-review note.'**
+  String get psychologyValidationMessage;
+
+  /// Label showing discipline score out of ten
+  ///
+  /// In en, this message translates to:
+  /// **'Discipline score: {score}/10'**
+  String psychologyScoreLabel(int score);
+
   /// No description provided for @insightsTitle.
   ///
   /// In en, this message translates to:
