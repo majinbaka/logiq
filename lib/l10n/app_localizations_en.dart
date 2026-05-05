@@ -517,7 +517,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get psychologySubtitle => 'Record emotions, behavior tags, and discipline signals.';
 
   @override
+  String get psychologyLoadErrorTitle => 'Could not load psychology data';
+
+  @override
+  String get psychologyLoadErrorBody => 'Please retry loading psychology data.';
+
+  @override
+  String get psychologyRetry => 'Retry';
+
+  @override
   String get psychologyBody => 'Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.';
+
+  @override
+  String get psychologyEmotionSectionTitle => 'Emotion Logs';
+
+  @override
+  String get psychologyEmotionSectionSubtitle => 'Track emotion by trade scope or journal scope.';
+
+  @override
+  String get psychologyEmotionAddButton => 'Add Emotion';
+
+  @override
+  String get psychologyEmotionCreateTitle => 'Create emotion log';
+
+  @override
+  String get psychologyEmotionEditTitle => 'Edit emotion log';
+
+  @override
+  String get psychologyEmotionTypeLabel => 'Emotion';
+
+  @override
+  String get psychologyEmotionNoteLabel => 'Note';
+
+  @override
+  String get psychologyEmotionEmpty => 'No emotion logs yet.';
+
+  @override
+  String get psychologyTradeReferenceLabel => 'Trade';
+
+  @override
+  String get psychologyJournalReferenceLabel => 'Journal';
+
+  @override
+  String get psychologyEditTooltip => 'Edit';
+
+  @override
+  String get psychologyDeleteTooltip => 'Delete';
+
+  @override
+  String get psychologyBehaviorSectionTitle => 'Behavior Tags';
+
+  @override
+  String get psychologyBehaviorSectionSubtitle => 'Attach or remove behavior tags on a trade.';
+
+  @override
+  String get psychologyBehaviorNoTrade => 'No trades yet. Create trades before tagging behavior.';
+
+  @override
+  String get psychologyBehaviorTradeLabel => 'Trade';
+
+  @override
+  String get psychologyBehaviorSearchHint => 'Search behavior tag';
+
+  @override
+  String get psychologyBehaviorClearSearch => 'Clear search';
+
+  @override
+  String psychologyEmotionIntensity(int value) {
+    return 'Intensity: $value';
+  }
 
   @override
   String get psychologyDisciplineSectionTitle => 'Discipline Reviews';

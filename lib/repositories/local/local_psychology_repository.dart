@@ -60,6 +60,12 @@ class LocalPsychologyRepository implements PsychologyRepository {
   }
 
   @override
+  Future<void> deleteEmotionLog(String id) async {
+    DataValidator.requireId(id, 'id');
+    await _emotionLogBox.delete(id);
+  }
+
+  @override
   Future<void> seedSystemBehaviorTags({DateTime? now}) async {
     final createdAt = (now ?? DateTime.now()).toIso8601String();
     final existingNames = _tagBox.values

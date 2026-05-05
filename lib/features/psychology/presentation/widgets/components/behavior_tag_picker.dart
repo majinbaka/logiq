@@ -7,7 +7,8 @@ class BehaviorTagPicker extends StatefulWidget {
     required this.tags,
     required this.selected,
     required this.onToggle,
-    this.searchHint = 'Search behavior tag',
+    required this.searchHint,
+    required this.clearSearchTooltip,
     super.key,
   });
 
@@ -15,6 +16,7 @@ class BehaviorTagPicker extends StatefulWidget {
   final Set<String> selected;
   final ValueChanged<String> onToggle;
   final String searchHint;
+  final String clearSearchTooltip;
 
   @override
   State<BehaviorTagPicker> createState() => _BehaviorTagPickerState();
@@ -62,7 +64,7 @@ class _BehaviorTagPickerState extends State<BehaviorTagPicker> {
                       setState(() => _query = '');
                     },
                     icon: const Icon(Icons.close),
-                    tooltip: 'Clear search',
+                    tooltip: widget.clearSearchTooltip,
                   ),
           ),
         ),

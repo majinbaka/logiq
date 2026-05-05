@@ -517,7 +517,75 @@ class AppLocalizationsVi extends AppLocalizations {
   String get psychologySubtitle => 'Ghi lại cảm xúc, tag hành vi và mức độ kỷ luật.';
 
   @override
+  String get psychologyLoadErrorTitle => 'Không thể tải dữ liệu tâm lý';
+
+  @override
+  String get psychologyLoadErrorBody => 'Vui lòng thử tải lại dữ liệu tâm lý.';
+
+  @override
+  String get psychologyRetry => 'Thử lại';
+
+  @override
   String get psychologyBody => 'Màn hình emotion log và phân tích hành vi sẽ được nối repository trong các lát cắt tiếp theo.';
+
+  @override
+  String get psychologyEmotionSectionTitle => 'Nhật ký cảm xúc';
+
+  @override
+  String get psychologyEmotionSectionSubtitle => 'Theo dõi cảm xúc theo phạm vi giao dịch hoặc nhật ký.';
+
+  @override
+  String get psychologyEmotionAddButton => 'Thêm cảm xúc';
+
+  @override
+  String get psychologyEmotionCreateTitle => 'Tạo nhật ký cảm xúc';
+
+  @override
+  String get psychologyEmotionEditTitle => 'Sửa nhật ký cảm xúc';
+
+  @override
+  String get psychologyEmotionTypeLabel => 'Cảm xúc';
+
+  @override
+  String get psychologyEmotionNoteLabel => 'Ghi chú';
+
+  @override
+  String get psychologyEmotionEmpty => 'Chưa có nhật ký cảm xúc.';
+
+  @override
+  String get psychologyTradeReferenceLabel => 'Giao dịch';
+
+  @override
+  String get psychologyJournalReferenceLabel => 'Nhật ký';
+
+  @override
+  String get psychologyEditTooltip => 'Sửa';
+
+  @override
+  String get psychologyDeleteTooltip => 'Xóa';
+
+  @override
+  String get psychologyBehaviorSectionTitle => 'Tag hành vi';
+
+  @override
+  String get psychologyBehaviorSectionSubtitle => 'Gắn hoặc bỏ tag hành vi cho một giao dịch.';
+
+  @override
+  String get psychologyBehaviorNoTrade => 'Chưa có giao dịch. Hãy tạo giao dịch trước khi gắn tag hành vi.';
+
+  @override
+  String get psychologyBehaviorTradeLabel => 'Giao dịch';
+
+  @override
+  String get psychologyBehaviorSearchHint => 'Tìm tag hành vi';
+
+  @override
+  String get psychologyBehaviorClearSearch => 'Xóa tìm kiếm';
+
+  @override
+  String psychologyEmotionIntensity(int value) {
+    return 'Cường độ: $value';
+  }
 
   @override
   String get psychologyDisciplineSectionTitle => 'Tự đánh giá kỷ luật';

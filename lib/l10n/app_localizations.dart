@@ -1091,11 +1091,143 @@ abstract class AppLocalizations {
   /// **'Record emotions, behavior tags, and discipline signals.'**
   String get psychologySubtitle;
 
+  /// No description provided for @psychologyLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load psychology data'**
+  String get psychologyLoadErrorTitle;
+
+  /// No description provided for @psychologyLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading psychology data.'**
+  String get psychologyLoadErrorBody;
+
+  /// No description provided for @psychologyRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get psychologyRetry;
+
   /// No description provided for @psychologyBody.
   ///
   /// In en, this message translates to:
   /// **'Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.'**
   String get psychologyBody;
+
+  /// No description provided for @psychologyEmotionSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion Logs'**
+  String get psychologyEmotionSectionTitle;
+
+  /// No description provided for @psychologyEmotionSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track emotion by trade scope or journal scope.'**
+  String get psychologyEmotionSectionSubtitle;
+
+  /// No description provided for @psychologyEmotionAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Emotion'**
+  String get psychologyEmotionAddButton;
+
+  /// No description provided for @psychologyEmotionCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create emotion log'**
+  String get psychologyEmotionCreateTitle;
+
+  /// No description provided for @psychologyEmotionEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit emotion log'**
+  String get psychologyEmotionEditTitle;
+
+  /// No description provided for @psychologyEmotionTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion'**
+  String get psychologyEmotionTypeLabel;
+
+  /// No description provided for @psychologyEmotionNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get psychologyEmotionNoteLabel;
+
+  /// No description provided for @psychologyEmotionEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No emotion logs yet.'**
+  String get psychologyEmotionEmpty;
+
+  /// No description provided for @psychologyTradeReferenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade'**
+  String get psychologyTradeReferenceLabel;
+
+  /// No description provided for @psychologyJournalReferenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal'**
+  String get psychologyJournalReferenceLabel;
+
+  /// No description provided for @psychologyEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get psychologyEditTooltip;
+
+  /// No description provided for @psychologyDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get psychologyDeleteTooltip;
+
+  /// No description provided for @psychologyBehaviorSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Behavior Tags'**
+  String get psychologyBehaviorSectionTitle;
+
+  /// No description provided for @psychologyBehaviorSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach or remove behavior tags on a trade.'**
+  String get psychologyBehaviorSectionSubtitle;
+
+  /// No description provided for @psychologyBehaviorNoTrade.
+  ///
+  /// In en, this message translates to:
+  /// **'No trades yet. Create trades before tagging behavior.'**
+  String get psychologyBehaviorNoTrade;
+
+  /// No description provided for @psychologyBehaviorTradeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade'**
+  String get psychologyBehaviorTradeLabel;
+
+  /// No description provided for @psychologyBehaviorSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search behavior tag'**
+  String get psychologyBehaviorSearchHint;
+
+  /// No description provided for @psychologyBehaviorClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get psychologyBehaviorClearSearch;
+
+  /// Emotion intensity label
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity: {value}'**
+  String psychologyEmotionIntensity(int value);
 
   /// No description provided for @psychologyDisciplineSectionTitle.
   ///

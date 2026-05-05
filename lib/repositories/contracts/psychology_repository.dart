@@ -4,6 +4,7 @@ import '../../core/database/models/trade_tag_model.dart';
 
 abstract class PsychologyRepository {
   Future<void> upsertEmotionLog(EmotionLogModel log);
+  Future<void> deleteEmotionLog(String id);
   Future<List<EmotionLogModel>> listEmotionLogsByJournal(String journalId);
   Future<List<EmotionLogModel>> listEmotionLogsByTrade(String tradeId);
   Future<void> seedSystemBehaviorTags({DateTime? now});

@@ -212,7 +212,37 @@
   },
   "psychologyTitle": "Trading Psychology",
   "psychologySubtitle": "Record emotions, behavior tags, and discipline signals.",
+  "psychologyLoadErrorTitle": "Could not load psychology data",
+  "psychologyLoadErrorBody": "Please retry loading psychology data.",
+  "psychologyRetry": "Retry",
   "psychologyBody": "Emotion log and behavior analysis screens will be wired to repositories in upcoming slices.",
+  "psychologyEmotionSectionTitle": "Emotion Logs",
+  "psychologyEmotionSectionSubtitle": "Track emotion by trade scope or journal scope.",
+  "psychologyEmotionAddButton": "Add Emotion",
+  "psychologyEmotionCreateTitle": "Create emotion log",
+  "psychologyEmotionEditTitle": "Edit emotion log",
+  "psychologyEmotionTypeLabel": "Emotion",
+  "psychologyEmotionNoteLabel": "Note",
+  "psychologyEmotionEmpty": "No emotion logs yet.",
+  "psychologyTradeReferenceLabel": "Trade",
+  "psychologyJournalReferenceLabel": "Journal",
+  "psychologyEditTooltip": "Edit",
+  "psychologyDeleteTooltip": "Delete",
+  "psychologyBehaviorSectionTitle": "Behavior Tags",
+  "psychologyBehaviorSectionSubtitle": "Attach or remove behavior tags on a trade.",
+  "psychologyBehaviorNoTrade": "No trades yet. Create trades before tagging behavior.",
+  "psychologyBehaviorTradeLabel": "Trade",
+  "psychologyBehaviorSearchHint": "Search behavior tag",
+  "psychologyBehaviorClearSearch": "Clear search",
+  "psychologyEmotionIntensity": "Intensity: {value}",
+  "@psychologyEmotionIntensity": {
+    "description": "Emotion intensity label",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
   "psychologyDisciplineSectionTitle": "Discipline Reviews",
   "psychologyDisciplineSectionSubtitle": "Capture self-review notes and filter by trade or journal scope.",
   "psychologyFilterLabel": "Filter by scope",

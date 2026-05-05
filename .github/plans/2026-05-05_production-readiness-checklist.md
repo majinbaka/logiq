@@ -141,9 +141,9 @@ Date: 2026-05-05
 
 ### Psychology
 
-- [ ] Task Y1: Emotion log CRUD by scope
+- [x] Task Y1: Emotion log CRUD by scope
   - AC: User can create/edit/list emotion logs for trade scope and journal scope.
-- [ ] Task Y2: Behavior tag attach/detach UI
+- [x] Task Y2: Behavior tag attach/detach UI
   - AC: User can attach/remove behavior tags to trades with dedupe behavior preserved.
 - [x] Task Y3: Discipline/self-review forms
   - AC: User can record and filter discipline/self-review related psychology inputs.
