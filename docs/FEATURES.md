@@ -213,3 +213,34 @@ Muc tieu: dam bao moi lenh giao dich duoc danh gia theo nguyen tac rui ro ro ran
 - Muc do tuan thu ky luat theo thoi gian.
 - Tan suat vuot risk.
 - Moi lien he giua vuot risk va ket qua giao dich.
+
+## 10. Design System Widget Kit
+
+Da bo sung bo widget co ban theo design system de tai su dung va scale theo feature:
+
+- Theme nen `ColorScheme` va semantic colors cho trading (`success`, `bullish`, `bearish`).
+- Trade widgets:
+  - `TradeKpiStrip`
+  - `TradeStatusSegmentedControl`
+  - `TradeFilterChipsBar`
+  - `TradeListCard`
+- Strategy/Risk widgets:
+  - `StrategyListTile`
+  - `RiskRuleSummaryCard`
+- Psychology widgets:
+  - `EmotionPicker`
+  - `IntensitySliderField`
+  - `BehaviorTagPicker`
+- Shared state widget:
+  - `TradingStateView`
+- Additional shared components:
+  - `TradingStatusBadge` (semantic status pill: neutral/success/warning/danger)
+  - `TradingSectionHeader` (section title + subtitle + optional trailing action)
+  - `TradingSkeletonCard` (loading placeholder for card/list states)
+
+Cap nhat bo psychology widget:
+
+- `BehaviorTagPicker` da co tim kiem tag de phu hop requirement "searchable chips".
+
+Bo widget nay dang duoc map vao man hinh gallery de lam mau cho cac page trade-list,
+trade-detail-editor, strategy-risk, psychology.
