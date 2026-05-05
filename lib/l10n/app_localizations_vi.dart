@@ -291,7 +291,81 @@ class AppLocalizationsVi extends AppLocalizations {
   String get dailyJournalSubtitle => 'Lập kế hoạch trước phiên và đánh giá sau phiên.';
 
   @override
-  String get dailyJournalBody => 'Form kế hoạch trong ngày và tổng kết cuối ngày sẽ được thêm trong các vòng lặp tiếp theo.';
+  String get dailyJournalLoadErrorTitle => 'Không thể tải nhật ký ngày';
+
+  @override
+  String get dailyJournalLoadErrorBody => 'Vui lòng thử tải lại các bản ghi nhật ký.';
+
+  @override
+  String get dailyJournalRetry => 'Thử lại';
+
+  @override
+  String get dailyJournalEmptyTitle => 'Chưa có nhật ký';
+
+  @override
+  String get dailyJournalEmptyBody => 'Nhấn Thêm nhật ký để tạo bản ghi đầu tiên.';
+
+  @override
+  String get dailyJournalAddButton => 'Thêm nhật ký';
+
+  @override
+  String get dailyJournalCreateTitle => 'Tạo nhật ký ngày';
+
+  @override
+  String get dailyJournalEditTitle => 'Sửa nhật ký ngày';
+
+  @override
+  String get dailyJournalDateLabel => 'Ngày nhật ký';
+
+  @override
+  String get dailyJournalPreMarketSectionTitle => 'Trước phiên';
+
+  @override
+  String get dailyJournalMarketViewLabel => 'Nhận định thị trường';
+
+  @override
+  String get dailyJournalTradingPlanLabel => 'Kế hoạch giao dịch';
+
+  @override
+  String get dailyJournalWatchlistLabel => 'Ghi chú watchlist';
+
+  @override
+  String get dailyJournalPostMarketSectionTitle => 'Sau phiên';
+
+  @override
+  String get dailyJournalCompletedActionsLabel => 'Việc đã thực hiện';
+
+  @override
+  String get dailyJournalFollowedPlanLabel => 'Có tuân thủ kế hoạch';
+
+  @override
+  String get dailyJournalWinsLabel => 'Điểm làm tốt';
+
+  @override
+  String get dailyJournalMistakesLabel => 'Sai lầm';
+
+  @override
+  String get dailyJournalFreeNoteLabel => 'Ghi chú tự do';
+
+  @override
+  String get dailyJournalDisciplineScoreLabel => 'Điểm kỷ luật';
+
+  @override
+  String get dailyJournalCancel => 'Hủy';
+
+  @override
+  String get dailyJournalSave => 'Lưu';
+
+  @override
+  String get dailyJournalValidationMessage => 'Vui lòng nhập ngày hợp lệ, đủ các phần bắt buộc và điểm từ 1-10.';
+
+  @override
+  String get dailyJournalEditTooltip => 'Sửa nhật ký';
+
+  @override
+  String dailyJournalScoreValue(int score) {
+    return 'Điểm: $score/10';
+  }
 
   @override
   String get psychologyTitle => 'Tâm lý giao dịch';

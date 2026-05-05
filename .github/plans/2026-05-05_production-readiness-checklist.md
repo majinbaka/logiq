@@ -16,7 +16,7 @@ Date: 2026-05-05
 - [ ] End-to-end feature flows for create/edit/list/detail in Trades.
 - [ ] End-to-end feature flows for Portfolio snapshots and holdings UI.
 - [x] End-to-end feature flows for Strategy + Risk management UI.
-- [ ] End-to-end feature flows for Daily Journal UI.
+- [x] End-to-end feature flows for Daily Journal UI.
 - [ ] End-to-end feature flows for Psychology logs/tagging UI.
 - [ ] End-to-end feature flows for Analytics/Insights dashboards and actions.
 - [ ] ViewModels per feature and repository-backed UI states.
@@ -66,11 +66,15 @@ Date: 2026-05-05
   - Add Risk Check visualization per trade.
   - Add widget tests for Strategy tab create/archive/version/risk-rule interactions.
 
-### 4) Daily Journal (not started in UI)
+### 4) Daily Journal (partially done)
 
-- Build daily journal create/edit/list flow.
-- Add pre-market and post-market sections.
-- Add validation and score range handling.
+- Current state:
+  - Daily Journal CRUD (create/edit/list by date per account) is available on Journal tab.
+  - Pre-market and post-market form sections are implemented.
+  - Validation with visible feedback is implemented for required fields/date/discipline score range.
+- Remaining:
+  - Add widget tests for create/edit and validation states.
+  - Add delete/archive flow if product scope requires explicit removal.
 
 ### 5) Psychology (not started in UI)
 
@@ -128,11 +132,11 @@ Date: 2026-05-05
 
 ### Daily Journal
 
-- [ ] Task J1: Daily journal CRUD
+- [x] Task J1: Daily journal CRUD
   - AC: User can create/edit/list daily journal entries by date per account.
-- [ ] Task J2: Pre-market and post-market sections
+- [x] Task J2: Pre-market and post-market sections
   - AC: Journal form captures both pre-market planning and post-market review fields.
-- [ ] Task J3: Journal validation + score handling
+- [x] Task J3: Journal validation + score handling
   - AC: Discipline score and required fields are validated with user-visible errors.
 
 ### Psychology

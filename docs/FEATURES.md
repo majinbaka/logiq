@@ -375,3 +375,14 @@ Da bo sung flow UI cho tab Strategy:
 Da bo sung test:
 
 - Unit test cho `StrategyRiskViewModel` bao phu tao strategy, version history, va risk rule.
+
+## 18. Daily Journal CRUD Slice (2026-05-05)
+
+Da bo sung flow UI cho tab Daily Journal:
+
+- Chuyen `DailyJournalView` tu placeholder sang repository-backed CRUD screen.
+- Co the tao/chinh sua va xem danh sach journal theo ngay (scope `accountId = acc_1`).
+- Form co day du section `Truoc phien` va `Sau phien`.
+- Validate bat buoc cho ngay, noi dung chinh, va `discipline score` trong khoang 1-10.
+- Hien thi loading/empty/error state va co retry.
+- Toan bo text UI moi da duoc noi dia hoa EN/VI.

@@ -647,11 +647,155 @@ abstract class AppLocalizations {
   /// **'Plan before market and review after market.'**
   String get dailyJournalSubtitle;
 
-  /// No description provided for @dailyJournalBody.
+  /// No description provided for @dailyJournalLoadErrorTitle.
   ///
   /// In en, this message translates to:
-  /// **'Daily planning and post-session review forms will be added in next iterations.'**
-  String get dailyJournalBody;
+  /// **'Could not load daily journals'**
+  String get dailyJournalLoadErrorTitle;
+
+  /// No description provided for @dailyJournalLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading journal entries.'**
+  String get dailyJournalLoadErrorBody;
+
+  /// No description provided for @dailyJournalRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get dailyJournalRetry;
+
+  /// No description provided for @dailyJournalEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No journal entries yet'**
+  String get dailyJournalEmptyTitle;
+
+  /// No description provided for @dailyJournalEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add Journal to create your first daily journal.'**
+  String get dailyJournalEmptyBody;
+
+  /// No description provided for @dailyJournalAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Journal'**
+  String get dailyJournalAddButton;
+
+  /// No description provided for @dailyJournalCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create daily journal'**
+  String get dailyJournalCreateTitle;
+
+  /// No description provided for @dailyJournalEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit daily journal'**
+  String get dailyJournalEditTitle;
+
+  /// No description provided for @dailyJournalDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal date'**
+  String get dailyJournalDateLabel;
+
+  /// No description provided for @dailyJournalPreMarketSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-market'**
+  String get dailyJournalPreMarketSectionTitle;
+
+  /// No description provided for @dailyJournalMarketViewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Market view'**
+  String get dailyJournalMarketViewLabel;
+
+  /// No description provided for @dailyJournalTradingPlanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trading plan'**
+  String get dailyJournalTradingPlanLabel;
+
+  /// No description provided for @dailyJournalWatchlistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlist note'**
+  String get dailyJournalWatchlistLabel;
+
+  /// No description provided for @dailyJournalPostMarketSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Post-market'**
+  String get dailyJournalPostMarketSectionTitle;
+
+  /// No description provided for @dailyJournalCompletedActionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed actions'**
+  String get dailyJournalCompletedActionsLabel;
+
+  /// No description provided for @dailyJournalFollowedPlanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed the plan'**
+  String get dailyJournalFollowedPlanLabel;
+
+  /// No description provided for @dailyJournalWinsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What went well'**
+  String get dailyJournalWinsLabel;
+
+  /// No description provided for @dailyJournalMistakesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mistakes'**
+  String get dailyJournalMistakesLabel;
+
+  /// No description provided for @dailyJournalFreeNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Free note'**
+  String get dailyJournalFreeNoteLabel;
+
+  /// No description provided for @dailyJournalDisciplineScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Discipline score'**
+  String get dailyJournalDisciplineScoreLabel;
+
+  /// No description provided for @dailyJournalCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dailyJournalCancel;
+
+  /// No description provided for @dailyJournalSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get dailyJournalSave;
+
+  /// No description provided for @dailyJournalValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid date, required sections, and score range 1-10.'**
+  String get dailyJournalValidationMessage;
+
+  /// No description provided for @dailyJournalEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit journal'**
+  String get dailyJournalEditTooltip;
+
+  /// Daily journal discipline score value
+  ///
+  /// In en, this message translates to:
+  /// **'Score: {score}/10'**
+  String dailyJournalScoreValue(int score);
 
   /// No description provided for @psychologyTitle.
   ///

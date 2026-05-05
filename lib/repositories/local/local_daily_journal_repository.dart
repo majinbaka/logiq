@@ -44,4 +44,19 @@ class LocalDailyJournalRepository implements DailyJournalRepository {
     }
     await _journalBox.put(journal.id, journal.toMap());
   }
+
+  @override
+  Future<List<DailyJournalModel>> listDailyJournals(String accountId) async {
+    final journals = <DailyJournalModel>[];
+    for (final value in _journalBox.values) {
+      final map = toDbJson(value);
+      if (!isNotSoftDeleted(map)) continue;
+      final journal = DailyJournalModel.fromMap(map);
+      if (journal.accountId == accountId) {
+        journals.add(journal);
+      }
+    }
+    journals.sort((a, b) => b.journalDate.compareTo(a.journalDate));
+    return journals;
+  }
 }

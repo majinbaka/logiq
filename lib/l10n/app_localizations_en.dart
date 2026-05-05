@@ -291,7 +291,81 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyJournalSubtitle => 'Plan before market and review after market.';
 
   @override
-  String get dailyJournalBody => 'Daily planning and post-session review forms will be added in next iterations.';
+  String get dailyJournalLoadErrorTitle => 'Could not load daily journals';
+
+  @override
+  String get dailyJournalLoadErrorBody => 'Please retry loading journal entries.';
+
+  @override
+  String get dailyJournalRetry => 'Retry';
+
+  @override
+  String get dailyJournalEmptyTitle => 'No journal entries yet';
+
+  @override
+  String get dailyJournalEmptyBody => 'Tap Add Journal to create your first daily journal.';
+
+  @override
+  String get dailyJournalAddButton => 'Add Journal';
+
+  @override
+  String get dailyJournalCreateTitle => 'Create daily journal';
+
+  @override
+  String get dailyJournalEditTitle => 'Edit daily journal';
+
+  @override
+  String get dailyJournalDateLabel => 'Journal date';
+
+  @override
+  String get dailyJournalPreMarketSectionTitle => 'Pre-market';
+
+  @override
+  String get dailyJournalMarketViewLabel => 'Market view';
+
+  @override
+  String get dailyJournalTradingPlanLabel => 'Trading plan';
+
+  @override
+  String get dailyJournalWatchlistLabel => 'Watchlist note';
+
+  @override
+  String get dailyJournalPostMarketSectionTitle => 'Post-market';
+
+  @override
+  String get dailyJournalCompletedActionsLabel => 'Completed actions';
+
+  @override
+  String get dailyJournalFollowedPlanLabel => 'Followed the plan';
+
+  @override
+  String get dailyJournalWinsLabel => 'What went well';
+
+  @override
+  String get dailyJournalMistakesLabel => 'Mistakes';
+
+  @override
+  String get dailyJournalFreeNoteLabel => 'Free note';
+
+  @override
+  String get dailyJournalDisciplineScoreLabel => 'Discipline score';
+
+  @override
+  String get dailyJournalCancel => 'Cancel';
+
+  @override
+  String get dailyJournalSave => 'Save';
+
+  @override
+  String get dailyJournalValidationMessage => 'Please enter valid date, required sections, and score range 1-10.';
+
+  @override
+  String get dailyJournalEditTooltip => 'Edit journal';
+
+  @override
+  String dailyJournalScoreValue(int score) {
+    return 'Score: $score/10';
+  }
 
   @override
   String get psychologyTitle => 'Trading Psychology';
