@@ -265,3 +265,20 @@ Da bo sung logic backend va test cho portfolio tracking + daily journal:
 - Sinh `PORTFOLIO_SNAPSHOT` + `POSITION_SNAPSHOT` theo ngay, co daily PnL, cumulative PnL va drawdown.
 - Tach `CASH_MOVEMENT` khoi trading PnL de nap/rut tien khong lam sai lech ket qua giao dich.
 - Enforce uniqueness theo `account + date` cho portfolio snapshot va daily journal.
+
+## 13. Phase 04 Psychology + Instrument Notes (2026-05-05)
+
+Da bo sung logic backend va test cho psychology tracking + instrument notes:
+
+- Validate `EMOTION_LOG`:
+  - Bat buoc gan it nhat 1 trong `tradeId` hoac `journalId`.
+  - `intensity` nam trong [0, 100].
+  - `emotionType` chi cho phep: confident, fearful, fomo, hesitant, calm, frustrated.
+- Seed idempotent system behavior tags trong `TAG` cho nhom psychology.
+- Ho tro attach/remove `TRADE_TAG` theo cap `trade + tag` va chong duplicate.
+- `INSTRUMENT_NOTE`:
+  - lay note active theo `instrumentId`,
+  - soft-delete theo `deleted_at`.
+- `INSTRUMENT_NOTE_UPDATE`:
+  - luu timeline cap nhat va tra ve theo thu tu moi nhat truoc.
+- Ho tro lay danh sach `TRADE` lien ket theo `instrumentId` de phuc vu man hinh note detail.
