@@ -1,11 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
+import 'package:trading_diary/core/database/models/risk_check_model.dart';
+import 'package:trading_diary/core/database/models/risk_rule_model.dart';
 import 'package:trading_diary/core/database/models/trade_fill_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
 import 'package:trading_diary/repositories/contracts/account_repository.dart';
 import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
+import 'package:trading_diary/repositories/contracts/risk_repository.dart';
 import 'package:trading_diary/repositories/contracts/trade_repository.dart';
 
 void main() {
@@ -15,6 +18,7 @@ void main() {
       repository: repo,
       accountRepository: _FakeAccountRepository(),
       instrumentRepository: _FakeInstrumentRepository(),
+      riskRepository: _FakeRiskRepository(),
     );
 
     await vm.createTrade(
@@ -43,6 +47,27 @@ void main() {
     await vm.deleteTrade(vm.trades.first);
     expect(vm.trades, isEmpty);
   });
+}
+
+class _FakeRiskRepository implements RiskRepository {
+  @override
+  Future<RiskRuleModel?> findApplicableRiskRule({
+    required String accountId,
+    required DateTime at,
+  }) async => null;
+
+  @override
+  Future<List<RiskCheckModel>> listRiskChecks() async => const [];
+
+  @override
+  Future<List<RiskRuleModel>> listRiskRulesByAccount(String accountId) async =>
+      const [];
+
+  @override
+  Future<void> upsertRiskCheck(RiskCheckModel check) async {}
+
+  @override
+  Future<void> upsertRiskRule(RiskRuleModel rule) async {}
 }
 
 class _FakeTradeRepository implements TradeRepository {

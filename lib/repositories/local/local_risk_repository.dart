@@ -47,6 +47,20 @@ class LocalRiskRepository implements RiskRepository {
   }
 
   @override
+  Future<List<RiskCheckModel>> listRiskChecks() async {
+    final checks = _checkBox.values
+        .map(toDbJson)
+        .map(RiskCheckModel.fromMap)
+        .toList(growable: false);
+    checks.sort((a, b) {
+      final aTime = a.updatedAt ?? a.createdAt;
+      final bTime = b.updatedAt ?? b.createdAt;
+      return bTime.compareTo(aTime);
+    });
+    return checks;
+  }
+
+  @override
   Future<void> upsertRiskRule(RiskRuleModel rule) =>
       _ruleBox.put(rule.id, rule.toMap());
 }

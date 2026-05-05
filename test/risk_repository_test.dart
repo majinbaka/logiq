@@ -79,4 +79,30 @@ void main() {
     expect(saved.followedRiskRule, isFalse);
     expect(saved.violationReason, isNotNull);
   });
+
+  test('listRiskChecks returns latest first', () async {
+    await repository.upsertRiskCheck(
+      RiskCheckModel(
+        id: 'check_old',
+        tradeId: 't1',
+        riskRuleId: 'r1',
+        plannedRiskAmount: '10',
+        maxAllowedRiskAmount: '100',
+        createdAt: DateTime.utc(2026, 5, 1),
+      ),
+    );
+    await repository.upsertRiskCheck(
+      RiskCheckModel(
+        id: 'check_new',
+        tradeId: 't2',
+        riskRuleId: 'r1',
+        plannedRiskAmount: '20',
+        maxAllowedRiskAmount: '100',
+        createdAt: DateTime.utc(2026, 5, 2),
+      ),
+    );
+
+    final checks = await repository.listRiskChecks();
+    expect(checks.map((item) => item.id), ['check_new', 'check_old']);
+  });
 }

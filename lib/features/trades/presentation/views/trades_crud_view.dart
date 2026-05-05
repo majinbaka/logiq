@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
+import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/core/widgets/trading_section_header.dart';
@@ -11,6 +12,7 @@ import 'package:trading_diary/features/trades/presentation/widgets/components/tr
 import 'package:trading_diary/l10n/app_localizations.dart';
 import 'package:trading_diary/repositories/local/local_account_repository.dart';
 import 'package:trading_diary/repositories/local/local_instrument_repository.dart';
+import 'package:trading_diary/repositories/local/local_risk_repository.dart';
 import 'package:trading_diary/repositories/local/local_trade_repository.dart';
 
 class TradesCrudView extends StatefulWidget {
@@ -35,6 +37,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           repository: LocalTradeRepository(),
           accountRepository: LocalAccountRepository(),
           instrumentRepository: LocalInstrumentRepository(),
+          riskRepository: LocalRiskRepository(),
         );
     _viewModel.loadTrades();
   }
@@ -90,6 +93,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
                 ..._viewModel.trades.map(
                   (trade) => _TradeListTile(
                     trade: trade,
+                    riskCheck: _viewModel.riskCheckForTrade(trade.id),
                     onTap: () => _openTradeDetail(trade),
                     onEdit: () => _openTradeForm(existing: trade),
                     onDelete: () => _viewModel.deleteTrade(trade),
@@ -113,6 +117,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
   Future<void> _openTradeDetail(TradeModel trade) async {
     final account = _findAccount(trade.accountId);
     final instrument = _findInstrument(trade.instrumentId);
+    final riskCheck = _viewModel.riskCheckForTrade(trade.id);
 
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -120,6 +125,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           trade: trade,
           account: account,
           instrument: instrument,
+          riskCheck: riskCheck,
           formatDateInput: _formatDateInput,
           onEdit: () {
             Navigator.of(context).pop();
@@ -209,12 +215,14 @@ class _TradesCrudViewState extends State<TradesCrudView> {
 class _TradeListTile extends StatelessWidget {
   const _TradeListTile({
     required this.trade,
+    required this.riskCheck,
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
   });
 
   final TradeModel trade;
+  final RiskCheckModel? riskCheck;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -224,12 +232,26 @@ class _TradeListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final opened =
         trade.openedAt?.toLocal().toIso8601String().split('T').first ?? '-';
+    final l10n = AppLocalizations.of(context)!;
+    final hasViolation = riskCheck?.exceededRisk == true ||
+        riskCheck?.followedRiskRule == false ||
+        ((riskCheck?.violationReason ?? '').trim().isNotEmpty);
+    final riskStatus = hasViolation
+        ? l10n.tradesRiskStatusViolation
+        : l10n.tradesRiskStatusFollowed;
+    final reason = (riskCheck?.violationReason ?? '').trim();
+    final riskReason = hasViolation && reason.isNotEmpty
+        ? reason
+        : l10n.tradesRiskReasonNotApplicable;
 
     return Card(
       child: ListTile(
         onTap: onTap,
         title: Text('${trade.instrumentId} • ${trade.direction.toUpperCase()}'),
-        subtitle: Text('${trade.status.toUpperCase()} • $opened'),
+        subtitle: Text(
+          '${trade.status.toUpperCase()} • $opened\n${l10n.tradesRiskStatusLabel}: $riskStatus\n${l10n.tradesRiskReasonLabel}: $riskReason',
+        ),
+        isThreeLine: true,
         trailing: Wrap(
           spacing: TradingUiSpacing.xs,
           children: [

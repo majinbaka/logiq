@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
+import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/repositories/contracts/account_repository.dart';
 import 'package:trading_diary/repositories/contracts/instrument_repository.dart';
+import 'package:trading_diary/repositories/contracts/risk_repository.dart';
 import 'package:trading_diary/repositories/contracts/trade_repository.dart';
 
 class TradesCrudViewModel extends ChangeNotifier {
@@ -11,23 +13,28 @@ class TradesCrudViewModel extends ChangeNotifier {
     required TradeRepository repository,
     required AccountRepository accountRepository,
     required InstrumentRepository instrumentRepository,
+    required RiskRepository riskRepository,
     this.defaultAccountId = 'acc_1',
   }) : _repository = repository,
        _accountRepository = accountRepository,
-       _instrumentRepository = instrumentRepository;
+       _instrumentRepository = instrumentRepository,
+       _riskRepository = riskRepository;
 
   final TradeRepository _repository;
   final AccountRepository _accountRepository;
   final InstrumentRepository _instrumentRepository;
+  final RiskRepository _riskRepository;
   final String defaultAccountId;
 
   List<TradeModel> _trades = const [];
+  Map<String, RiskCheckModel> _riskChecksByTradeId = const {};
   List<TradingAccountModel> _accounts = const [];
   List<InstrumentModel> _instruments = const [];
   bool _isLoading = false;
   String? _error;
 
   List<TradeModel> get trades => _trades;
+  RiskCheckModel? riskCheckForTrade(String tradeId) => _riskChecksByTradeId[tradeId];
   List<TradingAccountModel> get accounts => _accounts;
   List<InstrumentModel> get instruments => _instruments;
   bool get isLoading => _isLoading;
@@ -61,6 +68,7 @@ class TradesCrudViewModel extends ChangeNotifier {
         return bTime.compareTo(aTime);
       });
       _trades = fetched;
+      _riskChecksByTradeId = await _loadRiskChecksByTradeId();
     } catch (_) {
       _error = 'load_failed';
     } finally {
@@ -169,5 +177,16 @@ class TradesCrudViewModel extends ChangeNotifier {
   Future<void> deleteTrade(TradeModel trade) async {
     await _repository.softDeleteTrade(trade.id, DateTime.now().toUtc());
     await loadTrades();
+  }
+
+  Future<Map<String, RiskCheckModel>> _loadRiskChecksByTradeId() async {
+    final checks = await _riskRepository.listRiskChecks();
+    final activeTradeIds = _trades.map((item) => item.id).toSet();
+    final byTrade = <String, RiskCheckModel>{};
+    for (final check in checks) {
+      if (!activeTradeIds.contains(check.tradeId)) continue;
+      byTrade.putIfAbsent(check.tradeId, () => check);
+    }
+    return byTrade;
   }
 }

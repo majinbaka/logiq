@@ -41,6 +41,18 @@ void main() {
       'opened_at': DateTime.utc(2026, 1, 2).toIso8601String(),
       'created_at': DateTime.utc(2026, 1, 2).toIso8601String(),
     });
+    await Hive.box<Map>(StorageBoxes.riskChecks).put('risk_1', {
+      'id': 'risk_1',
+      'trade_id': 'tr_1',
+      'risk_rule_id': 'rr_1',
+      'planned_risk_amount': '150',
+      'actual_risk_amount': '120',
+      'max_allowed_risk_amount': '100',
+      'exceeded_risk': true,
+      'followed_risk_rule': false,
+      'violation_reason': 'Risk amount exceeds configured limit',
+      'created_at': DateTime.utc(2026, 1, 2).toIso8601String(),
+    });
   });
 
   tearDown(() async {
@@ -79,6 +91,9 @@ void main() {
     expect(find.text('Trade detail'), findsOneWidget);
     expect(find.text('Plan'), findsOneWidget);
     expect(find.text('Review'), findsOneWidget);
+    expect(find.text('Risk status'), findsWidgets);
+    expect(find.text('Violation'), findsWidgets);
+    expect(find.text('Risk amount exceeds configured limit'), findsWidgets);
   });
 
   testWidgets('trades supports create flow from form', (tester) async {

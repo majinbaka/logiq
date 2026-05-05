@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trading_diary/core/database/models/instrument_model.dart';
+import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/trade_model.dart';
 import 'package:trading_diary/core/database/models/trading_account_model.dart';
 import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
@@ -11,6 +12,7 @@ class TradeDetailView extends StatelessWidget {
     required this.trade,
     required this.account,
     required this.instrument,
+    required this.riskCheck,
     required this.formatDateInput,
     required this.onEdit,
   });
@@ -18,12 +20,23 @@ class TradeDetailView extends StatelessWidget {
   final TradeModel trade;
   final TradingAccountModel? account;
   final InstrumentModel? instrument;
+  final RiskCheckModel? riskCheck;
   final String Function(DateTime value) formatDateInput;
   final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasViolation = riskCheck?.exceededRisk == true ||
+        riskCheck?.followedRiskRule == false ||
+        ((riskCheck?.violationReason ?? '').trim().isNotEmpty);
+    final riskStatus = hasViolation
+        ? l10n.tradesRiskStatusViolation
+        : l10n.tradesRiskStatusFollowed;
+    final reason = (riskCheck?.violationReason ?? '').trim();
+    final riskReason = hasViolation && reason.isNotEmpty
+        ? reason
+        : l10n.tradesRiskReasonNotApplicable;
 
     return Scaffold(
       appBar: AppBar(
@@ -81,6 +94,8 @@ class TradeDetailView extends StatelessWidget {
             label: l10n.tradesReviewLabel,
             value: trade.reviewNote ?? l10n.tradesReviewPending,
           ),
+          _DetailRow(label: l10n.tradesRiskStatusLabel, value: riskStatus),
+          _DetailRow(label: l10n.tradesRiskReasonLabel, value: riskReason),
         ],
       ),
     );

@@ -51,6 +51,11 @@
   "tradesValidationMessage": "Please enter a valid instrument and date.",
   "tradesEditTooltip": "Edit trade",
   "tradesDeleteTooltip": "Delete trade",
+  "tradesRiskStatusLabel": "Risk status",
+  "tradesRiskReasonLabel": "Violation reason",
+  "tradesRiskStatusFollowed": "Followed",
+  "tradesRiskStatusViolation": "Violation",
+  "tradesRiskReasonNotApplicable": "N/A",
   "tradesOverviewTitle": "Trading Journal",
   "tradesOverviewSubtitle": "Capture and review your executed trades.",
   "tradesOverviewBody": "Trade list and trade detail flows will be connected in the next implementation slices.",
@@ -157,6 +162,18 @@
   "riskRulePercentLabel": "Risk percent per trade",
   "riskRuleDailyLossLabel": "Max daily loss",
   "riskRuleValidationMessage": "Please enter a rule name and a valid effective date.",
+  "riskChecksTitle": "Risk checks",
+  "riskChecksEmptyState": "No risk checks yet.",
+  "riskCheckTradeLabel": "Trade: {tradeId}",
+  "@riskCheckTradeLabel": {
+    "description": "Risk check list item label by trade id",
+    "placeholders": {
+      "tradeId": {
+        "type": "String"
+      }
+    }
+  },
+  "riskCheckNoViolationReason": "No violation.",
   "dateFormatHint": "YYYY-MM-DD",
   "dailyJournalTitle": "Daily Journal",
   "dailyJournalSubtitle": "Plan before market and review after market.",

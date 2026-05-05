@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:trading_diary/core/database/models/risk_check_model.dart';
 import 'package:trading_diary/core/database/models/risk_rule_model.dart';
 import 'package:trading_diary/core/database/models/strategy_model.dart';
 import 'package:trading_diary/core/database/models/strategy_version_model.dart';
@@ -19,6 +20,7 @@ class StrategyRiskViewModel extends ChangeNotifier {
 
   List<StrategyModel> strategies = const [];
   List<RiskRuleModel> riskRules = const [];
+  List<RiskCheckModel> riskChecks = const [];
   List<StrategyVersionModel> selectedVersions = const [];
   RiskRuleModel? applicableRiskRule;
   bool isLoading = false;
@@ -35,6 +37,7 @@ class StrategyRiskViewModel extends ChangeNotifier {
       riskRules = await _riskRepository.listRiskRulesByAccount(
         defaultAccountId,
       );
+      riskChecks = await _riskRepository.listRiskChecks();
       applicableRiskRule = await _riskRepository.findApplicableRiskRule(
         accountId: defaultAccountId,
         at: DateTime.now().toUtc(),
@@ -156,5 +159,11 @@ class StrategyRiskViewModel extends ChangeNotifier {
     selectedVersions = await _strategyRepository.listVersionsByStrategy(
       selectedStrategyId!,
     );
+  }
+
+  bool isViolation(RiskCheckModel check) {
+    if (check.exceededRisk == true) return true;
+    if (check.followedRiskRule == false) return true;
+    return (check.violationReason ?? '').trim().isNotEmpty;
   }
 }

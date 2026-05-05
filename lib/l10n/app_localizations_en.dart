@@ -153,6 +153,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesDeleteTooltip => 'Delete trade';
 
   @override
+  String get tradesRiskStatusLabel => 'Risk status';
+
+  @override
+  String get tradesRiskReasonLabel => 'Violation reason';
+
+  @override
+  String get tradesRiskStatusFollowed => 'Followed';
+
+  @override
+  String get tradesRiskStatusViolation => 'Violation';
+
+  @override
+  String get tradesRiskReasonNotApplicable => 'N/A';
+
+  @override
   String get tradesOverviewTitle => 'Trading Journal';
 
   @override
@@ -394,6 +409,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get riskRuleValidationMessage => 'Please enter a rule name and a valid effective date.';
+
+  @override
+  String get riskChecksTitle => 'Risk checks';
+
+  @override
+  String get riskChecksEmptyState => 'No risk checks yet.';
+
+  @override
+  String riskCheckTradeLabel(String tradeId) {
+    return 'Trade: $tradeId';
+  }
+
+  @override
+  String get riskCheckNoViolationReason => 'No violation.';
 
   @override
   String get dateFormatHint => 'YYYY-MM-DD';

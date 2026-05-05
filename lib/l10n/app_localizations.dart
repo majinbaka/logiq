@@ -383,6 +383,36 @@ abstract class AppLocalizations {
   /// **'Delete trade'**
   String get tradesDeleteTooltip;
 
+  /// No description provided for @tradesRiskStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk status'**
+  String get tradesRiskStatusLabel;
+
+  /// No description provided for @tradesRiskReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Violation reason'**
+  String get tradesRiskReasonLabel;
+
+  /// No description provided for @tradesRiskStatusFollowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed'**
+  String get tradesRiskStatusFollowed;
+
+  /// No description provided for @tradesRiskStatusViolation.
+  ///
+  /// In en, this message translates to:
+  /// **'Violation'**
+  String get tradesRiskStatusViolation;
+
+  /// No description provided for @tradesRiskReasonNotApplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get tradesRiskReasonNotApplicable;
+
   /// No description provided for @tradesOverviewTitle.
   ///
   /// In en, this message translates to:
@@ -856,6 +886,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a rule name and a valid effective date.'**
   String get riskRuleValidationMessage;
+
+  /// No description provided for @riskChecksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk checks'**
+  String get riskChecksTitle;
+
+  /// No description provided for @riskChecksEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No risk checks yet.'**
+  String get riskChecksEmptyState;
+
+  /// Risk check list item label by trade id
+  ///
+  /// In en, this message translates to:
+  /// **'Trade: {tradeId}'**
+  String riskCheckTradeLabel(String tradeId);
+
+  /// No description provided for @riskCheckNoViolationReason.
+  ///
+  /// In en, this message translates to:
+  /// **'No violation.'**
+  String get riskCheckNoViolationReason;
 
   /// No description provided for @dateFormatHint.
   ///

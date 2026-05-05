@@ -187,9 +187,43 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
                       rule.riskPercentPerTrade ?? '-',
                       rule.maxDailyLossAmount ?? '-',
                     ),
+                    ),
                   ),
                 ),
-              ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            Text(
+              l10n.riskChecksTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: TradingUiSpacing.xs),
+            if (_viewModel.riskChecks.isEmpty)
+              Text(l10n.riskChecksEmptyState)
+            else
+              ..._viewModel.riskChecks.map((check) {
+                final isViolation = _viewModel.isViolation(check);
+                final reason = (check.violationReason ?? '').trim();
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.riskCheckTradeLabel(check.tradeId)),
+                  subtitle: Text(
+                    isViolation
+                        ? (reason.isEmpty
+                              ? l10n.tradesRiskReasonNotApplicable
+                              : reason)
+                        : l10n.riskCheckNoViolationReason,
+                  ),
+                  trailing: Text(
+                    isViolation
+                        ? l10n.tradesRiskStatusViolation
+                        : l10n.tradesRiskStatusFollowed,
+                    style: TextStyle(
+                      color: isViolation
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                );
+              }),
           ],
         ),
       ),

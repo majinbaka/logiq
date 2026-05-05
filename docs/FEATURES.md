@@ -395,3 +395,13 @@ Da bo sung cac hang muc Portfolio readiness:
 - Them input flow cho `PriceQuote` (quote) va `CashMovement` (dong tien), sau khi luu se reload snapshot/holdings.
 - Them snapshot detail bottom sheet: hien thi `dailyPnl`, `cumulativePnl`, `drawdownPercent` va danh sach position snapshot.
 - Bo sung widget test cho Portfolio bao phu `create/edit/delete` va state `empty/error`.
+
+## 20. Strategy + Risk Trade Context Slice (2026-05-05)
+
+Da bo sung hien thi vi pham risk trong Trade va Risk screen:
+
+- `TradesCrudViewModel` nap them `risk check` va map theo `tradeId`.
+- Danh sach trade hien thi `Risk status` va `Violation reason`.
+- Trade detail hien thi ro trang thai `Followed/Violation` va ly do vi pham khi co.
+- `StrategyRiskView` bo sung section `Risk checks` de quan sat trang thai va ly do theo tung trade.
+- Toan bo text UI moi da duoc noi dia hoa EN/VI.

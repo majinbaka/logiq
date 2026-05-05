@@ -153,6 +153,21 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesDeleteTooltip => 'Xóa giao dịch';
 
   @override
+  String get tradesRiskStatusLabel => 'Trạng thái rủi ro';
+
+  @override
+  String get tradesRiskReasonLabel => 'Lý do vi phạm';
+
+  @override
+  String get tradesRiskStatusFollowed => 'Tuân thủ';
+
+  @override
+  String get tradesRiskStatusViolation => 'Vi phạm';
+
+  @override
+  String get tradesRiskReasonNotApplicable => 'Không áp dụng';
+
+  @override
   String get tradesOverviewTitle => 'Nhật ký giao dịch';
 
   @override
@@ -394,6 +409,20 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get riskRuleValidationMessage => 'Vui lòng nhập tên quy tắc và ngày hiệu lực hợp lệ.';
+
+  @override
+  String get riskChecksTitle => 'Kiểm tra rủi ro';
+
+  @override
+  String get riskChecksEmptyState => 'Chưa có bản kiểm tra rủi ro.';
+
+  @override
+  String riskCheckTradeLabel(String tradeId) {
+    return 'Giao dịch: $tradeId';
+  }
+
+  @override
+  String get riskCheckNoViolationReason => 'Không có vi phạm.';
 
   @override
   String get dateFormatHint => 'YYYY-MM-DD';
