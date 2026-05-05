@@ -359,3 +359,19 @@ Da bo sung test:
 
 - Unit test cho `PortfolioCrudViewModel` bao phu create/update/delete.
 - Cap nhat widget test app shell de assert tab Portfolio theo UI moi.
+
+## 17. Strategy + Risk CRUD Slice (2026-05-05)
+
+Da bo sung flow UI cho tab Strategy:
+
+- Chuyen `StrategyRiskView` tu placeholder sang repository-backed screen.
+- Co the tao strategy moi (name, description, entry/exit rules, effective from).
+- Co the archive strategy.
+- Co the tao strategy version moi va xem lich su version.
+- Co the tao risk rule (name, risk percent per trade, max daily loss, effective from).
+- Hien thi applicable risk rule theo effective date.
+- Toan bo text UI moi da duoc noi dia hoa EN/VI.
+
+Da bo sung test:
+
+- Unit test cho `StrategyRiskViewModel` bao phu tao strategy, version history, va risk rule.

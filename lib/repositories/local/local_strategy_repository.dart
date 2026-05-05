@@ -29,6 +29,18 @@ class LocalStrategyRepository implements StrategyRepository {
       readActive(_strategyBox, StrategyModel.fromMap);
 
   @override
+  Future<List<StrategyVersionModel>> listVersionsByStrategy(
+    String strategyId,
+  ) async {
+    final versions = _versionBox.values
+        .map((value) => StrategyVersionModel.fromMap(toDbJson(value)))
+        .where((version) => version.strategyId == strategyId)
+        .toList(growable: false);
+    versions.sort((a, b) => b.versionNumber.compareTo(a.versionNumber));
+    return versions;
+  }
+
+  @override
   Future<void> upsertStrategy(StrategyModel strategy) =>
       _strategyBox.put(strategy.id, strategy.toMap());
 

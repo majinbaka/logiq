@@ -461,6 +461,180 @@ abstract class AppLocalizations {
   /// **'Strategy versioning and risk checks are ready in data layer and will be surfaced in UI next.'**
   String get strategyRiskBody;
 
+  /// No description provided for @strategyLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load strategy and risk data'**
+  String get strategyLoadErrorTitle;
+
+  /// No description provided for @strategyLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading strategy and risk.'**
+  String get strategyLoadErrorBody;
+
+  /// No description provided for @strategyRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get strategyRetry;
+
+  /// No description provided for @strategyListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategies'**
+  String get strategyListTitle;
+
+  /// No description provided for @strategyAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Strategy'**
+  String get strategyAddButton;
+
+  /// No description provided for @strategyEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No active strategies yet.'**
+  String get strategyEmptyState;
+
+  /// No description provided for @strategyAddVersionTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Add strategy version'**
+  String get strategyAddVersionTooltip;
+
+  /// No description provided for @strategyArchiveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive strategy'**
+  String get strategyArchiveTooltip;
+
+  /// No description provided for @strategyVersionHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version history'**
+  String get strategyVersionHistoryTitle;
+
+  /// A strategy version label
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String strategyVersionLabel(int version);
+
+  /// No description provided for @strategyCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create strategy'**
+  String get strategyCreateTitle;
+
+  /// No description provided for @strategyCreateVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create strategy version'**
+  String get strategyCreateVersionTitle;
+
+  /// No description provided for @strategyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Strategy name'**
+  String get strategyNameLabel;
+
+  /// No description provided for @strategyDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get strategyDescriptionLabel;
+
+  /// No description provided for @strategyEntryRulesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry rules'**
+  String get strategyEntryRulesLabel;
+
+  /// No description provided for @strategyExitRulesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit rules'**
+  String get strategyExitRulesLabel;
+
+  /// No description provided for @strategyEffectiveFromLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Effective from'**
+  String get strategyEffectiveFromLabel;
+
+  /// No description provided for @strategyValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter required fields with a valid date.'**
+  String get strategyValidationMessage;
+
+  /// No description provided for @riskRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk rules'**
+  String get riskRulesTitle;
+
+  /// No description provided for @riskRuleAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Rule'**
+  String get riskRuleAddButton;
+
+  /// No description provided for @riskRulesEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No risk rules yet.'**
+  String get riskRulesEmptyState;
+
+  /// Current applicable risk rule
+  ///
+  /// In en, this message translates to:
+  /// **'Applicable rule now: {name}'**
+  String riskApplicableRuleLabel(String name);
+
+  /// Risk rule quick summary
+  ///
+  /// In en, this message translates to:
+  /// **'Risk/trade: {riskPercent} | Max daily loss: {maxDailyLoss}'**
+  String riskRuleSummary(String riskPercent, String maxDailyLoss);
+
+  /// No description provided for @riskRuleCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create risk rule'**
+  String get riskRuleCreateTitle;
+
+  /// No description provided for @riskRuleNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule name'**
+  String get riskRuleNameLabel;
+
+  /// No description provided for @riskRulePercentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk percent per trade'**
+  String get riskRulePercentLabel;
+
+  /// No description provided for @riskRuleDailyLossLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max daily loss'**
+  String get riskRuleDailyLossLabel;
+
+  /// No description provided for @riskRuleValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a rule name and a valid effective date.'**
+  String get riskRuleValidationMessage;
+
+  /// No description provided for @dateFormatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get dateFormatHint;
+
   /// No description provided for @dailyJournalTitle.
   ///
   /// In en, this message translates to:

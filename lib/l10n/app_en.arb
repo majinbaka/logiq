@@ -64,6 +64,62 @@
   "strategyRiskTitle": "Strategy and Risk",
   "strategyRiskSubtitle": "Define strategy rules and enforce risk boundaries.",
   "strategyRiskBody": "Strategy versioning and risk checks are ready in data layer and will be surfaced in UI next.",
+  "strategyLoadErrorTitle": "Could not load strategy and risk data",
+  "strategyLoadErrorBody": "Please retry loading strategy and risk.",
+  "strategyRetry": "Retry",
+  "strategyListTitle": "Strategies",
+  "strategyAddButton": "Add Strategy",
+  "strategyEmptyState": "No active strategies yet.",
+  "strategyAddVersionTooltip": "Add strategy version",
+  "strategyArchiveTooltip": "Archive strategy",
+  "strategyVersionHistoryTitle": "Version history",
+  "strategyVersionLabel": "Version {version}",
+  "@strategyVersionLabel": {
+    "description": "A strategy version label",
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "strategyCreateTitle": "Create strategy",
+  "strategyCreateVersionTitle": "Create strategy version",
+  "strategyNameLabel": "Strategy name",
+  "strategyDescriptionLabel": "Description",
+  "strategyEntryRulesLabel": "Entry rules",
+  "strategyExitRulesLabel": "Exit rules",
+  "strategyEffectiveFromLabel": "Effective from",
+  "strategyValidationMessage": "Please enter required fields with a valid date.",
+  "riskRulesTitle": "Risk rules",
+  "riskRuleAddButton": "Add Rule",
+  "riskRulesEmptyState": "No risk rules yet.",
+  "riskApplicableRuleLabel": "Applicable rule now: {name}",
+  "@riskApplicableRuleLabel": {
+    "description": "Current applicable risk rule",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "riskRuleSummary": "Risk/trade: {riskPercent} | Max daily loss: {maxDailyLoss}",
+  "@riskRuleSummary": {
+    "description": "Risk rule quick summary",
+    "placeholders": {
+      "riskPercent": {
+        "type": "String"
+      },
+      "maxDailyLoss": {
+        "type": "String"
+      }
+    }
+  },
+  "riskRuleCreateTitle": "Create risk rule",
+  "riskRuleNameLabel": "Rule name",
+  "riskRulePercentLabel": "Risk percent per trade",
+  "riskRuleDailyLossLabel": "Max daily loss",
+  "riskRuleValidationMessage": "Please enter a rule name and a valid effective date.",
+  "dateFormatHint": "YYYY-MM-DD",
   "dailyJournalTitle": "Daily Journal",
   "dailyJournalSubtitle": "Plan before market and review after market.",
   "dailyJournalBody": "Daily planning and post-session review forms will be added in next iterations.",

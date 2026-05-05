@@ -192,6 +192,99 @@ class AppLocalizationsVi extends AppLocalizations {
   String get strategyRiskBody => 'Version chiến lược và kiểm tra rủi ro đã sẵn sàng ở tầng dữ liệu, UI sẽ được nối tiếp theo.';
 
   @override
+  String get strategyLoadErrorTitle => 'Không thể tải dữ liệu chiến lược và rủi ro';
+
+  @override
+  String get strategyLoadErrorBody => 'Vui lòng thử tải lại chiến lược và rủi ro.';
+
+  @override
+  String get strategyRetry => 'Thử lại';
+
+  @override
+  String get strategyListTitle => 'Chiến lược';
+
+  @override
+  String get strategyAddButton => 'Thêm chiến lược';
+
+  @override
+  String get strategyEmptyState => 'Chưa có chiến lược hoạt động.';
+
+  @override
+  String get strategyAddVersionTooltip => 'Thêm phiên bản chiến lược';
+
+  @override
+  String get strategyArchiveTooltip => 'Lưu trữ chiến lược';
+
+  @override
+  String get strategyVersionHistoryTitle => 'Lịch sử phiên bản';
+
+  @override
+  String strategyVersionLabel(int version) {
+    return 'Phiên bản $version';
+  }
+
+  @override
+  String get strategyCreateTitle => 'Tạo chiến lược';
+
+  @override
+  String get strategyCreateVersionTitle => 'Tạo phiên bản chiến lược';
+
+  @override
+  String get strategyNameLabel => 'Tên chiến lược';
+
+  @override
+  String get strategyDescriptionLabel => 'Mô tả';
+
+  @override
+  String get strategyEntryRulesLabel => 'Quy tắc vào lệnh';
+
+  @override
+  String get strategyExitRulesLabel => 'Quy tắc thoát lệnh';
+
+  @override
+  String get strategyEffectiveFromLabel => 'Hiệu lực từ';
+
+  @override
+  String get strategyValidationMessage => 'Vui lòng nhập đủ trường bắt buộc và ngày hợp lệ.';
+
+  @override
+  String get riskRulesTitle => 'Quy tắc rủi ro';
+
+  @override
+  String get riskRuleAddButton => 'Thêm quy tắc';
+
+  @override
+  String get riskRulesEmptyState => 'Chưa có quy tắc rủi ro.';
+
+  @override
+  String riskApplicableRuleLabel(String name) {
+    return 'Quy tắc đang áp dụng: $name';
+  }
+
+  @override
+  String riskRuleSummary(String riskPercent, String maxDailyLoss) {
+    return 'Rủi ro/lệnh: $riskPercent | Lỗ ngày tối đa: $maxDailyLoss';
+  }
+
+  @override
+  String get riskRuleCreateTitle => 'Tạo quy tắc rủi ro';
+
+  @override
+  String get riskRuleNameLabel => 'Tên quy tắc';
+
+  @override
+  String get riskRulePercentLabel => 'Phần trăm rủi ro mỗi lệnh';
+
+  @override
+  String get riskRuleDailyLossLabel => 'Lỗ ngày tối đa';
+
+  @override
+  String get riskRuleValidationMessage => 'Vui lòng nhập tên quy tắc và ngày hiệu lực hợp lệ.';
+
+  @override
+  String get dateFormatHint => 'YYYY-MM-DD';
+
+  @override
   String get dailyJournalTitle => 'Nhật ký hằng ngày';
 
   @override

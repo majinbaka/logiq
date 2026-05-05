@@ -1,30 +1,498 @@
 import 'package:flutter/material.dart';
+import 'package:trading_diary/core/database/models/strategy_model.dart';
 import 'package:trading_diary/core/widgets/trading_section_header.dart';
 import 'package:trading_diary/core/widgets/trading_state_view.dart';
 import 'package:trading_diary/core/widgets/trading_ui_tokens.dart';
+import 'package:trading_diary/features/strategy/presentation/viewmodels/strategy_risk_viewmodel.dart';
 import 'package:trading_diary/l10n/app_localizations.dart';
+import 'package:trading_diary/repositories/local/local_risk_repository.dart';
+import 'package:trading_diary/repositories/local/local_strategy_repository.dart';
 
-class StrategyRiskView extends StatelessWidget {
+class StrategyRiskView extends StatefulWidget {
   const StrategyRiskView({super.key});
+
+  @override
+  State<StrategyRiskView> createState() => _StrategyRiskViewState();
+}
+
+class _StrategyRiskViewState extends State<StrategyRiskView> {
+  late final StrategyRiskViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = StrategyRiskViewModel(
+      strategyRepository: LocalStrategyRepository(),
+      riskRepository: LocalRiskRepository(),
+    );
+    _viewModel.load();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ListView(
-      padding: const EdgeInsets.all(TradingUiSpacing.md),
-      children: [
-        TradingSectionHeader(
-          title: l10n.strategyRiskTitle,
-          subtitle: l10n.strategyRiskSubtitle,
+    return AnimatedBuilder(
+      animation: _viewModel,
+      builder: (context, _) {
+        return Scaffold(
+          body: ListView(
+            padding: const EdgeInsets.all(TradingUiSpacing.md),
+            children: [
+              TradingSectionHeader(
+                title: l10n.strategyRiskTitle,
+                subtitle: l10n.strategyRiskSubtitle,
+              ),
+              const SizedBox(height: TradingUiSpacing.md),
+              if (_viewModel.isLoading)
+                const Center(child: CircularProgressIndicator())
+              else if (_viewModel.error != null)
+                TradingStateView(
+                  title: l10n.strategyLoadErrorTitle,
+                  message: l10n.strategyLoadErrorBody,
+                  icon: Icons.error_outline,
+                  actionLabel: l10n.strategyRetry,
+                  onAction: _viewModel.load,
+                )
+              else ...[
+                _buildStrategySection(l10n),
+                const SizedBox(height: TradingUiSpacing.md),
+                _buildRiskSection(l10n),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStrategySection(AppLocalizations l10n) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(TradingUiSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.strategyListTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                FilledButton.icon(
+                  onPressed: _openStrategyForm,
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.strategyAddButton),
+                ),
+              ],
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            if (_viewModel.strategies.isEmpty)
+              Text(l10n.strategyEmptyState)
+            else
+              ..._viewModel.strategies.map(
+                (strategy) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(strategy.name),
+                  subtitle: Text(strategy.description ?? '-'),
+                  trailing: Wrap(
+                    spacing: TradingUiSpacing.xs,
+                    children: [
+                      IconButton(
+                        tooltip: l10n.strategyAddVersionTooltip,
+                        onPressed: () => _openVersionForm(strategy),
+                        icon: const Icon(Icons.history),
+                      ),
+                      IconButton(
+                        tooltip: l10n.strategyArchiveTooltip,
+                        onPressed: () => _viewModel.archiveStrategy(strategy),
+                        icon: const Icon(Icons.archive_outlined),
+                      ),
+                    ],
+                  ),
+                  onTap: () => _viewModel.selectStrategy(strategy.id),
+                ),
+              ),
+            if (_viewModel.selectedVersions.isNotEmpty) ...[
+              const SizedBox(height: TradingUiSpacing.sm),
+              Text(
+                l10n.strategyVersionHistoryTitle,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: TradingUiSpacing.xs),
+              ..._viewModel.selectedVersions.map(
+                (version) => ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.strategyVersionLabel(version.versionNumber)),
+                  subtitle: Text(
+                    '${version.entryRules ?? '-'} | ${version.exitRules ?? '-'}',
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
-        const SizedBox(height: TradingUiSpacing.md),
-        TradingStateView(
-          title: l10n.workInProgressTitle,
-          message: l10n.strategyRiskBody,
-          icon: Icons.rule_folder_outlined,
+      ),
+    );
+  }
+
+  Widget _buildRiskSection(AppLocalizations l10n) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(TradingUiSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.riskRulesTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                FilledButton.icon(
+                  onPressed: _openRiskRuleForm,
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.riskRuleAddButton),
+                ),
+              ],
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            if (_viewModel.applicableRiskRule != null)
+              Text(
+                l10n.riskApplicableRuleLabel(
+                  _viewModel.applicableRiskRule!.name,
+                ),
+              ),
+            const SizedBox(height: TradingUiSpacing.xs),
+            if (_viewModel.riskRules.isEmpty)
+              Text(l10n.riskRulesEmptyState)
+            else
+              ..._viewModel.riskRules.map(
+                (rule) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(rule.name),
+                  subtitle: Text(
+                    l10n.riskRuleSummary(
+                      rule.riskPercentPerTrade ?? '-',
+                      rule.maxDailyLossAmount ?? '-',
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openStrategyForm() async {
+    final l10n = AppLocalizations.of(context)!;
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final entryController = TextEditingController();
+    final exitController = TextEditingController();
+    final effectiveController = TextEditingController(text: _dateNow());
+
+    final isSaved = await _openCommonFormSheet(
+      title: l10n.strategyCreateTitle,
+      fields: [
+        _FormFieldConfig(
+          label: l10n.strategyNameLabel,
+          controller: nameController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyDescriptionLabel,
+          controller: descriptionController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyEntryRulesLabel,
+          controller: entryController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyExitRulesLabel,
+          controller: exitController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyEffectiveFromLabel,
+          controller: effectiveController,
+          hintText: l10n.dateFormatHint,
         ),
       ],
     );
+
+    if (isSaved != true) {
+      _disposeControllers([
+        nameController,
+        descriptionController,
+        entryController,
+        exitController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    final effectiveFrom = DateTime.tryParse(effectiveController.text.trim());
+    if (nameController.text.trim().isEmpty || effectiveFrom == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.strategyValidationMessage)));
+      }
+      _disposeControllers([
+        nameController,
+        descriptionController,
+        entryController,
+        exitController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    await _viewModel.createStrategy(
+      name: nameController.text.trim(),
+      description: descriptionController.text.trim(),
+      entryRules: entryController.text.trim(),
+      exitRules: exitController.text.trim(),
+      effectiveFrom: effectiveFrom,
+    );
+
+    _disposeControllers([
+      nameController,
+      descriptionController,
+      entryController,
+      exitController,
+      effectiveController,
+    ]);
   }
+
+  Future<void> _openVersionForm(StrategyModel strategy) async {
+    final l10n = AppLocalizations.of(context)!;
+    final entryController = TextEditingController();
+    final exitController = TextEditingController();
+    final effectiveController = TextEditingController(text: _dateNow());
+
+    final isSaved = await _openCommonFormSheet(
+      title: l10n.strategyCreateVersionTitle,
+      fields: [
+        _FormFieldConfig(
+          label: l10n.strategyEntryRulesLabel,
+          controller: entryController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyExitRulesLabel,
+          controller: exitController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyEffectiveFromLabel,
+          controller: effectiveController,
+          hintText: l10n.dateFormatHint,
+        ),
+      ],
+    );
+
+    if (isSaved != true) {
+      _disposeControllers([
+        entryController,
+        exitController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    final effectiveFrom = DateTime.tryParse(effectiveController.text.trim());
+    if (effectiveFrom == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.strategyValidationMessage)));
+      }
+      _disposeControllers([
+        entryController,
+        exitController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    await _viewModel.addStrategyVersion(
+      strategy: strategy,
+      entryRules: entryController.text.trim(),
+      exitRules: exitController.text.trim(),
+      effectiveFrom: effectiveFrom,
+    );
+
+    _disposeControllers([entryController, exitController, effectiveController]);
+  }
+
+  Future<void> _openRiskRuleForm() async {
+    final l10n = AppLocalizations.of(context)!;
+    final nameController = TextEditingController();
+    final riskPercentController = TextEditingController();
+    final maxDailyLossController = TextEditingController();
+    final effectiveController = TextEditingController(text: _dateNow());
+
+    final isSaved = await _openCommonFormSheet(
+      title: l10n.riskRuleCreateTitle,
+      fields: [
+        _FormFieldConfig(
+          label: l10n.riskRuleNameLabel,
+          controller: nameController,
+        ),
+        _FormFieldConfig(
+          label: l10n.riskRulePercentLabel,
+          controller: riskPercentController,
+        ),
+        _FormFieldConfig(
+          label: l10n.riskRuleDailyLossLabel,
+          controller: maxDailyLossController,
+        ),
+        _FormFieldConfig(
+          label: l10n.strategyEffectiveFromLabel,
+          controller: effectiveController,
+          hintText: l10n.dateFormatHint,
+        ),
+      ],
+    );
+
+    if (isSaved != true) {
+      _disposeControllers([
+        nameController,
+        riskPercentController,
+        maxDailyLossController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    final effectiveFrom = DateTime.tryParse(effectiveController.text.trim());
+    if (nameController.text.trim().isEmpty || effectiveFrom == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.riskRuleValidationMessage)));
+      }
+      _disposeControllers([
+        nameController,
+        riskPercentController,
+        maxDailyLossController,
+        effectiveController,
+      ]);
+      return;
+    }
+
+    await _viewModel.upsertRiskRule(
+      name: nameController.text.trim(),
+      effectiveFrom: effectiveFrom,
+      riskPercentPerTrade: riskPercentController.text.trim().isEmpty
+          ? null
+          : riskPercentController.text.trim(),
+      maxDailyLoss: maxDailyLossController.text.trim().isEmpty
+          ? null
+          : maxDailyLossController.text.trim(),
+    );
+
+    _disposeControllers([
+      nameController,
+      riskPercentController,
+      maxDailyLossController,
+      effectiveController,
+    ]);
+  }
+
+  Future<bool?> _openCommonFormSheet({
+    required String title,
+    required List<_FormFieldConfig> fields,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: TradingUiSpacing.md,
+            right: TradingUiSpacing.md,
+            top: TradingUiSpacing.md,
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom + TradingUiSpacing.md,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: TradingUiSpacing.md),
+              ...fields.map(
+                (field) => Padding(
+                  padding: const EdgeInsets.only(bottom: TradingUiSpacing.sm),
+                  child: TextField(
+                    controller: field.controller,
+                    decoration: InputDecoration(
+                      labelText: field.label,
+                      hintText: field.hintText,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: TradingUiSpacing.md),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(l10n.tradesCancel),
+                    ),
+                  ),
+                  const SizedBox(width: TradingUiSpacing.sm),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(l10n.tradesSave),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _disposeControllers(List<TextEditingController> controllers) {
+    for (final controller in controllers) {
+      controller.dispose();
+    }
+  }
+
+  String _dateNow() {
+    final now = DateTime.now().toUtc();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    return '${now.year}-$month-$day';
+  }
+}
+
+class _FormFieldConfig {
+  const _FormFieldConfig({
+    required this.label,
+    required this.controller,
+    this.hintText,
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final String? hintText;
 }

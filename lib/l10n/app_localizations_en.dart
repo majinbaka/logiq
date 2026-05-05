@@ -192,6 +192,99 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strategyRiskBody => 'Strategy versioning and risk checks are ready in data layer and will be surfaced in UI next.';
 
   @override
+  String get strategyLoadErrorTitle => 'Could not load strategy and risk data';
+
+  @override
+  String get strategyLoadErrorBody => 'Please retry loading strategy and risk.';
+
+  @override
+  String get strategyRetry => 'Retry';
+
+  @override
+  String get strategyListTitle => 'Strategies';
+
+  @override
+  String get strategyAddButton => 'Add Strategy';
+
+  @override
+  String get strategyEmptyState => 'No active strategies yet.';
+
+  @override
+  String get strategyAddVersionTooltip => 'Add strategy version';
+
+  @override
+  String get strategyArchiveTooltip => 'Archive strategy';
+
+  @override
+  String get strategyVersionHistoryTitle => 'Version history';
+
+  @override
+  String strategyVersionLabel(int version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get strategyCreateTitle => 'Create strategy';
+
+  @override
+  String get strategyCreateVersionTitle => 'Create strategy version';
+
+  @override
+  String get strategyNameLabel => 'Strategy name';
+
+  @override
+  String get strategyDescriptionLabel => 'Description';
+
+  @override
+  String get strategyEntryRulesLabel => 'Entry rules';
+
+  @override
+  String get strategyExitRulesLabel => 'Exit rules';
+
+  @override
+  String get strategyEffectiveFromLabel => 'Effective from';
+
+  @override
+  String get strategyValidationMessage => 'Please enter required fields with a valid date.';
+
+  @override
+  String get riskRulesTitle => 'Risk rules';
+
+  @override
+  String get riskRuleAddButton => 'Add Rule';
+
+  @override
+  String get riskRulesEmptyState => 'No risk rules yet.';
+
+  @override
+  String riskApplicableRuleLabel(String name) {
+    return 'Applicable rule now: $name';
+  }
+
+  @override
+  String riskRuleSummary(String riskPercent, String maxDailyLoss) {
+    return 'Risk/trade: $riskPercent | Max daily loss: $maxDailyLoss';
+  }
+
+  @override
+  String get riskRuleCreateTitle => 'Create risk rule';
+
+  @override
+  String get riskRuleNameLabel => 'Rule name';
+
+  @override
+  String get riskRulePercentLabel => 'Risk percent per trade';
+
+  @override
+  String get riskRuleDailyLossLabel => 'Max daily loss';
+
+  @override
+  String get riskRuleValidationMessage => 'Please enter a rule name and a valid effective date.';
+
+  @override
+  String get dateFormatHint => 'YYYY-MM-DD';
+
+  @override
   String get dailyJournalTitle => 'Daily Journal';
 
   @override
