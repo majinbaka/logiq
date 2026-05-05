@@ -33,6 +33,81 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workInProgressTitle => 'Work in progress';
 
   @override
+  String get tradesCrudTitle => 'Trades';
+
+  @override
+  String get tradesCrudSubtitle => 'Create, update, and remove trades in your journal.';
+
+  @override
+  String get tradesLoadErrorTitle => 'Could not load trades';
+
+  @override
+  String get tradesLoadErrorBody => 'Please retry loading your trades.';
+
+  @override
+  String get tradesRetry => 'Retry';
+
+  @override
+  String get tradesEmptyTitle => 'No trades yet';
+
+  @override
+  String get tradesEmptyBody => 'Tap Add Trade to create your first trade entry.';
+
+  @override
+  String get tradesAddButton => 'Add Trade';
+
+  @override
+  String get tradesCreateTitle => 'Create trade';
+
+  @override
+  String get tradesEditTitle => 'Edit trade';
+
+  @override
+  String get tradesInstrumentLabel => 'Instrument ID';
+
+  @override
+  String get tradesDirectionLabel => 'Direction';
+
+  @override
+  String get tradesDirectionBuy => 'BUY';
+
+  @override
+  String get tradesDirectionSell => 'SELL';
+
+  @override
+  String get tradesStatusLabel => 'Status';
+
+  @override
+  String get tradesStatusOpen => 'Open';
+
+  @override
+  String get tradesStatusClosed => 'Closed';
+
+  @override
+  String get tradesStatusDraft => 'Draft';
+
+  @override
+  String get tradesOpenedAtLabel => 'Opened date';
+
+  @override
+  String get tradesOpenedAtHint => 'YYYY-MM-DD';
+
+  @override
+  String get tradesCancel => 'Cancel';
+
+  @override
+  String get tradesSave => 'Save';
+
+  @override
+  String get tradesValidationMessage => 'Please enter a valid instrument and date.';
+
+  @override
+  String get tradesEditTooltip => 'Edit trade';
+
+  @override
+  String get tradesDeleteTooltip => 'Delete trade';
+
+  @override
   String get tradesOverviewTitle => 'Trading Journal';
 
   @override

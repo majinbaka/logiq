@@ -143,6 +143,156 @@ abstract class AppLocalizations {
   /// **'Work in progress'**
   String get workInProgressTitle;
 
+  /// No description provided for @tradesCrudTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trades'**
+  String get tradesCrudTitle;
+
+  /// No description provided for @tradesCrudSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, update, and remove trades in your journal.'**
+  String get tradesCrudSubtitle;
+
+  /// No description provided for @tradesLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load trades'**
+  String get tradesLoadErrorTitle;
+
+  /// No description provided for @tradesLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading your trades.'**
+  String get tradesLoadErrorBody;
+
+  /// No description provided for @tradesRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get tradesRetry;
+
+  /// No description provided for @tradesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No trades yet'**
+  String get tradesEmptyTitle;
+
+  /// No description provided for @tradesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add Trade to create your first trade entry.'**
+  String get tradesEmptyBody;
+
+  /// No description provided for @tradesAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Trade'**
+  String get tradesAddButton;
+
+  /// No description provided for @tradesCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create trade'**
+  String get tradesCreateTitle;
+
+  /// No description provided for @tradesEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit trade'**
+  String get tradesEditTitle;
+
+  /// No description provided for @tradesInstrumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Instrument ID'**
+  String get tradesInstrumentLabel;
+
+  /// No description provided for @tradesDirectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction'**
+  String get tradesDirectionLabel;
+
+  /// No description provided for @tradesDirectionBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'BUY'**
+  String get tradesDirectionBuy;
+
+  /// No description provided for @tradesDirectionSell.
+  ///
+  /// In en, this message translates to:
+  /// **'SELL'**
+  String get tradesDirectionSell;
+
+  /// No description provided for @tradesStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get tradesStatusLabel;
+
+  /// No description provided for @tradesStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get tradesStatusOpen;
+
+  /// No description provided for @tradesStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get tradesStatusClosed;
+
+  /// No description provided for @tradesStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get tradesStatusDraft;
+
+  /// No description provided for @tradesOpenedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened date'**
+  String get tradesOpenedAtLabel;
+
+  /// No description provided for @tradesOpenedAtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get tradesOpenedAtHint;
+
+  /// No description provided for @tradesCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get tradesCancel;
+
+  /// No description provided for @tradesSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get tradesSave;
+
+  /// No description provided for @tradesValidationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid instrument and date.'**
+  String get tradesValidationMessage;
+
+  /// No description provided for @tradesEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit trade'**
+  String get tradesEditTooltip;
+
+  /// No description provided for @tradesDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete trade'**
+  String get tradesDeleteTooltip;
+
   /// No description provided for @tradesOverviewTitle.
   ///
   /// In en, this message translates to:

@@ -4,7 +4,7 @@ import 'package:trading_diary/features/insights/presentation/views/insights_view
 import 'package:trading_diary/features/portfolio/presentation/views/portfolio_overview_view.dart';
 import 'package:trading_diary/features/psychology/presentation/views/psychology_view.dart';
 import 'package:trading_diary/features/strategy/presentation/views/strategy_risk_view.dart';
-import 'package:trading_diary/features/trades/presentation/views/trades_overview_view.dart';
+import 'package:trading_diary/features/trades/presentation/views/trades_crud_view.dart';
 import 'package:trading_diary/l10n/app_localizations.dart';
 
 class AppShell extends StatefulWidget {
@@ -24,7 +24,7 @@ class _AppShellState extends State<AppShell> {
       _ShellTab(
         label: l10n.navTrades,
         icon: Icons.candlestick_chart,
-        body: const TradesOverviewView(),
+        body: const TradesCrudView(),
       ),
       _ShellTab(
         label: l10n.navPortfolio,

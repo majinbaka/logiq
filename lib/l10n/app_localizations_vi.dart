@@ -33,6 +33,81 @@ class AppLocalizationsVi extends AppLocalizations {
   String get workInProgressTitle => 'Đang phát triển';
 
   @override
+  String get tradesCrudTitle => 'Giao dịch';
+
+  @override
+  String get tradesCrudSubtitle => 'Tạo, cập nhật và xóa lệnh trong nhật ký giao dịch.';
+
+  @override
+  String get tradesLoadErrorTitle => 'Không thể tải giao dịch';
+
+  @override
+  String get tradesLoadErrorBody => 'Vui lòng thử tải lại danh sách giao dịch.';
+
+  @override
+  String get tradesRetry => 'Thử lại';
+
+  @override
+  String get tradesEmptyTitle => 'Chưa có giao dịch';
+
+  @override
+  String get tradesEmptyBody => 'Nhấn Thêm giao dịch để tạo lệnh đầu tiên.';
+
+  @override
+  String get tradesAddButton => 'Thêm giao dịch';
+
+  @override
+  String get tradesCreateTitle => 'Tạo giao dịch';
+
+  @override
+  String get tradesEditTitle => 'Sửa giao dịch';
+
+  @override
+  String get tradesInstrumentLabel => 'Mã instrument';
+
+  @override
+  String get tradesDirectionLabel => 'Chiều lệnh';
+
+  @override
+  String get tradesDirectionBuy => 'BUY';
+
+  @override
+  String get tradesDirectionSell => 'SELL';
+
+  @override
+  String get tradesStatusLabel => 'Trạng thái';
+
+  @override
+  String get tradesStatusOpen => 'Mở';
+
+  @override
+  String get tradesStatusClosed => 'Đóng';
+
+  @override
+  String get tradesStatusDraft => 'Nháp';
+
+  @override
+  String get tradesOpenedAtLabel => 'Ngày mở lệnh';
+
+  @override
+  String get tradesOpenedAtHint => 'YYYY-MM-DD';
+
+  @override
+  String get tradesCancel => 'Hủy';
+
+  @override
+  String get tradesSave => 'Lưu';
+
+  @override
+  String get tradesValidationMessage => 'Vui lòng nhập instrument và ngày hợp lệ.';
+
+  @override
+  String get tradesEditTooltip => 'Sửa giao dịch';
+
+  @override
+  String get tradesDeleteTooltip => 'Xóa giao dịch';
+
+  @override
   String get tradesOverviewTitle => 'Nhật ký giao dịch';
 
   @override

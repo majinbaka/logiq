@@ -308,3 +308,19 @@ Cap nhat lien quan:
 - Moi screen duoc dat theo feature-first structure `features/<feature>/presentation/views`.
 - Toan bo user-facing text tren cac screen nay da duoc noi dia hoa EN/VI qua ARB.
 - Da bo sung widget test dieu huong tab de xac nhan shell co the chuyen qua tung module.
+
+## 15. Trades CRUD Slice (2026-05-05)
+
+Da bo sung flow CRUD toi thieu cho tab Trades:
+
+- `TradesCrudView` duoc map vao tab Trades trong `AppShell`.
+- Co the tao trade moi (instrument, direction, opened date).
+- Co the cap nhat trade ton tai (instrument, direction, status, opened date).
+- Co the xoa mem trade.
+- Co state loading/empty/error va retry.
+- Toan bo text UI moi da duoc noi dia hoa EN/VI.
+
+Da bo sung test:
+
+- Widget test dieu huong app shell co khoi tao storage cho tab Trades.
+- Unit test cho `TradesCrudViewModel` bao phu create/update/delete.
