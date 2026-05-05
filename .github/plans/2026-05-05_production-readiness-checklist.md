@@ -165,5 +165,5 @@ Date: 2026-05-05
   - AC: Manual QA checklist passes for phone (~375px), tablet, and desktop layouts.
 - [ ] Task X3: Accessibility pass
   - AC: Screens pass basic checks for labels, focus order, contrast, and tap targets.
-- [ ] Task X4: Migration/data-upgrade test pack
+- [x] Task X4: Migration/data-upgrade test pack
   - AC: Schema/version upgrade tests pass and preserve existing user data.
