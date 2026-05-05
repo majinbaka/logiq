@@ -228,6 +228,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portfolioDeleteTooltip => 'Delete snapshot';
 
   @override
+  String get portfolioHoldingsTitle => 'Holdings';
+
+  @override
+  String get portfolioNoHoldings => 'No holdings yet. Add trades and quotes to build your holdings table.';
+
+  @override
+  String get portfolioHoldingInstrument => 'Instrument';
+
+  @override
+  String get portfolioHoldingQuantity => 'Qty';
+
+  @override
+  String get portfolioHoldingAvgCost => 'Avg cost';
+
+  @override
+  String get portfolioHoldingMarketValue => 'Market value';
+
+  @override
+  String get portfolioHoldingUnrealizedPnl => 'Unrealized PnL';
+
+  @override
+  String get portfolioHoldingWeight => 'Weight';
+
+  @override
+  String get portfolioInputsTitle => 'Inputs';
+
+  @override
+  String get portfolioAddQuoteButton => 'Add / Update Quote';
+
+  @override
+  String get portfolioAddCashMovementButton => 'Add Cash Movement';
+
+  @override
+  String get portfolioQuoteFormTitle => 'Quote input';
+
+  @override
+  String get portfolioQuoteInstrumentLabel => 'Instrument ID';
+
+  @override
+  String get portfolioQuotePriceLabel => 'Price';
+
+  @override
+  String get portfolioCashFormTitle => 'Cash movement input';
+
+  @override
+  String get portfolioCashAmountLabel => 'Amount';
+
+  @override
+  String get portfolioSnapshotsTitle => 'Snapshots';
+
+  @override
+  String get portfolioSnapshotDetailTitle => 'Snapshot detail';
+
+  @override
+  String get portfolioPositionsTitle => 'Positions';
+
+  @override
+  String get portfolioNoPositions => 'No positions for this snapshot.';
+
+  @override
+  String get portfolioDailyPnlLabel => 'Daily PnL';
+
+  @override
+  String get portfolioCumulativePnlLabel => 'Cumulative PnL';
+
+  @override
+  String get portfolioDrawdownLabel => 'Drawdown';
+
+  @override
   String get strategyRiskTitle => 'Strategy and Risk';
 
   @override

@@ -110,13 +110,13 @@ Date: 2026-05-05
 
 ### Portfolio
 
-- [ ] Task P1: Holdings table/detail screen
+- [x] Task P1: Holdings table/detail screen
   - AC: User can view holdings list generated from `buildHoldings` with key metrics (qty, avg cost, market value, unrealized PnL, weight).
-- [ ] Task P2: Quote and cash movement input flows
+- [x] Task P2: Quote and cash movement input flows
   - AC: User can add/update quotes and cash movements, and snapshot generation reflects those changes.
-- [ ] Task P3: Snapshot detail page
+- [x] Task P3: Snapshot detail page
   - AC: User can open a snapshot and see positions + summary metrics (`dailyPnl`, `cumulativePnl`, `drawdownPercent`).
-- [ ] Task P4: Portfolio widget tests
+- [x] Task P4: Portfolio widget tests
   - AC: Widget tests cover snapshot create/edit/delete and empty/error states.
 
 ### Strategy + Risk

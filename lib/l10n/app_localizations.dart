@@ -533,6 +533,144 @@ abstract class AppLocalizations {
   /// **'Delete snapshot'**
   String get portfolioDeleteTooltip;
 
+  /// No description provided for @portfolioHoldingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Holdings'**
+  String get portfolioHoldingsTitle;
+
+  /// No description provided for @portfolioNoHoldings.
+  ///
+  /// In en, this message translates to:
+  /// **'No holdings yet. Add trades and quotes to build your holdings table.'**
+  String get portfolioNoHoldings;
+
+  /// No description provided for @portfolioHoldingInstrument.
+  ///
+  /// In en, this message translates to:
+  /// **'Instrument'**
+  String get portfolioHoldingInstrument;
+
+  /// No description provided for @portfolioHoldingQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get portfolioHoldingQuantity;
+
+  /// No description provided for @portfolioHoldingAvgCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg cost'**
+  String get portfolioHoldingAvgCost;
+
+  /// No description provided for @portfolioHoldingMarketValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Market value'**
+  String get portfolioHoldingMarketValue;
+
+  /// No description provided for @portfolioHoldingUnrealizedPnl.
+  ///
+  /// In en, this message translates to:
+  /// **'Unrealized PnL'**
+  String get portfolioHoldingUnrealizedPnl;
+
+  /// No description provided for @portfolioHoldingWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get portfolioHoldingWeight;
+
+  /// No description provided for @portfolioInputsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inputs'**
+  String get portfolioInputsTitle;
+
+  /// No description provided for @portfolioAddQuoteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add / Update Quote'**
+  String get portfolioAddQuoteButton;
+
+  /// No description provided for @portfolioAddCashMovementButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Cash Movement'**
+  String get portfolioAddCashMovementButton;
+
+  /// No description provided for @portfolioQuoteFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote input'**
+  String get portfolioQuoteFormTitle;
+
+  /// No description provided for @portfolioQuoteInstrumentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Instrument ID'**
+  String get portfolioQuoteInstrumentLabel;
+
+  /// No description provided for @portfolioQuotePriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get portfolioQuotePriceLabel;
+
+  /// No description provided for @portfolioCashFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash movement input'**
+  String get portfolioCashFormTitle;
+
+  /// No description provided for @portfolioCashAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get portfolioCashAmountLabel;
+
+  /// No description provided for @portfolioSnapshotsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshots'**
+  String get portfolioSnapshotsTitle;
+
+  /// No description provided for @portfolioSnapshotDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshot detail'**
+  String get portfolioSnapshotDetailTitle;
+
+  /// No description provided for @portfolioPositionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Positions'**
+  String get portfolioPositionsTitle;
+
+  /// No description provided for @portfolioNoPositions.
+  ///
+  /// In en, this message translates to:
+  /// **'No positions for this snapshot.'**
+  String get portfolioNoPositions;
+
+  /// No description provided for @portfolioDailyPnlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily PnL'**
+  String get portfolioDailyPnlLabel;
+
+  /// No description provided for @portfolioCumulativePnlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cumulative PnL'**
+  String get portfolioCumulativePnlLabel;
+
+  /// No description provided for @portfolioDrawdownLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawdown'**
+  String get portfolioDrawdownLabel;
+
   /// No description provided for @strategyRiskTitle.
   ///
   /// In en, this message translates to:

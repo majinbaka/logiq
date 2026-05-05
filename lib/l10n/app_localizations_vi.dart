@@ -228,6 +228,75 @@ class AppLocalizationsVi extends AppLocalizations {
   String get portfolioDeleteTooltip => 'Xóa snapshot';
 
   @override
+  String get portfolioHoldingsTitle => 'Nắm giữ';
+
+  @override
+  String get portfolioNoHoldings => 'Chưa có nắm giữ. Hãy thêm lệnh và quote để tạo bảng holdings.';
+
+  @override
+  String get portfolioHoldingInstrument => 'Mã';
+
+  @override
+  String get portfolioHoldingQuantity => 'SL';
+
+  @override
+  String get portfolioHoldingAvgCost => 'Giá vốn TB';
+
+  @override
+  String get portfolioHoldingMarketValue => 'Giá trị thị trường';
+
+  @override
+  String get portfolioHoldingUnrealizedPnl => 'Lãi/lỗ chưa thực hiện';
+
+  @override
+  String get portfolioHoldingWeight => 'Tỷ trọng';
+
+  @override
+  String get portfolioInputsTitle => 'Dữ liệu đầu vào';
+
+  @override
+  String get portfolioAddQuoteButton => 'Thêm / Cập nhật Quote';
+
+  @override
+  String get portfolioAddCashMovementButton => 'Thêm dòng tiền';
+
+  @override
+  String get portfolioQuoteFormTitle => 'Nhập quote';
+
+  @override
+  String get portfolioQuoteInstrumentLabel => 'Mã công cụ';
+
+  @override
+  String get portfolioQuotePriceLabel => 'Giá';
+
+  @override
+  String get portfolioCashFormTitle => 'Nhập dòng tiền';
+
+  @override
+  String get portfolioCashAmountLabel => 'Số tiền';
+
+  @override
+  String get portfolioSnapshotsTitle => 'Snapshots';
+
+  @override
+  String get portfolioSnapshotDetailTitle => 'Chi tiết snapshot';
+
+  @override
+  String get portfolioPositionsTitle => 'Vị thế';
+
+  @override
+  String get portfolioNoPositions => 'Không có vị thế trong snapshot này.';
+
+  @override
+  String get portfolioDailyPnlLabel => 'PnL ngày';
+
+  @override
+  String get portfolioCumulativePnlLabel => 'PnL lũy kế';
+
+  @override
+  String get portfolioDrawdownLabel => 'Sụt giảm';
+
+  @override
   String get strategyRiskTitle => 'Chiến lược và rủi ro';
 
   @override

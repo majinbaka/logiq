@@ -386,3 +386,12 @@ Da bo sung flow UI cho tab Daily Journal:
 - Validate bat buoc cho ngay, noi dung chinh, va `discipline score` trong khoang 1-10.
 - Hien thi loading/empty/error state va co retry.
 - Toan bo text UI moi da duoc noi dia hoa EN/VI.
+
+## 19. Portfolio Production Readiness Slice (2026-05-05)
+
+Da bo sung cac hang muc Portfolio readiness:
+
+- Them bang Holdings trong `PortfolioCrudView`, hien thi tu `buildHoldings` voi cac chi so: `qty`, `avg cost`, `market value`, `unrealized PnL`, `weight`.
+- Them input flow cho `PriceQuote` (quote) va `CashMovement` (dong tien), sau khi luu se reload snapshot/holdings.
+- Them snapshot detail bottom sheet: hien thi `dailyPnl`, `cumulativePnl`, `drawdownPercent` va danh sach position snapshot.
+- Bo sung widget test cho Portfolio bao phu `create/edit/delete` va state `empty/error`.
