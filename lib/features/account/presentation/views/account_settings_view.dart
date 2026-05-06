@@ -16,6 +16,7 @@ class AccountSettingsView extends StatefulWidget {
     super.key,
     required this.selectedAccountId,
     required this.onSelectedAccountChanged,
+    this.onAddActionChanged,
     this.locale,
     this.onLocaleChanged,
     AccountRepository? accountRepository,
@@ -24,6 +25,7 @@ class AccountSettingsView extends StatefulWidget {
 
   final String selectedAccountId;
   final ValueChanged<String> onSelectedAccountChanged;
+  final ValueChanged<VoidCallback?>? onAddActionChanged;
   final Locale? locale;
   final ValueChanged<Locale>? onLocaleChanged;
   final AccountRepository? _accountRepository;
@@ -51,7 +53,14 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
           riskRepository: LocalRiskRepository(),
           strategyRepository: LocalStrategyRepository(),
         );
+    widget.onAddActionChanged?.call(_handleAddAction);
     _loadAccounts();
+  }
+
+  @override
+  void dispose() {
+    widget.onAddActionChanged?.call(null);
+    super.dispose();
   }
 
   Future<void> _loadAccounts() async {
@@ -106,6 +115,11 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
         SnackBar(content: Text(l10n.accountSettingsSavedMessage)),
       );
     }
+  }
+
+  void _handleAddAction() {
+    if (_isLoading || _isResetting) return;
+    _upsertAccount();
   }
 
   Future<void> _resetAllData() async {
@@ -257,11 +271,6 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
               ),
             ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _upsertAccount,
-        icon: const Icon(Icons.add),
-        label: Text(l10n.accountSettingsAddButton),
       ),
     );
   }

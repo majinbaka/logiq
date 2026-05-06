@@ -28,6 +28,9 @@ class _AppShellState extends State<AppShell> {
   int _currentIndex = 0;
   final _accountRepository = LocalAccountRepository();
   String _selectedAccountId = '';
+  VoidCallback? _onTradesAdd;
+  VoidCallback? _onPortfolioAdd;
+  VoidCallback? _onAccountAdd;
   String get _fallbackAccountId => SeedFixtures.account().id;
 
   @override
@@ -54,6 +57,7 @@ class _AppShellState extends State<AppShell> {
           defaultAccountId: _selectedAccountId.isEmpty
               ? _fallbackAccountId
               : _selectedAccountId,
+          onAddActionChanged: _bindTradesAddAction,
           onMissingAccount: () => setState(() => _currentIndex = 6),
           onMissingInitialDeposit: () => setState(() => _currentIndex = 1),
           onMissingRiskRule: () => setState(() => _currentIndex = 2),
@@ -67,6 +71,7 @@ class _AppShellState extends State<AppShell> {
           defaultAccountId: _selectedAccountId.isEmpty
               ? _fallbackAccountId
               : _selectedAccountId,
+          onAddActionChanged: _bindPortfolioAddAction,
         ),
       ),
       _ShellTab(
@@ -114,6 +119,7 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.manage_accounts_outlined,
         body: AccountSettingsView(
           selectedAccountId: _selectedAccountId,
+          onAddActionChanged: _bindAccountAddAction,
           locale: widget.locale,
           onLocaleChanged: widget.onLocaleChanged,
           onSelectedAccountChanged: (accountId) {
@@ -124,7 +130,21 @@ class _AppShellState extends State<AppShell> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.auto_graph_rounded,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Text(l10n.appTitle),
+          ],
+        ),
+        actions: [_buildHeaderAddAction(context, l10n)],
+      ),
       body: tabs[_currentIndex].body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
@@ -135,6 +155,61 @@ class _AppShellState extends State<AppShell> {
         ],
       ),
     );
+  }
+
+  Widget _buildHeaderAddAction(BuildContext context, AppLocalizations l10n) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final config = switch (_currentIndex) {
+      0 => (tooltip: l10n.tradesAddButton, icon: Icons.add_rounded),
+      1 => (tooltip: l10n.portfolioAddButton, icon: Icons.add_chart_rounded),
+      6 => (
+        tooltip: l10n.accountSettingsAddButton,
+        icon: Icons.person_add_alt_1_rounded,
+      ),
+      _ => null,
+    };
+    if (config == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer.withValues(alpha: 0.72),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: IconButton(
+          onPressed: _invokeCurrentAddAction,
+          tooltip: config.tooltip,
+          icon: Icon(config.icon),
+          color: colorScheme.onPrimaryContainer,
+        ),
+      ),
+    );
+  }
+
+  void _bindTradesAddAction(VoidCallback? action) {
+    _onTradesAdd = action;
+  }
+
+  void _bindPortfolioAddAction(VoidCallback? action) {
+    _onPortfolioAdd = action;
+  }
+
+  void _bindAccountAddAction(VoidCallback? action) {
+    _onAccountAdd = action;
+  }
+
+  void _invokeCurrentAddAction() {
+    final callback = switch (_currentIndex) {
+      0 => _onTradesAdd,
+      1 => _onPortfolioAdd,
+      6 => _onAccountAdd,
+      _ => null,
+    };
+    callback?.call();
   }
 }
 

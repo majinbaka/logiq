@@ -24,6 +24,7 @@ class PortfolioCrudView extends StatefulWidget {
   const PortfolioCrudView({
     super.key,
     required this.defaultAccountId,
+    this.onAddActionChanged,
     PortfolioRepository? repository,
     AccountRepository? accountRepository,
     InstrumentRepository? instrumentRepository,
@@ -32,6 +33,7 @@ class PortfolioCrudView extends StatefulWidget {
        _instrumentRepository = instrumentRepository;
 
   final String defaultAccountId;
+  final ValueChanged<VoidCallback?>? onAddActionChanged;
   final PortfolioRepository? _repository;
   final AccountRepository? _accountRepository;
   final InstrumentRepository? _instrumentRepository;
@@ -57,10 +59,12 @@ class _PortfolioCrudViewState extends State<PortfolioCrudView> {
         widget._instrumentRepository ?? LocalInstrumentRepository();
     _viewModel.loadSnapshots();
     _loadInstruments();
+    widget.onAddActionChanged?.call(_openSnapshotForm);
   }
 
   @override
   void dispose() {
+    widget.onAddActionChanged?.call(null);
     _viewModel.dispose();
     super.dispose();
   }
@@ -212,11 +216,6 @@ class _PortfolioCrudViewState extends State<PortfolioCrudView> {
                 child: _buildSnapshotList(l10n),
               ),
             ],
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: _openSnapshotForm,
-            icon: const Icon(Icons.add_chart_outlined),
-            label: Text(l10n.portfolioAddButton),
           ),
         );
       },

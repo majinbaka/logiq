@@ -31,6 +31,7 @@ class TradesCrudView extends StatefulWidget {
     this.onMissingAccount,
     this.onMissingInitialDeposit,
     this.onMissingRiskRule,
+    this.onAddActionChanged,
     TradesCrudViewModel? viewModel,
   }) : _viewModel = viewModel;
 
@@ -38,6 +39,7 @@ class TradesCrudView extends StatefulWidget {
   final VoidCallback? onMissingAccount;
   final VoidCallback? onMissingInitialDeposit;
   final VoidCallback? onMissingRiskRule;
+  final ValueChanged<VoidCallback?>? onAddActionChanged;
   final TradesCrudViewModel? _viewModel;
 
   @override
@@ -67,10 +69,12 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           enforceTradeFlowValidation: true,
         );
     _viewModel.loadTrades();
+    widget.onAddActionChanged?.call(_handleAddAction);
   }
 
   @override
   void dispose() {
+    widget.onAddActionChanged?.call(null);
     _viewModel.dispose();
     super.dispose();
   }
@@ -140,14 +144,14 @@ class _TradesCrudViewState extends State<TradesCrudView> {
                 ),
             ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: _viewModel.accounts.isEmpty ? null : _openTradeForm,
-            icon: const Icon(Icons.add),
-            label: Text(l10n.tradesAddButton),
-          ),
         );
       },
     );
+  }
+
+  void _handleAddAction() {
+    if (_viewModel.accounts.isEmpty) return;
+    _openTradeForm();
   }
 
   Future<void> _openTradeDetail(TradeModel trade) async {
