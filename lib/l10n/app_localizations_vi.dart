@@ -248,6 +248,39 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesOrderStatusCanceled => 'Canceled';
 
   @override
+  String get tradesPlanSectionTitle => 'Trade Plan';
+
+  @override
+  String get tradesPlanAddTargetButton => 'Add target';
+
+  @override
+  String get tradesPlanTargetsEmptyState => 'Chưa có target. Nhấn Add target để tạo mới.';
+
+  @override
+  String get tradesPlanTargetTag => 'Target';
+
+  @override
+  String get tradesPlanTargetCreateTitle => 'Tạo target';
+
+  @override
+  String get tradesPlanTargetEditTitle => 'Sửa target';
+
+  @override
+  String get tradesPlanTargetOrderLabel => 'Target order';
+
+  @override
+  String get tradesPlanTargetPriceLabel => 'Target price';
+
+  @override
+  String get tradesPlanTargetQtyLabel => 'Target qty';
+
+  @override
+  String get tradesPlanTargetQtyUnit => '%';
+
+  @override
+  String get tradesPlanTargetNoteLabel => 'Ghi chú';
+
+  @override
   String get tradesOverviewTitle => 'Nhật ký giao dịch';
 
   @override

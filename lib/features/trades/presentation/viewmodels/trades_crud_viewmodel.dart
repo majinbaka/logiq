@@ -6,6 +6,8 @@ import 'package:logiq/core/database/models/strategy_model.dart';
 import 'package:logiq/core/database/models/strategy_version_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
 import 'package:logiq/core/database/models/trade_order_model.dart';
+import 'package:logiq/core/database/models/trade_plan_model.dart';
+import 'package:logiq/core/database/models/trade_plan_target_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/instrument_repository.dart';
@@ -268,6 +270,41 @@ class TradesCrudViewModel extends ChangeNotifier {
     return _repository.softDeleteOrder(orderId, DateTime.now().toUtc());
   }
 
+  Future<List<TradePlanTargetModel>> listPlanTargetsByTrade(
+    String tradeId,
+  ) async {
+    final plan = await _repository.getLatestPlanByTrade(tradeId);
+    if (plan == null) return const [];
+    return _repository.listPlanTargetsByPlan(plan.id);
+  }
+
+  Future<void> savePlanTarget({
+    required TradeModel trade,
+    required int targetOrder,
+    required String targetPrice,
+    String? plannedQuantityPercent,
+    String? note,
+    TradePlanTargetModel? existing,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final plan = await _ensurePlanForTrade(trade, now);
+    final target = TradePlanTargetModel(
+      id: existing?.id ?? 'tgt_${trade.id}_${now.microsecondsSinceEpoch}',
+      tradePlanId: plan.id,
+      targetOrder: targetOrder,
+      targetPrice: _toNullableDecimal(targetPrice) ?? existing?.targetPrice ?? '0',
+      plannedQuantityPercent:
+          _toNullableDecimal(plannedQuantityPercent) ??
+          existing?.plannedQuantityPercent,
+      note: _toNullableString(note) ?? existing?.note,
+    );
+    await _repository.upsertPlanTarget(target);
+  }
+
+  Future<void> deletePlanTarget(String targetId) {
+    return _repository.deletePlanTarget(targetId);
+  }
+
   Future<InstrumentModel> createInstrument(String symbol) async {
     final normalizedSymbol = symbol.trim().toUpperCase();
     for (final item in _instruments) {
@@ -461,5 +498,25 @@ class TradesCrudViewModel extends ChangeNotifier {
     final trimmed = value.trim();
     if (trimmed.isEmpty) return null;
     return trimmed;
+  }
+
+  String? _toNullableString(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    return trimmed;
+  }
+
+  Future<TradePlanModel> _ensurePlanForTrade(TradeModel trade, DateTime now) async {
+    final existingPlan = await _repository.getLatestPlanByTrade(trade.id);
+    if (existingPlan != null) return existingPlan;
+    final plan = TradePlanModel(
+      id: 'plan_${trade.id}_${now.microsecondsSinceEpoch}',
+      tradeId: trade.id,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await _repository.upsertPlan(plan);
+    return plan;
   }
 }

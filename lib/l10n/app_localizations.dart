@@ -569,6 +569,72 @@ abstract class AppLocalizations {
   /// **'Canceled'**
   String get tradesOrderStatusCanceled;
 
+  /// No description provided for @tradesPlanSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade Plan'**
+  String get tradesPlanSectionTitle;
+
+  /// No description provided for @tradesPlanAddTargetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add target'**
+  String get tradesPlanAddTargetButton;
+
+  /// No description provided for @tradesPlanTargetsEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No targets yet. Tap Add target to create one.'**
+  String get tradesPlanTargetsEmptyState;
+
+  /// No description provided for @tradesPlanTargetTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get tradesPlanTargetTag;
+
+  /// No description provided for @tradesPlanTargetCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create target'**
+  String get tradesPlanTargetCreateTitle;
+
+  /// No description provided for @tradesPlanTargetEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit target'**
+  String get tradesPlanTargetEditTitle;
+
+  /// No description provided for @tradesPlanTargetOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target order'**
+  String get tradesPlanTargetOrderLabel;
+
+  /// No description provided for @tradesPlanTargetPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target price'**
+  String get tradesPlanTargetPriceLabel;
+
+  /// No description provided for @tradesPlanTargetQtyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target qty'**
+  String get tradesPlanTargetQtyLabel;
+
+  /// No description provided for @tradesPlanTargetQtyUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'%'**
+  String get tradesPlanTargetQtyUnit;
+
+  /// No description provided for @tradesPlanTargetNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get tradesPlanTargetNoteLabel;
+
   /// No description provided for @tradesOverviewTitle.
   ///
   /// In en, this message translates to:

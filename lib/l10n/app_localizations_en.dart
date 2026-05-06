@@ -248,6 +248,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesOrderStatusCanceled => 'Canceled';
 
   @override
+  String get tradesPlanSectionTitle => 'Trade Plan';
+
+  @override
+  String get tradesPlanAddTargetButton => 'Add target';
+
+  @override
+  String get tradesPlanTargetsEmptyState => 'No targets yet. Tap Add target to create one.';
+
+  @override
+  String get tradesPlanTargetTag => 'Target';
+
+  @override
+  String get tradesPlanTargetCreateTitle => 'Create target';
+
+  @override
+  String get tradesPlanTargetEditTitle => 'Edit target';
+
+  @override
+  String get tradesPlanTargetOrderLabel => 'Target order';
+
+  @override
+  String get tradesPlanTargetPriceLabel => 'Target price';
+
+  @override
+  String get tradesPlanTargetQtyLabel => 'Target qty';
+
+  @override
+  String get tradesPlanTargetQtyUnit => '%';
+
+  @override
+  String get tradesPlanTargetNoteLabel => 'Note';
+
+  @override
   String get tradesOverviewTitle => 'Trading Journal';
 
   @override

@@ -16,6 +16,10 @@ Muc tieu: giup nguoi dung ghi lai tung lenh giao dich, ly do vao lenh, cach thoa
   - Them order moi bang nut Add order.
   - Cap nhat nhanh status, gia ke hoach va khoi luong.
   - Xoa mem order khoi danh sach.
+- Quan ly target ladder trong Trade Detail -> Trade Plan:
+  - Them target bang nut Add target.
+  - Sua `target_order`, `target_price`, `target_qty`, `note` tren danh sach target.
+  - Xoa target trong danh sach.
 
 ### Tu Dong Tinh Toan
 

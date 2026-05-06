@@ -3,6 +3,7 @@ import 'package:logiq/core/database/models/instrument_model.dart';
 import 'package:logiq/core/database/models/risk_check_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
 import 'package:logiq/core/database/models/trade_order_model.dart';
+import 'package:logiq/core/database/models/trade_plan_target_model.dart';
 import 'package:logiq/core/widgets/instrument_date_summary.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/core/analytics/analytics_rebuild_service.dart';
@@ -166,6 +167,25 @@ class _TradesCrudViewState extends State<TradesCrudView> {
                 );
               },
           onDeleteOrder: _viewModel.deleteOrder,
+          loadPlanTargets: _viewModel.listPlanTargetsByTrade,
+          onSavePlanTarget:
+              ({
+                required int targetOrder,
+                required String targetPrice,
+                required String? plannedQuantityPercent,
+                required String? note,
+                TradePlanTargetModel? existing,
+              }) {
+                return _viewModel.savePlanTarget(
+                  trade: trade,
+                  targetOrder: targetOrder,
+                  targetPrice: targetPrice,
+                  plannedQuantityPercent: plannedQuantityPercent,
+                  note: note,
+                  existing: existing,
+                );
+              },
+          onDeletePlanTarget: _viewModel.deletePlanTarget,
         ),
       ),
     );
