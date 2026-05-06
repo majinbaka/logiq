@@ -244,7 +244,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesOrderStatusPlanned => 'Planned';
 
   @override
-  String get tradesOrderStatusPlaced => 'Placed';
+  String get tradesOrderStatusPlaced => 'Pending';
 
   @override
   String get tradesOrderStatusFilled => 'Filled';

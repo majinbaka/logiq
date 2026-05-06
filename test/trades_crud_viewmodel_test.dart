@@ -174,6 +174,85 @@ void main() {
     );
     expect(portfolioRepo.releasedAmounts, ['18000']);
   });
+
+  test('settle reserved cash when pending order is filled', () async {
+    final repo = _FakeTradeRepository();
+    final portfolioRepo = _FakePortfolioRepository();
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: portfolioRepo,
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
+    );
+
+    await vm.createTrade(
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '1',
+    );
+    final trade = vm.trades.first;
+    await vm.saveOrder(
+      trade: trade,
+      status: 'pending',
+      plannedPrice: '180',
+      quantity: '100',
+    );
+    final createdOrder = (await vm.listOrdersByTrade(trade.id)).first;
+    await vm.saveOrder(
+      trade: trade,
+      existing: createdOrder,
+      status: 'filled',
+      plannedPrice: '180',
+      quantity: '100',
+    );
+
+    expect(portfolioRepo.settledExecutionCosts, ['18000']);
+    expect(portfolioRepo.settledReservedAmounts, ['18000']);
+  });
+
+  test('realize proceeds when trade transitions to closed', () async {
+    final repo = _FakeTradeRepository();
+    final portfolioRepo = _FakePortfolioRepository();
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: portfolioRepo,
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
+    );
+
+    await vm.createTrade(
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '10',
+      avgEntryPrice: '100',
+    );
+    final created = vm.trades.first;
+    await vm.updateTrade(
+      trade: created,
+      accountId: created.accountId,
+      instrumentId: created.instrumentId,
+      direction: created.direction,
+      status: 'closed',
+      openedAt: created.openedAt ?? DateTime.utc(2026, 5, 1),
+      quantityOpened: '10',
+      avgEntryPrice: '100',
+      avgExitPrice: '120',
+      totalFee: '5',
+      totalTax: '5',
+    );
+
+    expect(portfolioRepo.realizedProceeds, ['1190']);
+  });
 }
 
 class _FakeRiskRepository implements RiskRepository {
@@ -508,6 +587,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
   final String availableCash;
   final List<String> reservedAmounts = [];
   final List<String> releasedAmounts = [];
+  final List<String> settledExecutionCosts = [];
+  final List<String> settledReservedAmounts = [];
+  final List<String> realizedProceeds = [];
 
   @override
   Future<void> deleteCashLedger(String ledgerId) async {}
@@ -623,7 +705,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
     required String executionCost,
     required String reservedAmount,
     required DateTime at,
-  }) async {}
+  }) async {
+    settledExecutionCosts.add(executionCost);
+    settledReservedAmounts.add(reservedAmount);
+  }
 
   @override
   Future<void> realizeTradeCloseProceeds({
@@ -632,7 +717,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
     required String tradeId,
     required String proceeds,
     required DateTime at,
-  }) async {}
+  }) async {
+    realizedProceeds.add(proceeds);
+  }
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}

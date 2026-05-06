@@ -102,7 +102,7 @@
   "tradesOrderEditTitle": "Edit order",
   "tradesOrderPlannedPriceLabel": "Planned price",
   "tradesOrderStatusPlanned": "Planned",
-  "tradesOrderStatusPlaced": "Placed",
+  "tradesOrderStatusPlaced": "Pending",
   "tradesOrderStatusFilled": "Filled",
   "tradesOrderStatusCanceled": "Canceled",
   "tradesPlanSectionTitle": "Trade Plan",

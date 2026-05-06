@@ -560,7 +560,7 @@ abstract class AppLocalizations {
   /// No description provided for @tradesOrderStatusPlaced.
   ///
   /// In en, this message translates to:
-  /// **'Placed'**
+  /// **'Pending'**
   String get tradesOrderStatusPlaced;
 
   /// No description provided for @tradesOrderStatusFilled.

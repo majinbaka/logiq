@@ -237,6 +237,7 @@ class TradesCrudViewModel extends ChangeNotifier {
       updatedAt: DateTime.now().toUtc(),
       deletedAt: trade.deletedAt,
     );
+    await _realizeCloseProceedsIfNeeded(previous: trade, next: updatedTrade);
     await _repository.upsertTrade(updatedTrade);
     await _rebuildAnalyticsForTrade(updatedTrade);
 
@@ -297,6 +298,14 @@ class TradesCrudViewModel extends ChangeNotifier {
       trade: trade,
       order: order,
       existing: existing,
+      previousRequiredCash: prevRequiredCash,
+      nextRequiredCash: nextRequiredCash,
+      at: now,
+    );
+    await _settleReservedCashOnFillIfNeeded(
+      trade: trade,
+      existing: existing,
+      order: order,
       previousRequiredCash: prevRequiredCash,
       nextRequiredCash: nextRequiredCash,
       at: now,
@@ -384,7 +393,12 @@ class TradesCrudViewModel extends ChangeNotifier {
 
   bool _isPendingOrderStatus(String? status) {
     final normalized = (status ?? '').trim().toLowerCase();
-    return normalized == 'pending' || normalized == 'open';
+    return normalized == 'pending' || normalized == 'open' || normalized == 'placed';
+  }
+
+  bool _isFilledOrderStatus(String? status) {
+    final normalized = (status ?? '').trim().toLowerCase();
+    return normalized == 'filled' || normalized == 'executed';
   }
 
   double _requiredCash(String? price, String? quantity) {
@@ -640,6 +654,59 @@ class TradesCrudViewModel extends ChangeNotifier {
       if (account.id == accountId) return account.baseCurrency;
     }
     return 'VND';
+  }
+
+  Future<void> _settleReservedCashOnFillIfNeeded({
+    required TradeModel trade,
+    required TradeOrderModel? existing,
+    required TradeOrderModel order,
+    required double previousRequiredCash,
+    required double nextRequiredCash,
+    required DateTime at,
+  }) async {
+    final tradeDirection = trade.direction.trim().toLowerCase();
+    final isEntrySide = tradeDirection == 'long' || tradeDirection == 'buy';
+    if (!isEntrySide) return;
+    final wasPending = _isPendingOrderStatus(existing?.status);
+    final isNowFilled = _isFilledOrderStatus(order.status);
+    if (!wasPending || !isNowFilled) return;
+    final reservedAmount = previousRequiredCash > 0
+        ? previousRequiredCash
+        : nextRequiredCash;
+    final executionCost = nextRequiredCash;
+    if (executionCost <= 0 || reservedAmount <= 0) return;
+    await _portfolioRepository.settleReservedCashOnFill(
+      accountId: trade.accountId,
+      currency: _accountCurrency(trade.accountId),
+      orderId: order.id,
+      executionCost: _fmt(executionCost),
+      reservedAmount: _fmt(reservedAmount),
+      at: at,
+    );
+  }
+
+  Future<void> _realizeCloseProceedsIfNeeded({
+    required TradeModel previous,
+    required TradeModel next,
+  }) async {
+    final wasClosed = previous.status.trim().toLowerCase() == 'closed';
+    final isClosed = next.status.trim().toLowerCase() == 'closed';
+    if (wasClosed || !isClosed) return;
+    final qty = _toDouble(next.quantityOpened);
+    final exit = _toDouble(next.avgExitPrice);
+    if (qty <= 0 || exit <= 0) return;
+    final fee = _toDouble(next.totalFee);
+    final tax = _toDouble(next.totalTax);
+    final grossProceeds = qty * exit;
+    final proceeds = (grossProceeds - fee - tax).clamp(0, double.infinity);
+    if (proceeds <= 0) return;
+    await _portfolioRepository.realizeTradeCloseProceeds(
+      accountId: next.accountId,
+      currency: _accountCurrency(next.accountId),
+      tradeId: next.id,
+      proceeds: _fmt(proceeds.toDouble()),
+      at: next.closedAt ?? DateTime.now().toUtc(),
+    );
   }
 
   String _fmt(double value) {
