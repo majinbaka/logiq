@@ -313,5 +313,11 @@
   "accountSettingsStatusActive": "Hoạt động",
   "accountSettingsStatusInactive": "Không hoạt động",
   "accountSettingsEditTooltip": "Sửa tài khoản",
-  "accountSettingsSavedMessage": "Đã lưu tài khoản"
+  "accountSettingsSavedMessage": "Đã lưu tài khoản",
+  "accountSettingsResetButton": "Đặt lại toàn bộ dữ liệu",
+  "accountSettingsResetConfirmTitle": "Đặt lại toàn bộ dữ liệu ứng dụng?",
+  "accountSettingsResetConfirmBody": "Thao tác này sẽ xóa toàn bộ dữ liệu hiện tại và khôi phục dữ liệu mặc định ban đầu.",
+  "accountSettingsResetConfirmAction": "Đặt lại ngay",
+  "accountSettingsResetSuccess": "Đã đặt lại dữ liệu về mặc định",
+  "accountSettingsResetFailed": "Không thể đặt lại dữ liệu. Vui lòng thử lại."
 }

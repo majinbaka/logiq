@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
+import 'package:logiq/core/storage/storage_initializer.dart';
 import 'package:logiq/core/widgets/trading_section_header.dart';
 import 'package:logiq/core/widgets/trading_state_view.dart';
 import 'package:logiq/core/widgets/trading_ui_tokens.dart';
@@ -27,6 +28,7 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
   late final AccountRepository _accountRepository;
   List<TradingAccountModel> _accounts = const [];
   bool _isLoading = false;
+  bool _isResetting = false;
   String? _error;
 
   @override
@@ -89,6 +91,51 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
     }
   }
 
+  Future<void> _resetAllData() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.accountSettingsResetConfirmTitle),
+        content: Text(l10n.accountSettingsResetConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.tradesCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.accountSettingsResetConfirmAction),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    setState(() => _isResetting = true);
+    try {
+      await StorageInitializer.instance.resetAllDataToSeed();
+      await _loadAccounts();
+      if (_accounts.isNotEmpty) {
+        widget.onSelectedAccountChanged(_accounts.first.id);
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.accountSettingsResetSuccess)));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.accountSettingsResetFailed)));
+    } finally {
+      if (mounted) {
+        setState(() => _isResetting = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -100,6 +147,24 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
           TradingSectionHeader(
             title: l10n.accountSettingsTitle,
             subtitle: l10n.accountSettingsSubtitle,
+          ),
+          const SizedBox(height: TradingUiSpacing.md),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: _isLoading || _isResetting ? null : _resetAllData,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              icon: _isResetting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.restart_alt_outlined),
+              label: Text(l10n.accountSettingsResetButton),
+            ),
           ),
           const SizedBox(height: TradingUiSpacing.md),
           if (_isLoading)

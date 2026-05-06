@@ -1978,6 +1978,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account saved'**
   String get accountSettingsSavedMessage;
+
+  /// No description provided for @accountSettingsResetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all data'**
+  String get accountSettingsResetButton;
+
+  /// No description provided for @accountSettingsResetConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all app data?'**
+  String get accountSettingsResetConfirmTitle;
+
+  /// No description provided for @accountSettingsResetConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will clear all current data and restore initial default data.'**
+  String get accountSettingsResetConfirmBody;
+
+  /// No description provided for @accountSettingsResetConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset now'**
+  String get accountSettingsResetConfirmAction;
+
+  /// No description provided for @accountSettingsResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Data reset to default successfully'**
+  String get accountSettingsResetSuccess;
+
+  /// No description provided for @accountSettingsResetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reset data. Please try again.'**
+  String get accountSettingsResetFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

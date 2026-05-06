@@ -433,5 +433,11 @@
   "accountSettingsStatusActive": "Active",
   "accountSettingsStatusInactive": "Inactive",
   "accountSettingsEditTooltip": "Edit account",
-  "accountSettingsSavedMessage": "Account saved"
+  "accountSettingsSavedMessage": "Account saved",
+  "accountSettingsResetButton": "Reset all data",
+  "accountSettingsResetConfirmTitle": "Reset all app data?",
+  "accountSettingsResetConfirmBody": "This will clear all current data and restore initial default data.",
+  "accountSettingsResetConfirmAction": "Reset now",
+  "accountSettingsResetSuccess": "Data reset to default successfully",
+  "accountSettingsResetFailed": "Could not reset data. Please try again."
 }

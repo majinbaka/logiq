@@ -55,6 +55,26 @@ class StorageInitializer {
     _initialized = true;
   }
 
+  Future<void> resetAllDataToSeed() async {
+    await _initializeHiveIfNeeded();
+
+    for (final boxName in StorageBoxes.all) {
+      if (!Hive.isBoxOpen(boxName)) {
+        await Hive.openBox<Map>(boxName);
+      }
+      await Hive.box<Map>(boxName).clear();
+    }
+
+    final schemaBox = Hive.isBoxOpen(StorageBoxes.schema)
+        ? Hive.box(StorageBoxes.schema)
+        : await Hive.openBox(StorageBoxes.schema);
+    await schemaBox.clear();
+    await _seedReferenceDataIfNeeded();
+    await schemaBox.put(_schemaVersionKey, schemaVersion);
+
+    _initialized = true;
+  }
+
   void resetForTest() {
     _initialized = false;
     _hiveInitialized = false;

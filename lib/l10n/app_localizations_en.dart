@@ -973,4 +973,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSettingsSavedMessage => 'Account saved';
+
+  @override
+  String get accountSettingsResetButton => 'Reset all data';
+
+  @override
+  String get accountSettingsResetConfirmTitle => 'Reset all app data?';
+
+  @override
+  String get accountSettingsResetConfirmBody => 'This will clear all current data and restore initial default data.';
+
+  @override
+  String get accountSettingsResetConfirmAction => 'Reset now';
+
+  @override
+  String get accountSettingsResetSuccess => 'Data reset to default successfully';
+
+  @override
+  String get accountSettingsResetFailed => 'Could not reset data. Please try again.';
 }

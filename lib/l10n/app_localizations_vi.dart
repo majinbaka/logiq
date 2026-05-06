@@ -973,4 +973,22 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get accountSettingsSavedMessage => 'Đã lưu tài khoản';
+
+  @override
+  String get accountSettingsResetButton => 'Đặt lại toàn bộ dữ liệu';
+
+  @override
+  String get accountSettingsResetConfirmTitle => 'Đặt lại toàn bộ dữ liệu ứng dụng?';
+
+  @override
+  String get accountSettingsResetConfirmBody => 'Thao tác này sẽ xóa toàn bộ dữ liệu hiện tại và khôi phục dữ liệu mặc định ban đầu.';
+
+  @override
+  String get accountSettingsResetConfirmAction => 'Đặt lại ngay';
+
+  @override
+  String get accountSettingsResetSuccess => 'Đã đặt lại dữ liệu về mặc định';
+
+  @override
+  String get accountSettingsResetFailed => 'Không thể đặt lại dữ liệu. Vui lòng thử lại.';
 }
