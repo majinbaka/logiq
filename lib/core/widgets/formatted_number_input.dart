@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class FormattedNumberInput extends StatelessWidget {
+class FormattedNumberInput extends StatefulWidget {
   const FormattedNumberInput({
     super.key,
     required this.controller,
@@ -34,30 +34,80 @@ class FormattedNumberInput extends StatelessWidget {
   }
 
   @override
+  State<FormattedNumberInput> createState() => _FormattedNumberInputState();
+}
+
+class _FormattedNumberInputState extends State<FormattedNumberInput> {
+  static const _formatter = _ThousandsSeparatorFormatter();
+  bool _isApplyingFormat = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onControllerChanged);
+    _formatControllerText();
+  }
+
+  @override
+  void didUpdateWidget(covariant FormattedNumberInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller == widget.controller) return;
+    oldWidget.controller.removeListener(_onControllerChanged);
+    widget.controller.addListener(_onControllerChanged);
+    _formatControllerText();
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
+    super.dispose();
+  }
+
+  void _onControllerChanged() {
+    _formatControllerText();
+  }
+
+  void _formatControllerText() {
+    if (_isApplyingFormat) return;
+    final current = widget.controller.value;
+    final formatted = _formatter.formatEditUpdate(
+      const TextEditingValue(text: ''),
+      current,
+    );
+    if (formatted.text == current.text) return;
+    _isApplyingFormat = true;
+    widget.controller.value = formatted;
+    _isApplyingFormat = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
+      controller: widget.controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       inputFormatters: const [_ThousandsSeparatorFormatter()],
-      decoration: InputDecoration(labelText: label, suffixText: suffixText),
+      decoration: InputDecoration(
+        labelText: widget.label,
+        suffixText: widget.suffixText,
+      ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
-        final text = normalizeNumberText(value ?? '');
+        final text = FormattedNumberInput.normalizeNumberText(value ?? '');
         if (text.isEmpty) {
-          if (required) return requiredErrorText;
+          if (widget.required) return widget.requiredErrorText;
           return null;
         }
         if (num.tryParse(text) == null) {
-          return numberErrorText;
+          return widget.numberErrorText;
         }
         final parsed = num.parse(text);
-        if (mustBePositive && parsed <= 0) {
-          return positiveNumberErrorText;
+        if (widget.mustBePositive && parsed <= 0) {
+          return widget.positiveNumberErrorText;
         }
-        if (nonNegative && parsed < 0) {
-          return nonNegativeNumberErrorText;
+        if (widget.nonNegative && parsed < 0) {
+          return widget.nonNegativeNumberErrorText;
         }
-        return customValidator?.call(value);
+        return widget.customValidator?.call(value);
       },
     );
   }
