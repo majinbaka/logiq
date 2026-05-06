@@ -258,6 +258,21 @@ trade-detail-editor, strategy-risk, psychology.
 Da bo sung nen tang cho feature phase tiep theo:
 
 - App khoi dong qua `bootstrap()` va co `StorageInitializer` idempotent.
+
+## 12. Master Data Seed Khi Tao Account (2026-05-06)
+
+- Khi tao account moi trong Account Settings, app tu dong seed bo master data de dung ngay.
+- Risk rules mac dinh theo account moi:
+  - Conservative Risk
+  - Standard Risk
+  - Aggressive Risk
+  - Prop Firm Style
+  - Small Account Growth
+  - Capital Preservation
+- Strategy templates mac dinh duoc dam bao ton tai (idempotent):
+  - Breakout, Pullback, Mean Reversion, Momentum, Swing Trend
+  - Gap Trading, Support / Resistance, Breakdown Short
+  - Dividend / Value, News Catalyst
 - App shell co dieu huong placeholder cho module va da noi dia hoa (EN/VI) bang ARB.
 - Da khai bao repository contracts cho account/instrument/strategy/trade/portfolio/journal/psychology/instrument-note/risk/analytics/insight.
 - Da co local repository implementation dua tren Hive box va map boundary `toMap/fromMap`.

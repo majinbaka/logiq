@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logiq/core/seed/account_master_data_seeder.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/core/storage/storage_initializer.dart';
 import 'package:logiq/core/widgets/trading_section_header.dart';
@@ -7,6 +8,8 @@ import 'package:logiq/core/widgets/trading_ui_tokens.dart';
 import 'package:logiq/l10n/app_localizations.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/local/local_account_repository.dart';
+import 'package:logiq/repositories/local/local_risk_repository.dart';
+import 'package:logiq/repositories/local/local_strategy_repository.dart';
 
 class AccountSettingsView extends StatefulWidget {
   const AccountSettingsView({
@@ -14,11 +17,13 @@ class AccountSettingsView extends StatefulWidget {
     required this.selectedAccountId,
     required this.onSelectedAccountChanged,
     AccountRepository? accountRepository,
+    this.masterDataSeeder,
   }) : _accountRepository = accountRepository;
 
   final String selectedAccountId;
   final ValueChanged<String> onSelectedAccountChanged;
   final AccountRepository? _accountRepository;
+  final AccountMasterDataSeeder? masterDataSeeder;
 
   @override
   State<AccountSettingsView> createState() => _AccountSettingsViewState();
@@ -26,6 +31,7 @@ class AccountSettingsView extends StatefulWidget {
 
 class _AccountSettingsViewState extends State<AccountSettingsView> {
   late final AccountRepository _accountRepository;
+  late final AccountMasterDataSeeder _masterDataSeeder;
   List<TradingAccountModel> _accounts = const [];
   bool _isLoading = false;
   bool _isResetting = false;
@@ -35,6 +41,12 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
   void initState() {
     super.initState();
     _accountRepository = widget._accountRepository ?? LocalAccountRepository();
+    _masterDataSeeder =
+        widget.masterDataSeeder ??
+        AccountMasterDataSeeder(
+          riskRepository: LocalRiskRepository(),
+          strategyRepository: LocalStrategyRepository(),
+        );
     _loadAccounts();
   }
 
@@ -80,6 +92,9 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
     );
 
     await _accountRepository.upsert(account);
+    if (existing == null) {
+      await _masterDataSeeder.seedForNewAccount(account.id);
+    }
     await _loadAccounts();
 
     if (existing == null || widget.selectedAccountId == existing.id) {
