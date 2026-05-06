@@ -47,6 +47,9 @@ class _AppShellState extends State<AppShell> {
           defaultAccountId: _selectedAccountId.isEmpty
               ? _fallbackAccountId
               : _selectedAccountId,
+          onMissingAccount: () => setState(() => _currentIndex = 6),
+          onMissingInitialDeposit: () => setState(() => _currentIndex = 1),
+          onMissingRiskRule: () => setState(() => _currentIndex = 2),
         ),
       ),
       _ShellTab(

@@ -28,10 +28,16 @@ class TradesCrudView extends StatefulWidget {
   const TradesCrudView({
     super.key,
     required this.defaultAccountId,
+    this.onMissingAccount,
+    this.onMissingInitialDeposit,
+    this.onMissingRiskRule,
     TradesCrudViewModel? viewModel,
   }) : _viewModel = viewModel;
 
   final String defaultAccountId;
+  final VoidCallback? onMissingAccount;
+  final VoidCallback? onMissingInitialDeposit;
+  final VoidCallback? onMissingRiskRule;
   final TradesCrudViewModel? _viewModel;
 
   @override
@@ -281,6 +287,19 @@ class _TradesCrudViewState extends State<TradesCrudView> {
         _ => l10n.tradesFlowValidationGeneric,
       };
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      switch (error.reasonKey) {
+        case 'missing_account':
+          widget.onMissingAccount?.call();
+          break;
+        case 'missing_initial_deposit':
+          widget.onMissingInitialDeposit?.call();
+          break;
+        case 'missing_risk_rule':
+          widget.onMissingRiskRule?.call();
+          break;
+        default:
+          break;
+      }
     }
   }
 
