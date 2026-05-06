@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Change Test Check"
+  short_description: "Recheck tests after any code changes"
+  default_prompt: "Verify and rerun tests after code edits."
