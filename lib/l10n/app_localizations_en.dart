@@ -218,6 +218,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesRiskReasonNotApplicable => 'N/A';
 
   @override
+  String get tradesOrdersSectionTitle => 'Orders';
+
+  @override
+  String get tradesOrdersAddButton => 'Add order';
+
+  @override
+  String get tradesOrdersEmptyState => 'No orders yet. Tap Add order to create one.';
+
+  @override
+  String get tradesOrderCreateTitle => 'Create order';
+
+  @override
+  String get tradesOrderEditTitle => 'Edit order';
+
+  @override
+  String get tradesOrderPlannedPriceLabel => 'Planned price';
+
+  @override
+  String get tradesOrderStatusPlanned => 'Planned';
+
+  @override
+  String get tradesOrderStatusPlaced => 'Placed';
+
+  @override
+  String get tradesOrderStatusFilled => 'Filled';
+
+  @override
+  String get tradesOrderStatusCanceled => 'Canceled';
+
+  @override
   String get tradesOverviewTitle => 'Trading Journal';
 
   @override

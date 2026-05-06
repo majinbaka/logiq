@@ -5,6 +5,7 @@ import 'package:logiq/core/database/models/risk_check_model.dart';
 import 'package:logiq/core/database/models/strategy_model.dart';
 import 'package:logiq/core/database/models/strategy_version_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_order_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/instrument_repository.dart';
@@ -231,6 +232,42 @@ class TradesCrudViewModel extends ChangeNotifier {
     await loadTrades();
   }
 
+  Future<List<TradeOrderModel>> listOrdersByTrade(String tradeId) {
+    return _repository.listOrdersByTrade(tradeId);
+  }
+
+  Future<void> saveOrder({
+    required TradeModel trade,
+    required String status,
+    String? plannedPrice,
+    String? quantity,
+    TradeOrderModel? existing,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final normalizedStatus = status.toLowerCase().trim();
+    final order = TradeOrderModel(
+      id: existing?.id ?? 'ord_${trade.id}_${now.microsecondsSinceEpoch}',
+      tradeId: trade.id,
+      orderSide: existing?.orderSide ?? trade.direction.toLowerCase(),
+      orderType: existing?.orderType ?? 'limit',
+      intent: existing?.intent ?? 'entry',
+      plannedPrice: _toNullableDecimal(plannedPrice) ?? existing?.plannedPrice,
+      stopPrice: existing?.stopPrice,
+      limitPrice: existing?.limitPrice,
+      quantity: _toNullableDecimal(quantity) ?? existing?.quantity,
+      status: normalizedStatus,
+      placedAt: existing?.placedAt,
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+      deletedAt: existing?.deletedAt,
+    );
+    await _repository.upsertOrder(order);
+  }
+
+  Future<void> deleteOrder(String orderId) {
+    return _repository.softDeleteOrder(orderId, DateTime.now().toUtc());
+  }
+
   Future<InstrumentModel> createInstrument(String symbol) async {
     final normalizedSymbol = symbol.trim().toUpperCase();
     for (final item in _instruments) {
@@ -390,7 +427,11 @@ class TradesCrudViewModel extends ChangeNotifier {
     required DateTime asOf,
   }) async {
     final start = DateTime.utc(1970, 1, 1);
-    final trades = await _repository.listByAccountAndDateRange(accountId, start, asOf);
+    final trades = await _repository.listByAccountAndDateRange(
+      accountId,
+      start,
+      asOf,
+    );
     var quantity = 0.0;
     for (final item in trades) {
       if (item.id == existingTradeId) continue;
@@ -413,5 +454,12 @@ class TradesCrudViewModel extends ChangeNotifier {
   double _toDouble(String? value) {
     if (value == null || value.trim().isEmpty) return 0;
     return double.tryParse(value.trim()) ?? 0;
+  }
+
+  String? _toNullableDecimal(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    return trimmed;
   }
 }

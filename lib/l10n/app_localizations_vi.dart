@@ -218,6 +218,36 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesRiskReasonNotApplicable => 'Không áp dụng';
 
   @override
+  String get tradesOrdersSectionTitle => 'Orders';
+
+  @override
+  String get tradesOrdersAddButton => 'Thêm order';
+
+  @override
+  String get tradesOrdersEmptyState => 'Chưa có order. Nhấn Thêm order để tạo mới.';
+
+  @override
+  String get tradesOrderCreateTitle => 'Tạo order';
+
+  @override
+  String get tradesOrderEditTitle => 'Sửa order';
+
+  @override
+  String get tradesOrderPlannedPriceLabel => 'Giá kế hoạch';
+
+  @override
+  String get tradesOrderStatusPlanned => 'Planned';
+
+  @override
+  String get tradesOrderStatusPlaced => 'Placed';
+
+  @override
+  String get tradesOrderStatusFilled => 'Filled';
+
+  @override
+  String get tradesOrderStatusCanceled => 'Canceled';
+
+  @override
   String get tradesOverviewTitle => 'Nhật ký giao dịch';
 
   @override

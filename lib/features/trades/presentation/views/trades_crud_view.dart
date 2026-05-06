@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
 import 'package:logiq/core/database/models/risk_check_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_order_model.dart';
 import 'package:logiq/core/widgets/instrument_date_summary.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/core/analytics/analytics_rebuild_service.dart';
@@ -25,8 +26,7 @@ class TradesCrudView extends StatefulWidget {
     super.key,
     required this.defaultAccountId,
     TradesCrudViewModel? viewModel,
-  })
-    : _viewModel = viewModel;
+  }) : _viewModel = viewModel;
 
   final String defaultAccountId;
   final TradesCrudViewModel? _viewModel;
@@ -149,6 +149,23 @@ class _TradesCrudViewState extends State<TradesCrudView> {
             Navigator.of(context).pop();
             _openTradeForm(existing: trade);
           },
+          loadOrders: _viewModel.listOrdersByTrade,
+          onSaveOrder:
+              ({
+                required String status,
+                required String? plannedPrice,
+                required String? quantity,
+                TradeOrderModel? existing,
+              }) {
+                return _viewModel.saveOrder(
+                  trade: trade,
+                  status: status,
+                  plannedPrice: plannedPrice,
+                  quantity: quantity,
+                  existing: existing,
+                );
+              },
+          onDeleteOrder: _viewModel.deleteOrder,
         ),
       ),
     );

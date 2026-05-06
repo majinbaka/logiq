@@ -509,6 +509,66 @@ abstract class AppLocalizations {
   /// **'N/A'**
   String get tradesRiskReasonNotApplicable;
 
+  /// No description provided for @tradesOrdersSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get tradesOrdersSectionTitle;
+
+  /// No description provided for @tradesOrdersAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add order'**
+  String get tradesOrdersAddButton;
+
+  /// No description provided for @tradesOrdersEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet. Tap Add order to create one.'**
+  String get tradesOrdersEmptyState;
+
+  /// No description provided for @tradesOrderCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create order'**
+  String get tradesOrderCreateTitle;
+
+  /// No description provided for @tradesOrderEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit order'**
+  String get tradesOrderEditTitle;
+
+  /// No description provided for @tradesOrderPlannedPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned price'**
+  String get tradesOrderPlannedPriceLabel;
+
+  /// No description provided for @tradesOrderStatusPlanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned'**
+  String get tradesOrderStatusPlanned;
+
+  /// No description provided for @tradesOrderStatusPlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed'**
+  String get tradesOrderStatusPlaced;
+
+  /// No description provided for @tradesOrderStatusFilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Filled'**
+  String get tradesOrderStatusFilled;
+
+  /// No description provided for @tradesOrderStatusCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Canceled'**
+  String get tradesOrderStatusCanceled;
+
   /// No description provided for @tradesOverviewTitle.
   ///
   /// In en, this message translates to:

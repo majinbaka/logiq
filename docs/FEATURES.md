@@ -12,6 +12,10 @@ Muc tieu: giup nguoi dung ghi lai tung lenh giao dich, ly do vao lenh, cach thoa
 - Luu gia giao dich.
 - Luu khoi luong.
 - Luu phi va thue.
+- Quan ly vong doi order trong Trade Detail:
+  - Them order moi bang nut Add order.
+  - Cap nhat nhanh status, gia ke hoach va khoi luong.
+  - Xoa mem order khoi danh sach.
 
 ### Tu Dong Tinh Toan
 
