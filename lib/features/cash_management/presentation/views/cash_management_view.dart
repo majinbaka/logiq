@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/portfolio_input_enums.dart';
 import 'package:logiq/core/widgets/formatted_number_input.dart';
 import 'package:logiq/core/widgets/trading_section_header.dart';
 import 'package:logiq/core/widgets/trading_state_view.dart';
@@ -30,10 +31,23 @@ class CashManagementView extends StatefulWidget {
 
 class _CashManagementViewState extends State<CashManagementView> {
   late final CashManagementViewModel _viewModel;
+  final GlobalKey<FormState> _depositFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _withdrawFormKey = GlobalKey<FormState>();
+  late final TextEditingController _depositAmountController;
+  late final TextEditingController _depositNoteController;
+  late final TextEditingController _withdrawAmountController;
+  late final TextEditingController _withdrawNoteController;
+  CashMovementType _depositType = CashMovementType.deposit;
+  bool _isDepositExpanded = false;
+  bool _isWithdrawExpanded = false;
 
   @override
   void initState() {
     super.initState();
+    _depositAmountController = TextEditingController();
+    _depositNoteController = TextEditingController();
+    _withdrawAmountController = TextEditingController();
+    _withdrawNoteController = TextEditingController();
     _viewModel = CashManagementViewModel(
       repository: widget._repository ?? LocalPortfolioRepository(),
       accountRepository: widget._accountRepository ?? LocalAccountRepository(),
@@ -44,6 +58,10 @@ class _CashManagementViewState extends State<CashManagementView> {
 
   @override
   void dispose() {
+    _depositAmountController.dispose();
+    _depositNoteController.dispose();
+    _withdrawAmountController.dispose();
+    _withdrawNoteController.dispose();
     _viewModel.dispose();
     super.dispose();
   }
@@ -110,7 +128,14 @@ class _CashManagementViewState extends State<CashManagementView> {
               children: [
                 FilledButton.tonalIcon(
                   key: const Key('cash_action_deposit'),
-                  onPressed: _viewModel.isSubmitting ? null : _openDepositModal,
+                  onPressed: _viewModel.isSubmitting
+                      ? null
+                      : () {
+                          setState(() {
+                            _isDepositExpanded = !_isDepositExpanded;
+                            if (_isDepositExpanded) _isWithdrawExpanded = false;
+                          });
+                        },
                   icon: const Icon(Icons.south_west_rounded),
                   label: Text(l10n.cashDeposit),
                 ),
@@ -118,7 +143,12 @@ class _CashManagementViewState extends State<CashManagementView> {
                   key: const Key('cash_action_withdraw'),
                   onPressed: _viewModel.isSubmitting
                       ? null
-                      : _openWithdrawModal,
+                      : () {
+                          setState(() {
+                            _isWithdrawExpanded = !_isWithdrawExpanded;
+                            if (_isWithdrawExpanded) _isDepositExpanded = false;
+                          });
+                        },
                   icon: const Icon(Icons.north_east_rounded),
                   label: Text(l10n.cashWithdraw),
                 ),
@@ -130,6 +160,14 @@ class _CashManagementViewState extends State<CashManagementView> {
                 ),
               ],
             ),
+            if (_isDepositExpanded) ...[
+              const SizedBox(height: TradingUiSpacing.sm),
+              _buildDepositForm(),
+            ],
+            if (_isWithdrawExpanded) ...[
+              const SizedBox(height: TradingUiSpacing.sm),
+              _buildWithdrawForm(),
+            ],
             const SizedBox(height: TradingUiSpacing.md),
             Text(
               l10n.cashTransactionsTitle,
@@ -181,6 +219,14 @@ class _CashManagementViewState extends State<CashManagementView> {
                           onPressed: () => _openTransactionDetail(movement),
                           icon: const Icon(Icons.info_outline),
                           tooltip: l10n.cashTransactionDetail,
+                        ),
+                        IconButton(
+                          key: Key('cash_delete_${movement.id}'),
+                          onPressed: _viewModel.isSubmitting
+                              ? null
+                              : () => _deleteMovement(movement),
+                          icon: const Icon(Icons.delete_outline),
+                          tooltip: l10n.tradesDeleteTooltip,
                         ),
                       ],
                     ),
@@ -265,212 +311,226 @@ class _CashManagementViewState extends State<CashManagementView> {
     );
   }
 
-  Future<void> _openDepositModal() async {
+  Widget _buildDepositForm() {
     final l10n = AppLocalizations.of(context)!;
-    final amountController = TextEditingController();
-    final noteController = TextEditingController();
-    final typeController = TextEditingController(text: 'deposit');
-
-    final ok = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        final formKey = GlobalKey<FormState>();
-        return Padding(
-          padding: EdgeInsets.only(
-            left: TradingUiSpacing.md,
-            right: TradingUiSpacing.md,
-            top: TradingUiSpacing.md,
-            bottom:
-                MediaQuery.of(context).viewInsets.bottom + TradingUiSpacing.md,
-          ),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.cashDepositTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                FormattedNumberInput(
-                  key: const Key('cash_deposit_amount'),
-                  controller: amountController,
-                  label: '${l10n.cashAmount} *',
-                  required: true,
-                  mustBePositive: true,
-                  suffixText: _viewModel.currency,
-                  requiredErrorText: l10n.portfolioRequiredFieldValidationError,
-                  numberErrorText: l10n.portfolioNumberValidationError,
-                  positiveNumberErrorText:
-                      l10n.portfolioPositiveNumberValidationError,
-                  nonNegativeNumberErrorText:
-                      l10n.portfolioPositiveNumberValidationError,
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                TextFormField(
-                  key: const Key('cash_deposit_type'),
-                  controller: typeController,
-                  decoration: InputDecoration(labelText: l10n.cashDepositType),
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                TextFormField(
-                  key: const Key('cash_deposit_note'),
-                  controller: noteController,
-                  decoration: InputDecoration(
-                    labelText: l10n.portfolioNoteLabel,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(TradingUiSpacing.md),
+        child: Form(
+          key: _depositFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.cashDepositTitle,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              FormattedNumberInput(
+                key: const Key('cash_deposit_amount'),
+                controller: _depositAmountController,
+                label: '${l10n.cashAmount} *',
+                required: true,
+                mustBePositive: true,
+                suffixText: _viewModel.currency,
+                requiredErrorText: l10n.portfolioRequiredFieldValidationError,
+                numberErrorText: l10n.portfolioNumberValidationError,
+                positiveNumberErrorText:
+                    l10n.portfolioPositiveNumberValidationError,
+                nonNegativeNumberErrorText:
+                    l10n.portfolioPositiveNumberValidationError,
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              DropdownButtonFormField<CashMovementType>(
+                key: const Key('cash_deposit_type'),
+                initialValue: _depositType,
+                decoration: InputDecoration(labelText: l10n.cashDepositType),
+                items: const [
+                  DropdownMenuItem(
+                    value: CashMovementType.initialDeposit,
+                    child: Text('initial_deposit'),
                   ),
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: Text(l10n.portfolioCancel),
-                      ),
+                  DropdownMenuItem(
+                    value: CashMovementType.deposit,
+                    child: Text('deposit'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => _depositType = value);
+                },
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              TextFormField(
+                key: const Key('cash_deposit_note'),
+                controller: _depositNoteController,
+                decoration: InputDecoration(labelText: l10n.portfolioNoteLabel),
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _viewModel.isSubmitting
+                          ? null
+                          : () {
+                              _depositFormKey.currentState?.reset();
+                              _depositAmountController.clear();
+                              _depositNoteController.clear();
+                              setState(() => _isDepositExpanded = false);
+                            },
+                      child: Text(l10n.portfolioCancel),
                     ),
-                    const SizedBox(width: TradingUiSpacing.sm),
-                    Expanded(
-                      child: FilledButton(
-                        key: const Key('cash_deposit_save'),
-                        onPressed: () {
-                          if (formKey.currentState?.validate() != true) return;
-                          Navigator.pop(context, true);
-                        },
-                        child: Text(l10n.portfolioSave),
-                      ),
+                  ),
+                  const SizedBox(width: TradingUiSpacing.sm),
+                  Expanded(
+                    child: FilledButton(
+                      key: const Key('cash_deposit_save'),
+                      onPressed: _viewModel.isSubmitting ? null : _submitDeposit,
+                      child: Text(l10n.portfolioSave),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  }
 
-    if (ok == true) {
-      try {
-        await _viewModel.createDepositPending(
-          amount: FormattedNumberInput.normalizeNumberText(
-            amountController.text,
+  Widget _buildWithdrawForm() {
+    final l10n = AppLocalizations.of(context)!;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(TradingUiSpacing.md),
+        child: Form(
+          key: _withdrawFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.cashWithdrawalTitle,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: TradingUiSpacing.xs),
+              Text(
+                '${l10n.cashAvailableCash}: ${_viewModel.balance?.availableCash ?? '0'} ${_viewModel.currency}',
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              FormattedNumberInput(
+                key: const Key('cash_withdraw_amount'),
+                controller: _withdrawAmountController,
+                label: '${l10n.cashAmount} *',
+                required: true,
+                mustBePositive: true,
+                suffixText: _viewModel.currency,
+                requiredErrorText: l10n.portfolioRequiredFieldValidationError,
+                numberErrorText: l10n.portfolioNumberValidationError,
+                positiveNumberErrorText:
+                    l10n.portfolioPositiveNumberValidationError,
+                nonNegativeNumberErrorText:
+                    l10n.portfolioPositiveNumberValidationError,
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              TextFormField(
+                key: const Key('cash_withdraw_note'),
+                controller: _withdrawNoteController,
+                decoration: InputDecoration(labelText: l10n.portfolioNoteLabel),
+              ),
+              const SizedBox(height: TradingUiSpacing.sm),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _viewModel.isSubmitting
+                          ? null
+                          : () {
+                              _withdrawFormKey.currentState?.reset();
+                              _withdrawAmountController.clear();
+                              _withdrawNoteController.clear();
+                              setState(() => _isWithdrawExpanded = false);
+                            },
+                      child: Text(l10n.portfolioCancel),
+                    ),
+                  ),
+                  const SizedBox(width: TradingUiSpacing.sm),
+                  Expanded(
+                    child: FilledButton(
+                      key: const Key('cash_withdraw_save'),
+                      onPressed: _viewModel.isSubmitting ? null : _submitWithdraw,
+                      child: Text(l10n.portfolioSave),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          movementType: typeController.text.trim().isEmpty
-              ? 'deposit'
-              : typeController.text.trim(),
-          note: noteController.text.trim().isEmpty
-              ? null
-              : noteController.text.trim(),
-        );
-      } catch (_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.cashSubmitFailed)));
-      }
+        ),
+      ),
+    );
+  }
+
+  Future<void> _submitDeposit() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_depositFormKey.currentState?.validate() != true) return;
+    final amount = FormattedNumberInput.normalizeNumberText(
+      _depositAmountController.text,
+    );
+    final confirmed = await _confirmCreateTransaction(
+      amount: amount,
+      isDeposit: true,
+    );
+    if (!confirmed) return;
+    try {
+      await _viewModel.createDepositPending(
+        amount: amount,
+        movementType: _depositType.value,
+        note: _depositNoteController.text.trim().isEmpty
+            ? null
+            : _depositNoteController.text.trim(),
+      );
+      _depositFormKey.currentState?.reset();
+      _depositAmountController.clear();
+      _depositNoteController.clear();
+      if (!mounted) return;
+      setState(() => _isDepositExpanded = false);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.cashSubmitFailed)));
     }
   }
 
-  Future<void> _openWithdrawModal() async {
+  Future<void> _submitWithdraw() async {
     final l10n = AppLocalizations.of(context)!;
-    final amountController = TextEditingController();
-    final noteController = TextEditingController();
-    final ok = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        final formKey = GlobalKey<FormState>();
-        return Padding(
-          padding: EdgeInsets.only(
-            left: TradingUiSpacing.md,
-            right: TradingUiSpacing.md,
-            top: TradingUiSpacing.md,
-            bottom:
-                MediaQuery.of(context).viewInsets.bottom + TradingUiSpacing.md,
-          ),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.cashWithdrawalTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: TradingUiSpacing.xs),
-                Text(
-                  '${l10n.cashAvailableCash}: ${_viewModel.balance?.availableCash ?? '0'} ${_viewModel.currency}',
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                FormattedNumberInput(
-                  key: const Key('cash_withdraw_amount'),
-                  controller: amountController,
-                  label: '${l10n.cashAmount} *',
-                  required: true,
-                  mustBePositive: true,
-                  suffixText: _viewModel.currency,
-                  requiredErrorText: l10n.portfolioRequiredFieldValidationError,
-                  numberErrorText: l10n.portfolioNumberValidationError,
-                  positiveNumberErrorText:
-                      l10n.portfolioPositiveNumberValidationError,
-                  nonNegativeNumberErrorText:
-                      l10n.portfolioPositiveNumberValidationError,
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                TextFormField(
-                  key: const Key('cash_withdraw_note'),
-                  controller: noteController,
-                  decoration: InputDecoration(
-                    labelText: l10n.portfolioNoteLabel,
-                  ),
-                ),
-                const SizedBox(height: TradingUiSpacing.sm),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: Text(l10n.portfolioCancel),
-                      ),
-                    ),
-                    const SizedBox(width: TradingUiSpacing.sm),
-                    Expanded(
-                      child: FilledButton(
-                        key: const Key('cash_withdraw_save'),
-                        onPressed: () {
-                          if (formKey.currentState?.validate() != true) return;
-                          Navigator.pop(context, true);
-                        },
-                        child: Text(l10n.portfolioSave),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    if (_withdrawFormKey.currentState?.validate() != true) return;
+    final amount = FormattedNumberInput.normalizeNumberText(
+      _withdrawAmountController.text,
     );
-
-    if (ok == true) {
-      try {
-        await _viewModel.createWithdrawalPending(
-          amount: FormattedNumberInput.normalizeNumberText(
-            amountController.text,
-          ),
-          note: noteController.text.trim().isEmpty
-              ? null
-              : noteController.text.trim(),
-        );
-      } catch (_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.cashInsufficientAvailable)));
-      }
+    final confirmed = await _confirmCreateTransaction(
+      amount: amount,
+      isDeposit: false,
+    );
+    if (!confirmed) return;
+    try {
+      await _viewModel.createWithdrawalPending(
+        amount: amount,
+        note: _withdrawNoteController.text.trim().isEmpty
+            ? null
+            : _withdrawNoteController.text.trim(),
+      );
+      _withdrawFormKey.currentState?.reset();
+      _withdrawAmountController.clear();
+      _withdrawNoteController.clear();
+      if (!mounted) return;
+      setState(() => _isWithdrawExpanded = false);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.cashInsufficientAvailable)));
     }
   }
 
@@ -520,6 +580,65 @@ class _CashManagementViewState extends State<CashManagementView> {
       },
     );
   }
+
+  Future<void> _deleteMovement(CashMovementModel movement) async {
+    await _viewModel.deleteMovement(movement.id);
+  }
+
+  Future<bool> _confirmCreateTransaction({
+    required String amount,
+    required bool isDeposit,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final value = _toDouble(amount);
+    final currentCash = _toDouble(_viewModel.balance?.currentCashBalance);
+    final availableCash = _toDouble(_viewModel.balance?.availableCash);
+    final unsettled = _viewModel.totalUnsettledFunds();
+    final nextCurrentCash = isDeposit ? currentCash + value : currentCash;
+    final nextAvailableCash = isDeposit
+        ? availableCash
+        : availableCash - value;
+    final nextUnsettled = unsettled + value;
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.cashCreateConfirmTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${l10n.cashCreateConfirmAmount}: $amount ${_viewModel.currency}'),
+              const SizedBox(height: TradingUiSpacing.xs),
+              Text('${l10n.cashCurrentCash}: ${currentCash.toStringAsFixed(2)}'),
+              Text('${l10n.cashCreateConfirmCurrentAfter}: ${nextCurrentCash.toStringAsFixed(2)}'),
+              const SizedBox(height: TradingUiSpacing.xs),
+              Text('${l10n.cashAvailableCash}: ${availableCash.toStringAsFixed(2)}'),
+              Text('${l10n.cashCreateConfirmAvailableAfter}: ${nextAvailableCash.toStringAsFixed(2)}'),
+              const SizedBox(height: TradingUiSpacing.xs),
+              Text('${l10n.cashUnsettledFunds}: ${unsettled.toStringAsFixed(2)}'),
+              Text('${l10n.cashCreateConfirmPendingAfter}: ${nextUnsettled.toStringAsFixed(2)}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.portfolioCancel),
+            ),
+            FilledButton(
+              key: const Key('cash_create_confirm_submit'),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.cashConfirm),
+            ),
+          ],
+        );
+      },
+    );
+    return ok == true;
+  }
+
+  double _toDouble(String? value) => double.tryParse(value ?? '0') ?? 0;
 
   String _fmtDateTime(DateTime value) {
     final local = value.toLocal();

@@ -169,6 +169,13 @@ class CashManagementViewModel extends ChangeNotifier {
     });
   }
 
+  Future<void> deleteMovement(String movementId) async {
+    await _runSubmit(() async {
+      await _repository.deleteCashMovement(movementId);
+      await load();
+    });
+  }
+
   Future<void> reconcileNow() async {
     await _runSubmit(() async {
       final now = DateTime.now().toUtc();

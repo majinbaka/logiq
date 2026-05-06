@@ -138,6 +138,21 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cashDepositType => 'Loại nạp tiền';
 
   @override
+  String get cashCreateConfirmTitle => 'Xác nhận thay đổi giao dịch';
+
+  @override
+  String get cashCreateConfirmAmount => 'Giá trị giao dịch';
+
+  @override
+  String get cashCreateConfirmAvailableAfter => 'Tiền khả dụng sau khi tạo';
+
+  @override
+  String get cashCreateConfirmCurrentAfter => 'Tiền hiện tại sau khi tạo';
+
+  @override
+  String get cashCreateConfirmPendingAfter => 'Tiền chưa thanh toán sau khi tạo';
+
+  @override
   String get cashSubmitFailed => 'Tạo yêu cầu tiền thất bại. Vui lòng kiểm tra dữ liệu.';
 
   @override

@@ -138,6 +138,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashDepositType => 'Deposit type';
 
   @override
+  String get cashCreateConfirmTitle => 'Confirm transaction impact';
+
+  @override
+  String get cashCreateConfirmAmount => 'Transaction amount';
+
+  @override
+  String get cashCreateConfirmAvailableAfter => 'Available cash after create';
+
+  @override
+  String get cashCreateConfirmCurrentAfter => 'Current cash after create';
+
+  @override
+  String get cashCreateConfirmPendingAfter => 'Unsettled funds after create';
+
+  @override
   String get cashSubmitFailed => 'Cash request failed. Please validate input.';
 
   @override

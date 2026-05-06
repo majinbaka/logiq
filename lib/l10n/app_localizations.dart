@@ -353,6 +353,36 @@ abstract class AppLocalizations {
   /// **'Deposit type'**
   String get cashDepositType;
 
+  /// No description provided for @cashCreateConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm transaction impact'**
+  String get cashCreateConfirmTitle;
+
+  /// No description provided for @cashCreateConfirmAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction amount'**
+  String get cashCreateConfirmAmount;
+
+  /// No description provided for @cashCreateConfirmAvailableAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Available cash after create'**
+  String get cashCreateConfirmAvailableAfter;
+
+  /// No description provided for @cashCreateConfirmCurrentAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Current cash after create'**
+  String get cashCreateConfirmCurrentAfter;
+
+  /// No description provided for @cashCreateConfirmPendingAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsettled funds after create'**
+  String get cashCreateConfirmPendingAfter;
+
   /// No description provided for @cashSubmitFailed.
   ///
   /// In en, this message translates to:

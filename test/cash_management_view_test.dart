@@ -16,7 +16,7 @@ import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 void main() {
-  testWidgets('open deposit modal from cash action bar', (tester) async {
+  testWidgets('open deposit collapsed form from cash action bar', (tester) async {
     await _pumpCash(tester, portfolioRepository: _FakePortfolioRepository());
 
     await tester.tap(find.byKey(const Key('cash_action_deposit')));
@@ -43,8 +43,32 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('cash_withdraw_save')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('cash_create_confirm_submit')));
+    await tester.pumpAndSettle();
 
     expect(find.text('Insufficient available cash.'), findsOneWidget);
+  });
+
+  testWidgets('can delete transaction from transaction list', (tester) async {
+    final repository = _FakePortfolioRepository(
+      movements: [
+        CashMovementModel(
+          id: 'cm_1',
+          accountId: 'acc_1',
+          movementDate: DateTime.utc(2026, 5, 1),
+          movementType: 'deposit',
+          amount: '100',
+          currency: 'USD',
+          status: 'completed',
+          createdAt: DateTime.utc(2026, 5, 1),
+        ),
+      ],
+    );
+    await _pumpCash(tester, portfolioRepository: repository);
+    await tester.tap(find.byKey(const Key('cash_delete_cm_1')));
+    await tester.pumpAndSettle();
+
+    expect(repository.deletedMovementId, 'cm_1');
   });
 }
 
@@ -93,9 +117,14 @@ class _FakeAccountRepository implements AccountRepository {
 }
 
 class _FakePortfolioRepository implements PortfolioRepository {
-  _FakePortfolioRepository({this.availableCash = '10000'});
+  _FakePortfolioRepository({
+    this.availableCash = '10000',
+    List<CashMovementModel>? movements,
+  }) : _movements = movements ?? [];
 
   final String availableCash;
+  final List<CashMovementModel> _movements;
+  String? deletedMovementId;
 
   @override
   Future<void> completeCashMovement({
@@ -143,7 +172,7 @@ class _FakePortfolioRepository implements PortfolioRepository {
     String accountId, {
     int limit = 20,
   }) async {
-    return const [];
+    return List<CashMovementModel>.from(_movements);
   }
 
   @override
@@ -158,7 +187,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
   Future<void> upsertCashMovement(CashMovementModel movement) async {}
 
   @override
-  Future<void> deleteCashMovement(String movementId) async {}
+  Future<void> deleteCashMovement(String movementId) async {
+    deletedMovementId = movementId;
+    _movements.removeWhere((item) => item.id == movementId);
+  }
 
   @override
   Future<void> deleteCashLedger(String ledgerId) async {}
