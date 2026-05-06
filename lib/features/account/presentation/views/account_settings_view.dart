@@ -155,6 +155,13 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
   }
 
   Future<void> _deleteAccount(TradingAccountModel account) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_accounts.length <= 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.accountSettingsDeleteLastBlocked)),
+      );
+      return;
+    }
     final now = DateTime.now().toUtc();
     await _accountRepository.upsert(
       TradingAccountModel(
@@ -304,43 +311,7 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
                         padding: const EdgeInsets.only(bottom: TradingUiSpacing.sm),
                         child: Text(l10n.accountSettingsEmptyBody),
                       ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text(l10n.accountSettingsNameLabel)),
-                          DataColumn(
-                            label: Text(l10n.accountSettingsCurrencyLabel),
-                          ),
-                          DataColumn(label: Text(l10n.accountSettingsStatusLabel)),
-                          const DataColumn(label: Text('')),
-                        ],
-                        rows: [
-                          ..._accounts.map((account) {
-                            final isEditing = _editingId == account.id;
-                            return DataRow(
-                              selected: account.id == widget.selectedAccountId,
-                              onSelectChanged: (_) =>
-                                  widget.onSelectedAccountChanged(account.id),
-                              cells: _buildRowCells(
-                                l10n: l10n,
-                                account: account,
-                                isEditing: isEditing,
-                              ),
-                            );
-                          }),
-                          if (_editingId != null &&
-                              !_accounts.any((item) => item.id == _editingId))
-                            DataRow(
-                              cells: _buildRowCells(
-                                l10n: l10n,
-                                account: null,
-                                isEditing: true,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                    _buildResponsiveAccountEditor(l10n),
                     const SizedBox(height: TradingUiSpacing.sm),
                     FilledButton.icon(
                       onPressed: _editingId != null || _isResetting
@@ -353,6 +324,194 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResponsiveAccountEditor(AppLocalizations l10n) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 760) {
+          return Column(
+            children: [
+              ..._accounts.map((account) {
+                final isEditing = _editingId == account.id;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: TradingUiSpacing.sm),
+                  child: _buildCompactAccountRow(
+                    l10n: l10n,
+                    account: account,
+                    isEditing: isEditing,
+                  ),
+                );
+              }),
+              if (_editingId != null &&
+                  !_accounts.any((item) => item.id == _editingId))
+                _buildCompactAccountRow(
+                  l10n: l10n,
+                  account: null,
+                  isEditing: true,
+                ),
+            ],
+          );
+        }
+
+        return Scrollbar(
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: DataTable(
+                showCheckboxColumn: false,
+                dataRowColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.4);
+                  }
+                  return null;
+                }),
+                columns: [
+                  DataColumn(label: Text(l10n.accountSettingsNameLabel)),
+                  DataColumn(label: Text(l10n.accountSettingsCurrencyLabel)),
+                  DataColumn(label: Text(l10n.accountSettingsStatusLabel)),
+                  const DataColumn(label: Text('')),
+                ],
+                rows: [
+                  ..._accounts.map((account) {
+                    final isEditing = _editingId == account.id;
+                    return DataRow(
+                      selected: account.id == widget.selectedAccountId,
+                      onSelectChanged: (_) =>
+                          widget.onSelectedAccountChanged(account.id),
+                      cells: _buildRowCells(
+                        l10n: l10n,
+                        account: account,
+                        isEditing: isEditing,
+                      ),
+                    );
+                  }),
+                  if (_editingId != null &&
+                      !_accounts.any((item) => item.id == _editingId))
+                    DataRow(
+                      cells: _buildRowCells(
+                        l10n: l10n,
+                        account: null,
+                        isEditing: true,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCompactAccountRow({
+    required AppLocalizations l10n,
+    required TradingAccountModel? account,
+    required bool isEditing,
+  }) {
+    if (isEditing) {
+      return Container(
+        padding: const EdgeInsets.all(TradingUiSpacing.sm),
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: l10n.accountSettingsNameLabel),
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            TextField(
+              controller: _currencyController,
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(
+                labelText: l10n.accountSettingsCurrencyLabel,
+              ),
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            DropdownButtonFormField<String>(
+              initialValue: _status,
+              decoration: InputDecoration(labelText: l10n.accountSettingsStatusLabel),
+              items: [
+                DropdownMenuItem(
+                  value: 'active',
+                  child: Text(l10n.accountSettingsStatusActive),
+                ),
+                DropdownMenuItem(
+                  value: 'inactive',
+                  child: Text(l10n.accountSettingsStatusInactive),
+                ),
+              ],
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => _status = value);
+              },
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            Row(
+              children: [
+                FilledButton.icon(
+                  onPressed: _saveEditingAccount,
+                  icon: const Icon(Icons.check_rounded),
+                  label: Text(l10n.tradesSave),
+                ),
+                const SizedBox(width: TradingUiSpacing.sm),
+                OutlinedButton.icon(
+                  onPressed: _cancelEditing,
+                  icon: const Icon(Icons.close_rounded),
+                  label: Text(l10n.tradesCancel),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    final canDelete = _editingId == null && _accounts.length > 1;
+    return ListTile(
+      tileColor: account?.id == widget.selectedAccountId
+          ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.4)
+          : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      title: Text(account?.name ?? ''),
+      subtitle: Text(
+        '${account?.baseCurrency ?? ''} • '
+        '${(account?.status ?? 'active') == 'inactive' ? l10n.accountSettingsStatusInactive : l10n.accountSettingsStatusActive}',
+      ),
+      onTap: account == null
+          ? null
+          : () => widget.onSelectedAccountChanged(account.id),
+      trailing: Wrap(
+        spacing: 4,
+        children: [
+          IconButton(
+            tooltip: l10n.accountSettingsEditTooltip,
+            onPressed: _editingId == null && account != null
+                ? () => _startEdit(account)
+                : null,
+            icon: const Icon(Icons.edit_outlined),
+          ),
+          IconButton(
+            tooltip: canDelete
+                ? l10n.tradesDeleteTooltip
+                : l10n.accountSettingsDeleteLastBlocked,
+            onPressed: canDelete && account != null ? () => _deleteAccount(account) : null,
+            icon: const Icon(Icons.delete_outline),
+          ),
         ],
       ),
     );
@@ -450,7 +609,9 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
             ),
             IconButton(
               tooltip: l10n.tradesDeleteTooltip,
-              onPressed: _editingId == null && account != null
+              onPressed: _editingId == null &&
+                      _accounts.length > 1 &&
+                      account != null
                   ? () => _deleteAccount(account)
                   : null,
               icon: const Icon(Icons.delete_outline),

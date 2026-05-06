@@ -456,5 +456,6 @@
   "accountSettingsResetConfirmBody": "This will clear all current data and restore initial default data.",
   "accountSettingsResetConfirmAction": "Reset now",
   "accountSettingsResetSuccess": "Data reset to default successfully",
-  "accountSettingsResetFailed": "Could not reset data. Please try again."
+  "accountSettingsResetFailed": "Could not reset data. Please try again.",
+  "accountSettingsDeleteLastBlocked": "At least one account must remain."
 }

@@ -1042,4 +1042,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get accountSettingsResetFailed => 'Không thể đặt lại dữ liệu. Vui lòng thử lại.';
+
+  @override
+  String get accountSettingsDeleteLastBlocked => 'Phải luôn giữ lại ít nhất 1 tài khoản.';
 }

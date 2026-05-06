@@ -2116,6 +2116,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not reset data. Please try again.'**
   String get accountSettingsResetFailed;
+
+  /// No description provided for @accountSettingsDeleteLastBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'At least one account must remain.'**
+  String get accountSettingsDeleteLastBlocked;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

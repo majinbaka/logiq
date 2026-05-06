@@ -336,5 +336,6 @@
   "accountSettingsResetConfirmBody": "Thao tác này sẽ xóa toàn bộ dữ liệu hiện tại và khôi phục dữ liệu mặc định ban đầu.",
   "accountSettingsResetConfirmAction": "Đặt lại ngay",
   "accountSettingsResetSuccess": "Đã đặt lại dữ liệu về mặc định",
-  "accountSettingsResetFailed": "Không thể đặt lại dữ liệu. Vui lòng thử lại."
+  "accountSettingsResetFailed": "Không thể đặt lại dữ liệu. Vui lòng thử lại.",
+  "accountSettingsDeleteLastBlocked": "Phải luôn giữ lại ít nhất 1 tài khoản."
 }

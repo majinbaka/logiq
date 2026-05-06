@@ -1042,4 +1042,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSettingsResetFailed => 'Could not reset data. Please try again.';
+
+  @override
+  String get accountSettingsDeleteLastBlocked => 'At least one account must remain.';
 }
