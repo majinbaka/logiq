@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logiq/features/account/presentation/views/account_settings_view.dart';
 import 'package:logiq/features/daily_journal/presentation/views/daily_journal_view.dart';
 import 'package:logiq/features/insights/presentation/views/insights_view.dart';
 import 'package:logiq/features/portfolio/presentation/views/portfolio_crud_view.dart';
@@ -16,6 +17,7 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _currentIndex = 0;
+  String _selectedAccountId = 'acc_1';
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +26,18 @@ class _AppShellState extends State<AppShell> {
       _ShellTab(
         label: l10n.navTrades,
         icon: Icons.candlestick_chart,
-        body: const TradesCrudView(),
+        body: TradesCrudView(
+          key: ValueKey<String>('trades_$_selectedAccountId'),
+          defaultAccountId: _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navPortfolio,
         icon: Icons.pie_chart_outline,
-        body: const PortfolioCrudView(),
+        body: PortfolioCrudView(
+          key: ValueKey<String>('portfolio_$_selectedAccountId'),
+          defaultAccountId: _selectedAccountId,
+        ),
       ),
       _ShellTab(
         label: l10n.navStrategy,
@@ -50,6 +58,16 @@ class _AppShellState extends State<AppShell> {
         label: l10n.navInsights,
         icon: Icons.insights_outlined,
         body: const InsightsView(),
+      ),
+      _ShellTab(
+        label: l10n.navAccountSettings,
+        icon: Icons.manage_accounts_outlined,
+        body: AccountSettingsView(
+          selectedAccountId: _selectedAccountId,
+          onSelectedAccountChanged: (accountId) {
+            setState(() => _selectedAccountId = accountId);
+          },
+        ),
       ),
     ];
 

@@ -21,9 +21,14 @@ import 'package:logiq/repositories/local/local_strategy_repository.dart';
 import 'package:logiq/repositories/local/local_trade_repository.dart';
 
 class TradesCrudView extends StatefulWidget {
-  const TradesCrudView({super.key, TradesCrudViewModel? viewModel})
+  const TradesCrudView({
+    super.key,
+    this.defaultAccountId = 'acc_1',
+    TradesCrudViewModel? viewModel,
+  })
     : _viewModel = viewModel;
 
+  final String defaultAccountId;
   final TradesCrudViewModel? _viewModel;
 
   @override
@@ -48,6 +53,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
             analyticsRepository: LocalAnalyticsRepository(),
             insightRepository: LocalInsightRepository(),
           ),
+          defaultAccountId: widget.defaultAccountId,
         );
     _viewModel.loadTrades();
   }

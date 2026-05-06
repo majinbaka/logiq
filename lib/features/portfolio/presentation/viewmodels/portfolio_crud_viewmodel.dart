@@ -50,7 +50,14 @@ class PortfolioCrudViewModel extends ChangeNotifier {
       return accountId;
     }
     final account = await repository.getById(accountId);
-    _resolvedAccountId = account?.id ?? accountId;
+    if (account != null) {
+      _resolvedAccountId = account.id;
+      return _resolvedAccountId!;
+    }
+    final activeAccounts = await repository.listActive();
+    _resolvedAccountId = activeAccounts.isNotEmpty
+        ? activeAccounts.first.id
+        : accountId;
     return _resolvedAccountId!;
   }
 

@@ -463,3 +463,14 @@ Cap nhat tiep theo de chuan hoa enum:
 - `movement_type` duoc khoa theo tap co dinh: `deposit`, `withdrawal`, `dividend`, `fee`, `tax`, `adjustment`.
 - `price_type` duoc gioi han theo tap co dinh: `last`, `close`, `bid`, `ask`, `mark` (cho phep de trong neu chua xac dinh).
 - ViewModel reject `movement_type` khong hop le de tranh du lieu lech schema.
+
+## 11. Account Settings
+
+Muc tieu: cho phep user tao va cap nhat trading account ngay trong app, dong thoi chon account dang hoat dong de cac module su dung.
+
+### Chuc nang
+
+- Them tab `Accounts` trong App Shell.
+- Tao account moi voi `name`, `baseCurrency`, `status`.
+- Sua account hien co voi cac field tren.
+- Chon account active de Trades va Portfolio dung account do thay vi mac dinh `acc_1`.

@@ -37,3 +37,11 @@
 - **Description:** Portfolio input allowed arbitrary strings for `movement_type` and `price_type`, creating schema drift risk vs ERD.
 - **Root cause:** No enum domain and no strict validation at ViewModel/UI boundaries.
 - **Fix / workaround:** Added fixed enum sets, added UI validation for supported values, and hard-rejected unsupported `movement_type` in ViewModel.
+
+## [RESOLVED] Missing UI write triggers for TRADING_ACCOUNT  (STATUS: RESOLVED)
+- **Date found:** 2026-05-06
+- **Date resolved:** 2026-05-06
+- **Affected files:** lib/app/app_shell.dart, lib/features/account/presentation/views/account_settings_view.dart, lib/features/trades/presentation/views/trades_crud_view.dart, lib/features/portfolio/presentation/views/portfolio_crud_view.dart, lib/features/portfolio/presentation/viewmodels/portfolio_crud_viewmodel.dart, lib/l10n/app_en.arb, lib/l10n/app_vi.arb
+- **Description:** User had no UI path to insert/update trading accounts, and multiple flows were pinned to `acc_1`.
+- **Root cause:** Account repository existed but no Account Settings screen/tab and no selected-account wiring into key view flows.
+- **Fix / workaround:** Added Account Settings tab with create/update/select account flow; wired selected account into Trades and Portfolio defaults.

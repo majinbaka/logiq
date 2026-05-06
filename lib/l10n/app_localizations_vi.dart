@@ -30,6 +30,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get navInsights => 'Nhận định';
 
   @override
+  String get navAccountSettings => 'Tài khoản';
+
+  @override
   String get workInProgressTitle => 'Đang phát triển';
 
   @override
@@ -851,4 +854,55 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get startupErrorRetryHint => 'Vui lòng khởi động lại ứng dụng và thử lại.';
+
+  @override
+  String get accountSettingsTitle => 'Thiết lập tài khoản';
+
+  @override
+  String get accountSettingsSubtitle => 'Tạo và cập nhật tài khoản giao dịch dùng cho các module khác.';
+
+  @override
+  String get accountSettingsLoadErrorTitle => 'Không thể tải tài khoản';
+
+  @override
+  String get accountSettingsLoadErrorBody => 'Vui lòng thử tải lại danh sách tài khoản.';
+
+  @override
+  String get accountSettingsRetry => 'Thử lại';
+
+  @override
+  String get accountSettingsEmptyTitle => 'Chưa có tài khoản';
+
+  @override
+  String get accountSettingsEmptyBody => 'Nhấn Thêm tài khoản để tạo tài khoản đầu tiên.';
+
+  @override
+  String get accountSettingsAddButton => 'Thêm tài khoản';
+
+  @override
+  String get accountSettingsCreateTitle => 'Tạo tài khoản';
+
+  @override
+  String get accountSettingsEditTitle => 'Sửa tài khoản';
+
+  @override
+  String get accountSettingsNameLabel => 'Tên tài khoản';
+
+  @override
+  String get accountSettingsCurrencyLabel => 'Tiền tệ cơ sở';
+
+  @override
+  String get accountSettingsStatusLabel => 'Trạng thái';
+
+  @override
+  String get accountSettingsStatusActive => 'Hoạt động';
+
+  @override
+  String get accountSettingsStatusInactive => 'Không hoạt động';
+
+  @override
+  String get accountSettingsEditTooltip => 'Sửa tài khoản';
+
+  @override
+  String get accountSettingsSavedMessage => 'Đã lưu tài khoản';
 }

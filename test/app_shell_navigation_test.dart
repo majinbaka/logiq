@@ -89,5 +89,12 @@ void main() {
       find.text('Turn trade history into measurable improvements.'),
       findsOneWidget,
     );
+
+    await tester.tap(find.byIcon(Icons.manage_accounts_outlined).last);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(
+      find.text('Create and update trading accounts used by other modules.'),
+      findsOneWidget,
+    );
   });
 }

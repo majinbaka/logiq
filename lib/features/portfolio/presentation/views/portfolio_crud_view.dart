@@ -23,6 +23,7 @@ import 'package:logiq/repositories/local/local_portfolio_repository.dart';
 class PortfolioCrudView extends StatefulWidget {
   const PortfolioCrudView({
     super.key,
+    this.defaultAccountId = 'acc_1',
     PortfolioRepository? repository,
     AccountRepository? accountRepository,
     InstrumentRepository? instrumentRepository,
@@ -30,6 +31,7 @@ class PortfolioCrudView extends StatefulWidget {
        _accountRepository = accountRepository,
        _instrumentRepository = instrumentRepository;
 
+  final String defaultAccountId;
   final PortfolioRepository? _repository;
   final AccountRepository? _accountRepository;
   final InstrumentRepository? _instrumentRepository;
@@ -49,6 +51,7 @@ class _PortfolioCrudViewState extends State<PortfolioCrudView> {
     _viewModel = PortfolioCrudViewModel(
       repository: widget._repository ?? LocalPortfolioRepository(),
       accountRepository: widget._accountRepository ?? LocalAccountRepository(),
+      accountId: widget.defaultAccountId,
     );
     _instrumentRepository =
         widget._instrumentRepository ?? LocalInstrumentRepository();

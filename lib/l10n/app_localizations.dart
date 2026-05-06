@@ -137,6 +137,12 @@ abstract class AppLocalizations {
   /// **'Insights'**
   String get navInsights;
 
+  /// No description provided for @navAccountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get navAccountSettings;
+
   /// No description provided for @workInProgressTitle.
   ///
   /// In en, this message translates to:
@@ -1738,6 +1744,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please restart the app and try again.'**
   String get startupErrorRetryHint;
+
+  /// No description provided for @accountSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
+  String get accountSettingsTitle;
+
+  /// No description provided for @accountSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and update trading accounts used by other modules.'**
+  String get accountSettingsSubtitle;
+
+  /// No description provided for @accountSettingsLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load accounts'**
+  String get accountSettingsLoadErrorTitle;
+
+  /// No description provided for @accountSettingsLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading your account list.'**
+  String get accountSettingsLoadErrorBody;
+
+  /// No description provided for @accountSettingsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get accountSettingsRetry;
+
+  /// No description provided for @accountSettingsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No account yet'**
+  String get accountSettingsEmptyTitle;
+
+  /// No description provided for @accountSettingsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add Account to create your first account.'**
+  String get accountSettingsEmptyBody;
+
+  /// No description provided for @accountSettingsAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Account'**
+  String get accountSettingsAddButton;
+
+  /// No description provided for @accountSettingsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get accountSettingsCreateTitle;
+
+  /// No description provided for @accountSettingsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit account'**
+  String get accountSettingsEditTitle;
+
+  /// No description provided for @accountSettingsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name'**
+  String get accountSettingsNameLabel;
+
+  /// No description provided for @accountSettingsCurrencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Base currency'**
+  String get accountSettingsCurrencyLabel;
+
+  /// No description provided for @accountSettingsStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get accountSettingsStatusLabel;
+
+  /// No description provided for @accountSettingsStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get accountSettingsStatusActive;
+
+  /// No description provided for @accountSettingsStatusInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get accountSettingsStatusInactive;
+
+  /// No description provided for @accountSettingsEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit account'**
+  String get accountSettingsEditTooltip;
+
+  /// No description provided for @accountSettingsSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Account saved'**
+  String get accountSettingsSavedMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

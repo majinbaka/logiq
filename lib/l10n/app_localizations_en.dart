@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navInsights => 'Insights';
 
   @override
+  String get navAccountSettings => 'Accounts';
+
+  @override
   String get workInProgressTitle => 'Work in progress';
 
   @override
@@ -851,4 +854,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startupErrorRetryHint => 'Please restart the app and try again.';
+
+  @override
+  String get accountSettingsTitle => 'Account Settings';
+
+  @override
+  String get accountSettingsSubtitle => 'Create and update trading accounts used by other modules.';
+
+  @override
+  String get accountSettingsLoadErrorTitle => 'Could not load accounts';
+
+  @override
+  String get accountSettingsLoadErrorBody => 'Please retry loading your account list.';
+
+  @override
+  String get accountSettingsRetry => 'Retry';
+
+  @override
+  String get accountSettingsEmptyTitle => 'No account yet';
+
+  @override
+  String get accountSettingsEmptyBody => 'Tap Add Account to create your first account.';
+
+  @override
+  String get accountSettingsAddButton => 'Add Account';
+
+  @override
+  String get accountSettingsCreateTitle => 'Create account';
+
+  @override
+  String get accountSettingsEditTitle => 'Edit account';
+
+  @override
+  String get accountSettingsNameLabel => 'Account name';
+
+  @override
+  String get accountSettingsCurrencyLabel => 'Base currency';
+
+  @override
+  String get accountSettingsStatusLabel => 'Status';
+
+  @override
+  String get accountSettingsStatusActive => 'Active';
+
+  @override
+  String get accountSettingsStatusInactive => 'Inactive';
+
+  @override
+  String get accountSettingsEditTooltip => 'Edit account';
+
+  @override
+  String get accountSettingsSavedMessage => 'Account saved';
 }
