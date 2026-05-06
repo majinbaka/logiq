@@ -41,6 +41,9 @@ class _CashManagementViewState extends State<CashManagementView> {
   CashMovementType _depositType = CashMovementType.deposit;
   bool _isDepositExpanded = false;
   bool _isWithdrawExpanded = false;
+  late final ScrollController _scrollController;
+  int _visibleMovementCount = 30;
+  static const int _visibleMovementStep = 30;
 
   @override
   void initState() {
@@ -49,6 +52,7 @@ class _CashManagementViewState extends State<CashManagementView> {
     _depositNoteController = TextEditingController();
     _withdrawAmountController = TextEditingController();
     _withdrawNoteController = TextEditingController();
+    _scrollController = ScrollController()..addListener(_onScroll);
     _viewModel = CashManagementViewModel(
       repository: widget._repository ?? LocalPortfolioRepository(),
       accountRepository: widget._accountRepository ?? LocalAccountRepository(),
@@ -59,6 +63,9 @@ class _CashManagementViewState extends State<CashManagementView> {
 
   @override
   void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     _depositAmountController.dispose();
     _depositNoteController.dispose();
     _withdrawAmountController.dispose();
@@ -86,8 +93,13 @@ class _CashManagementViewState extends State<CashManagementView> {
           );
         }
 
+        final filteredMovements = _viewModel.filteredMovements;
+        final visibleMovements = filteredMovements
+            .take(_visibleMovementCount)
+            .toList(growable: false);
         final balance = _viewModel.balance;
         return ListView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(TradingUiSpacing.md),
           children: [
             TradingSectionHeader(
@@ -195,11 +207,21 @@ class _CashManagementViewState extends State<CashManagementView> {
                 ),
               ],
             ),
+            const SizedBox(height: TradingUiSpacing.xs),
+            Wrap(
+              spacing: TradingUiSpacing.xs,
+              children: [
+                _dateFilterChip(l10n.cashFilterTimeAll, CashMovementDateFilter.all),
+                _dateFilterChip(l10n.cashFilterTime7d, CashMovementDateFilter.last7Days),
+                _dateFilterChip(l10n.cashFilterTime30d, CashMovementDateFilter.last30Days),
+                _dateFilterChip(l10n.cashFilterTime90d, CashMovementDateFilter.last90Days),
+              ],
+            ),
             const SizedBox(height: TradingUiSpacing.sm),
-            if (_viewModel.filteredMovements.isEmpty)
+            if (filteredMovements.isEmpty)
               Text(l10n.cashNoTransactions)
             else
-              ..._viewModel.filteredMovements.take(30).map((movement) {
+              ...visibleMovements.map((movement) {
                 return Card(
                   child: ListTile(
                     title: Text(
@@ -238,6 +260,16 @@ class _CashManagementViewState extends State<CashManagementView> {
                   ),
                 );
               }),
+            if (visibleMovements.length < filteredMovements.length)
+              Padding(
+                padding: const EdgeInsets.only(top: TradingUiSpacing.sm),
+                child: Center(
+                  child: Text(
+                    l10n.cashLoadingMoreTransactions,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ),
             const SizedBox(height: TradingUiSpacing.md),
             Text(
               l10n.cashReservedDetailsTitle,
@@ -313,7 +345,21 @@ class _CashManagementViewState extends State<CashManagementView> {
     return FilterChip(
       label: Text(label),
       selected: _viewModel.filter == filter,
-      onSelected: (_) => _viewModel.setFilter(filter),
+      onSelected: (_) {
+        _viewModel.setFilter(filter);
+        setState(() => _visibleMovementCount = _visibleMovementStep);
+      },
+    );
+  }
+
+  Widget _dateFilterChip(String label, CashMovementDateFilter filter) {
+    return FilterChip(
+      label: Text(label),
+      selected: _viewModel.dateFilter == filter,
+      onSelected: (_) {
+        _viewModel.setDateFilter(filter);
+        setState(() => _visibleMovementCount = _visibleMovementStep);
+      },
     );
   }
 
@@ -713,5 +759,21 @@ class _CashManagementViewState extends State<CashManagementView> {
     final h = local.hour.toString().padLeft(2, '0');
     final n = local.minute.toString().padLeft(2, '0');
     return '${local.year}-$m-$d $h:$n';
+  }
+
+  Future<void> _onScroll() async {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.extentAfter > 480) return;
+    final movementCount = _viewModel.filteredMovements.length;
+    if (_visibleMovementCount < movementCount) {
+      if (!mounted) return;
+      setState(() {
+        _visibleMovementCount =
+            (_visibleMovementCount + _visibleMovementStep).clamp(0, movementCount);
+      });
+      return;
+    }
+    await _viewModel.loadMoreMovements();
   }
 }

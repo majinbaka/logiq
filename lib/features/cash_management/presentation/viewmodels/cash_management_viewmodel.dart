@@ -8,6 +8,7 @@ import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 enum CashMovementFilter { all, deposit, withdrawal, fee, dividend }
+enum CashMovementDateFilter { all, last7Days, last30Days, last90Days }
 
 class CashManagementViewModel extends ChangeNotifier {
   CashManagementViewModel({
@@ -32,6 +33,9 @@ class CashManagementViewModel extends ChangeNotifier {
   List<AccountActivityLogModel> _activityLogs = const [];
   DateTime? _lastReconciledAt;
   CashMovementFilter _filter = CashMovementFilter.all;
+  CashMovementDateFilter _dateFilter = CashMovementDateFilter.last30Days;
+  int _movementFetchLimit = 100;
+  static const int _movementFetchStep = 100;
 
   bool get isLoading => _isLoading;
   bool get isSubmitting => _isSubmitting;
@@ -41,11 +45,19 @@ class CashManagementViewModel extends ChangeNotifier {
   List<CashReservationModel> get reservations => _reservations;
   DateTime? get lastReconciledAt => _lastReconciledAt;
   CashMovementFilter get filter => _filter;
+  CashMovementDateFilter get dateFilter => _dateFilter;
+  bool get hasMoreMovements => _movements.length >= _movementFetchLimit;
 
   List<CashMovementModel> get filteredMovements {
-    final movements = _movements
+    var movements = _movements
         .where((item) => !_isLegacyReconciliationMovement(item))
         .toList(growable: false);
+    final startDate = _dateFilterStartDate();
+    if (startDate != null) {
+      movements = movements
+          .where((item) => !item.movementDate.isBefore(startDate))
+          .toList(growable: false);
+    }
     if (_filter == CashMovementFilter.all) return movements;
     return movements
         .where((item) {
@@ -68,7 +80,10 @@ class CashManagementViewModel extends ChangeNotifier {
         accountId,
         currency: _currency,
       );
-      _movements = await _repository.listCashMovements(accountId, limit: 200);
+      _movements = await _repository.listCashMovements(
+        accountId,
+        limit: _movementFetchLimit,
+      );
       _reservations = await _repository.listCashReservations(
         accountId,
         limit: 200,
@@ -95,6 +110,17 @@ class CashManagementViewModel extends ChangeNotifier {
   void setFilter(CashMovementFilter value) {
     _filter = value;
     notifyListeners();
+  }
+
+  void setDateFilter(CashMovementDateFilter value) {
+    _dateFilter = value;
+    notifyListeners();
+  }
+
+  Future<void> loadMoreMovements() async {
+    if (_isLoading || !hasMoreMovements) return;
+    _movementFetchLimit += _movementFetchStep;
+    await load();
   }
 
   Future<void> createDepositPending({
@@ -266,5 +292,19 @@ class CashManagementViewModel extends ChangeNotifier {
       return -amount;
     }
     return amount;
+  }
+
+  DateTime? _dateFilterStartDate() {
+    final now = DateTime.now().toUtc();
+    switch (_dateFilter) {
+      case CashMovementDateFilter.all:
+        return null;
+      case CashMovementDateFilter.last7Days:
+        return now.subtract(const Duration(days: 7));
+      case CashMovementDateFilter.last30Days:
+        return now.subtract(const Duration(days: 30));
+      case CashMovementDateFilter.last90Days:
+        return now.subtract(const Duration(days: 90));
+    }
   }
 }

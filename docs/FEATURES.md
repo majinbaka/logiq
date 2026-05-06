@@ -575,3 +575,15 @@ Da bo sung:
 - Bottom sheet chi tiet giao dich tien.
 - Khu vuc theo doi reserved cash cho pending orders.
 - The hien thong tin doi soat broker va settlement tracking tren cung man hinh.
+
+## 23. Cash Transaction Time Filter + Progressive Infinite Scroll (2026-05-06)
+
+Cap nhat man Cash Management de giam lag khi danh sach giao dich dai:
+
+- Bo sung filter theo thoi gian cho transaction list: `All time`, `7D`, `30D`, `90D`.
+- Mac dinh ap dung `30D` de uu tien bo du lieu gan hien tai.
+- Bo sung progressive infinite scroll:
+  - Ban dau chi render 30 item.
+  - Cuon den gan day se mo rong them 30 item.
+  - Khi da hien thi het tap da nap, ViewModel se nap them du lieu theo lo (`+100`) roi tiep tuc render theo lo.
+- Muc tieu: giam chi phi render ban dau va han che giat/lag khi nguoi dung cuon sau.

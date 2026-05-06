@@ -269,6 +269,36 @@ abstract class AppLocalizations {
   /// **'Dividend'**
   String get cashFilterDividend;
 
+  /// No description provided for @cashFilterTimeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get cashFilterTimeAll;
+
+  /// No description provided for @cashFilterTime7d.
+  ///
+  /// In en, this message translates to:
+  /// **'7D'**
+  String get cashFilterTime7d;
+
+  /// No description provided for @cashFilterTime30d.
+  ///
+  /// In en, this message translates to:
+  /// **'30D'**
+  String get cashFilterTime30d;
+
+  /// No description provided for @cashFilterTime90d.
+  ///
+  /// In en, this message translates to:
+  /// **'90D'**
+  String get cashFilterTime90d;
+
+  /// No description provided for @cashLoadingMoreTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more transactions...'**
+  String get cashLoadingMoreTransactions;
+
   /// No description provided for @cashNoTransactions.
   ///
   /// In en, this message translates to:

@@ -96,6 +96,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashFilterDividend => 'Dividend';
 
   @override
+  String get cashFilterTimeAll => 'All time';
+
+  @override
+  String get cashFilterTime7d => '7D';
+
+  @override
+  String get cashFilterTime30d => '30D';
+
+  @override
+  String get cashFilterTime90d => '90D';
+
+  @override
+  String get cashLoadingMoreTransactions => 'Loading more transactions...';
+
+  @override
   String get cashNoTransactions => 'No cash transactions yet.';
 
   @override

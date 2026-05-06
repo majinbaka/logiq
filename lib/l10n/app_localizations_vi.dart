@@ -96,6 +96,21 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cashFilterDividend => 'Cổ tức';
 
   @override
+  String get cashFilterTimeAll => 'Toàn thời gian';
+
+  @override
+  String get cashFilterTime7d => '7 ngày';
+
+  @override
+  String get cashFilterTime30d => '30 ngày';
+
+  @override
+  String get cashFilterTime90d => '90 ngày';
+
+  @override
+  String get cashLoadingMoreTransactions => 'Đang tải thêm giao dịch...';
+
+  @override
   String get cashNoTransactions => 'Chưa có giao dịch tiền.';
 
   @override
