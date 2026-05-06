@@ -6,6 +6,7 @@ import 'package:logiq/core/database/models/strategy_model.dart';
 import 'package:logiq/core/database/models/strategy_version_model.dart';
 import 'package:logiq/core/database/models/trade_fill_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
+import 'package:logiq/core/database/models/trade_order_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
@@ -106,6 +107,7 @@ class _FakeRiskRepository implements RiskRepository {
 
 class _FakeTradeRepository implements TradeRepository {
   final Map<String, TradeModel> _store = {};
+  final Map<String, TradeOrderModel> _orderStore = {};
   int _idCounter = 0;
 
   @override
@@ -130,6 +132,17 @@ class _FakeTradeRepository implements TradeRepository {
   Future<List<TradeModel>> listByInstrument(String instrumentId) async {
     return _store.values
         .where((trade) => trade.instrumentId == instrumentId)
+        .toList(growable: false);
+  }
+
+  @override
+  Future<TradeOrderModel?> getOrderById(String orderId) async =>
+      _orderStore[orderId];
+
+  @override
+  Future<List<TradeOrderModel>> listOrdersByTrade(String tradeId) async {
+    return _orderStore.values
+        .where((order) => order.tradeId == tradeId && order.deletedAt == null)
         .toList(growable: false);
   }
 
@@ -184,7 +197,34 @@ class _FakeTradeRepository implements TradeRepository {
   }
 
   @override
+  Future<void> softDeleteOrder(String orderId, DateTime deletedAt) async {
+    final existing = _orderStore[orderId];
+    if (existing == null) return;
+    _orderStore[orderId] = TradeOrderModel(
+      id: existing.id,
+      tradeId: existing.tradeId,
+      orderSide: existing.orderSide,
+      orderType: existing.orderType,
+      intent: existing.intent,
+      plannedPrice: existing.plannedPrice,
+      stopPrice: existing.stopPrice,
+      limitPrice: existing.limitPrice,
+      quantity: existing.quantity,
+      status: existing.status,
+      placedAt: existing.placedAt,
+      createdAt: existing.createdAt,
+      updatedAt: DateTime.utc(2026, 5, 10),
+      deletedAt: deletedAt,
+    );
+  }
+
+  @override
   Future<void> upsertFill(TradeFillModel fill) async {}
+
+  @override
+  Future<void> upsertOrder(TradeOrderModel order) async {
+    _orderStore[order.id] = order;
+  }
 
   @override
   Future<void> upsertTrade(TradeModel trade) async {

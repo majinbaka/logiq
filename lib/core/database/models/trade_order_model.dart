@@ -15,6 +15,7 @@ class TradeOrderModel {
     this.placedAt,
     required this.createdAt,
     this.updatedAt,
+    this.deletedAt,
   });
 
   final String id;
@@ -30,6 +31,7 @@ class TradeOrderModel {
   final DateTime? placedAt;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final DateTime? deletedAt;
 
   factory TradeOrderModel.fromMap(DbJson map) => TradeOrderModel(
     id: map['id'] as String,
@@ -45,6 +47,7 @@ class TradeOrderModel {
     placedAt: parseDateTime(map['placed_at']),
     createdAt: parseRequiredDateTime(map['created_at'], 'created_at'),
     updatedAt: parseDateTime(map['updated_at']),
+    deletedAt: parseDateTime(map['deleted_at']),
   );
 
   DbJson toMap() => {
@@ -61,5 +64,6 @@ class TradeOrderModel {
     'placed_at': placedAt?.toIso8601String(),
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
+    'deleted_at': deletedAt?.toIso8601String(),
   };
 }

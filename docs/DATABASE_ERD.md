@@ -541,7 +541,7 @@ Pham vi doi chieu:
 ### 2) Kiem tra map quan he (relationship) theo ERD
 
 - [x] Cac quan he cot loi da co du FK field trong model (account_id, instrument_id, strategy_version_id, ...).
-- [ ] Hoan thien luong CRUD cho `TRADE_ORDER` (hien chua co repository/contract su dung).
+- [x] Hoan thien luong CRUD cho `TRADE_ORDER` (da co repository/contract su dung).
 - [ ] Hoan thien luong CRUD cho `TRADE_PLAN_TARGET` (hien chua co repository/contract su dung).
 - [ ] Bo sung write path ro rang cho `TRADE_PLAN` (hien chu yeu duoc doc boi analytics/insight).
 - [ ] Bo sung write path ro rang cho `TRADE_REVIEW` (hien chu yeu duoc doc boi analytics/insight).

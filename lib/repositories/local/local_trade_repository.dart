@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 
 import '../../core/database/models/trade_fill_model.dart';
 import '../../core/database/models/trade_model.dart';
+import '../../core/database/models/trade_order_model.dart';
 import '../../core/storage/storage_boxes.dart';
 import '../../core/system/clock.dart';
 import '../../core/system/id_generator.dart';
@@ -14,15 +15,18 @@ import 'local_repository_utils.dart';
 class LocalTradeRepository implements TradeRepository {
   LocalTradeRepository({
     Box<Map>? tradeBox,
+    Box<Map>? orderBox,
     Box<Map>? fillBox,
     Clock? clock,
     IdGenerator? idGenerator,
   }) : _tradeBox = tradeBox ?? Hive.box(StorageBoxes.trades),
+       _orderBox = orderBox ?? Hive.box(StorageBoxes.tradeOrders),
        _fillBox = fillBox ?? Hive.box(StorageBoxes.tradeFills),
        _clock = clock ?? const SystemClock(),
        _idGenerator = idGenerator ?? const TimestampIdGenerator();
 
   final Box<Map> _tradeBox;
+  final Box<Map> _orderBox;
   final Box<Map> _fillBox;
   final Clock _clock;
   final IdGenerator _idGenerator;
@@ -56,6 +60,9 @@ class LocalTradeRepository implements TradeRepository {
 
   List<TradeModel> get _activeTrades =>
       readActive(_tradeBox, TradeModel.fromMap);
+
+  List<TradeOrderModel> get _activeOrders =>
+      readActive(_orderBox, TradeOrderModel.fromMap);
 
   @override
   Future<TradeModel> saveTradeDraft({
@@ -114,6 +121,57 @@ class LocalTradeRepository implements TradeRepository {
   @override
   Future<void> upsertFill(TradeFillModel fill) =>
       _fillBox.put(fill.id, fill.toMap());
+
+  @override
+  Future<TradeOrderModel?> getOrderById(String orderId) async {
+    DataValidator.requireId(orderId, 'orderId');
+    final orderMap = _orderBox.get(orderId);
+    if (orderMap == null) return null;
+    final order = TradeOrderModel.fromMap(toDbJson(orderMap));
+    if (order.deletedAt != null) return null;
+    return order;
+  }
+
+  @override
+  Future<List<TradeOrderModel>> listOrdersByTrade(String tradeId) async {
+    DataValidator.requireId(tradeId, 'tradeId');
+    final orders = _activeOrders
+        .where((order) => order.tradeId == tradeId)
+        .toList();
+    orders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return orders;
+  }
+
+  @override
+  Future<void> softDeleteOrder(String orderId, DateTime deletedAt) async {
+    DataValidator.requireId(orderId, 'orderId');
+    final existing = _orderBox.get(orderId);
+    if (existing == null) return;
+    final order = TradeOrderModel.fromMap(toDbJson(existing));
+    await _orderBox.put(
+      orderId,
+      TradeOrderModel(
+        id: order.id,
+        tradeId: order.tradeId,
+        orderSide: order.orderSide,
+        orderType: order.orderType,
+        intent: order.intent,
+        plannedPrice: order.plannedPrice,
+        stopPrice: order.stopPrice,
+        limitPrice: order.limitPrice,
+        quantity: order.quantity,
+        status: order.status,
+        placedAt: order.placedAt,
+        createdAt: order.createdAt,
+        updatedAt: _clock.now(),
+        deletedAt: deletedAt,
+      ).toMap(),
+    );
+  }
+
+  @override
+  Future<void> upsertOrder(TradeOrderModel order) =>
+      _orderBox.put(order.id, order.toMap());
 
   @override
   Future<void> upsertTrade(TradeModel trade) {
