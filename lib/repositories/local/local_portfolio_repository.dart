@@ -39,8 +39,8 @@ class LocalPortfolioRepository implements PortfolioRepository {
        _cashLedgerBox = cashLedgerBox ?? Hive.box(StorageBoxes.cashLedgers),
        _accountBalanceBox =
            accountBalanceBox ?? Hive.box(StorageBoxes.accountBalances),
-       _accountActivityLogBox = accountActivityLogBox ??
-           Hive.box(StorageBoxes.accountActivityLogs),
+       _accountActivityLogBox =
+           accountActivityLogBox ?? Hive.box(StorageBoxes.accountActivityLogs),
        _cashReservationBox =
            cashReservationBox ?? Hive.box(StorageBoxes.cashReservations),
        _quoteBox = quoteBox ?? Hive.box(StorageBoxes.priceQuotes),
@@ -147,6 +147,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
     );
   }
 
+  @override
   Future<void> completeCashMovement({
     required String movementId,
     required String brokerReference,
@@ -183,7 +184,10 @@ class LocalPortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {
+  Future<void> upsertCashLedger(
+    CashLedgerModel ledger, {
+    String? currency,
+  }) async {
     await _cashLedgerBox.put(ledger.id, ledger.toMap());
     final normalizedCurrency = _normalizeCurrency(currency);
     final current = await getAccountBalance(
@@ -278,7 +282,9 @@ class LocalPortfolioRepository implements PortfolioRepository {
     if (releaseAmount <= 0) return;
     final current = _toDouble(balance.currentCashBalance);
     final reserved = _toDouble(balance.reservedCash);
-    final nextReserved = (reserved - releaseAmount).clamp(0, double.infinity).toDouble();
+    final nextReserved = (reserved - releaseAmount)
+        .clamp(0, double.infinity)
+        .toDouble();
     final nextAvailable = current - nextReserved;
     await _upsertBalance(
       balance,
@@ -317,7 +323,9 @@ class LocalPortfolioRepository implements PortfolioRepository {
     final current = _toDouble(balance.currentCashBalance);
     final reserved = _toDouble(balance.reservedCash);
     final nextCurrent = current - execution;
-    final nextReserved = (reserved - reservedRelease).clamp(0, double.infinity).toDouble();
+    final nextReserved = (reserved - reservedRelease)
+        .clamp(0, double.infinity)
+        .toDouble();
     final nextAvailable = nextCurrent - nextReserved;
     await _upsertBalance(
       balance,
@@ -384,7 +392,8 @@ class LocalPortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> deleteCashLedger(String ledgerId) => _cashLedgerBox.delete(ledgerId);
+  Future<void> deleteCashLedger(String ledgerId) =>
+      _cashLedgerBox.delete(ledgerId);
 
   @override
   Future<void> deletePriceQuote(String quoteId) => _quoteBox.delete(quoteId);
@@ -409,6 +418,32 @@ class LocalPortfolioRepository implements PortfolioRepository {
   }) async {
     final items = _cashLedgerBox.values
         .map((value) => CashLedgerModel.fromMap(toDbJson(value)))
+        .where((item) => item.accountId == accountId)
+        .toList(growable: false);
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items.take(limit).toList(growable: false);
+  }
+
+  @override
+  Future<List<CashReservationModel>> listCashReservations(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    final items = _cashReservationBox.values
+        .map((value) => CashReservationModel.fromMap(toDbJson(value)))
+        .where((item) => item.accountId == accountId)
+        .toList(growable: false);
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items.take(limit).toList(growable: false);
+  }
+
+  @override
+  Future<List<AccountActivityLogModel>> listAccountActivityLogs(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    final items = _accountActivityLogBox.values
+        .map((value) => AccountActivityLogModel.fromMap(toDbJson(value)))
         .where((item) => item.accountId == accountId)
         .toList(growable: false);
     items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -658,7 +693,10 @@ class LocalPortfolioRepository implements PortfolioRepository {
       final entryPrice = _toDouble(trade.avgEntryPrice);
       if (quantity <= 0 || entryPrice <= 0) continue;
       final signedQty = _signedFillQuantity(trade.direction, null, quantity);
-      final state = map.putIfAbsent(trade.instrumentId, _HoldingAccumulator.new);
+      final state = map.putIfAbsent(
+        trade.instrumentId,
+        _HoldingAccumulator.new,
+      );
       if (signedQty > 0) {
         state.quantity += signedQty;
         state.costTotal += signedQty * entryPrice;
@@ -689,7 +727,10 @@ class LocalPortfolioRepository implements PortfolioRepository {
   Map<String, double> _latestQuotesByInstrument(DateTime asOf) {
     final latest = <String, PriceQuoteModel>{};
     final symbolsByUpper = <String, String>{};
-    for (final instrument in readActive(_instrumentBox, InstrumentModel.fromMap)) {
+    for (final instrument in readActive(
+      _instrumentBox,
+      InstrumentModel.fromMap,
+    )) {
       symbolsByUpper[instrument.symbol.trim().toUpperCase()] = instrument.id;
     }
     final quotes = _quoteBox.values
@@ -712,7 +753,10 @@ class LocalPortfolioRepository implements PortfolioRepository {
     final trimmed = rawInstrumentId.trim();
     if (trimmed.isEmpty) return trimmed;
     final upper = trimmed.toUpperCase();
-    for (final instrument in readActive(_instrumentBox, InstrumentModel.fromMap)) {
+    for (final instrument in readActive(
+      _instrumentBox,
+      InstrumentModel.fromMap,
+    )) {
       if (instrument.id == trimmed) return trimmed;
       if (instrument.symbol.trim().toUpperCase() == upper) {
         return instrument.id;
@@ -736,7 +780,7 @@ class LocalPortfolioRepository implements PortfolioRepository {
   double _sumTradeCashFlowToDate(String accountId, DateTime asOf) {
     final trades = readActive(
       _tradeBox,
-    TradeModel.fromMap,
+      TradeModel.fromMap,
     ).where((trade) => trade.accountId == accountId).toList(growable: false);
     final tradeById = {for (final trade in trades) trade.id: trade};
     final fills = readActive(_fillBox, TradeFillModel.fromMap)
@@ -746,21 +790,21 @@ class LocalPortfolioRepository implements PortfolioRepository {
     final tradeIdsWithFill = fills.map((fill) => fill.tradeId).toSet();
 
     var total = fills.fold<double>(0, (sum, fill) {
-          final trade = tradeById[fill.tradeId];
-          if (trade == null) return sum;
-          if (fill.netCashFlow != null) {
-            return sum + _toDouble(fill.netCashFlow);
-          }
-          final gross = _toDouble(fill.price) * _toDouble(fill.quantity);
-          final feeTax = _toDouble(fill.fee) + _toDouble(fill.tax);
-          final directionSign = _signedFillQuantity(
-            trade.direction,
-            fill.source,
-            1,
-          );
-          final cashFlow = -(directionSign * gross) - feeTax;
-          return sum + cashFlow;
-        });
+      final trade = tradeById[fill.tradeId];
+      if (trade == null) return sum;
+      if (fill.netCashFlow != null) {
+        return sum + _toDouble(fill.netCashFlow);
+      }
+      final gross = _toDouble(fill.price) * _toDouble(fill.quantity);
+      final feeTax = _toDouble(fill.fee) + _toDouble(fill.tax);
+      final directionSign = _signedFillQuantity(
+        trade.direction,
+        fill.source,
+        1,
+      );
+      final cashFlow = -(directionSign * gross) - feeTax;
+      return sum + cashFlow;
+    });
 
     for (final trade in trades) {
       if (tradeIdsWithFill.contains(trade.id)) continue;

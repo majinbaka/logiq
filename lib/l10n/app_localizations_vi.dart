@@ -30,7 +30,136 @@ class AppLocalizationsVi extends AppLocalizations {
   String get navInsights => 'Nhận định';
 
   @override
+  String get navCashManagement => 'Tiền';
+
+  @override
   String get navAccountSettings => 'Tài khoản';
+
+  @override
+  String get cashTitle => 'Quản lý tiền';
+
+  @override
+  String get cashSubtitle => 'Theo dõi vòng đời dòng tiền, tiền khóa và sức mua.';
+
+  @override
+  String get cashLoadErrorTitle => 'Không thể tải dữ liệu tiền';
+
+  @override
+  String get cashLoadErrorBody => 'Vui lòng thử tải lại thông tin tiền.';
+
+  @override
+  String get cashRetry => 'Thử lại';
+
+  @override
+  String get cashCurrentCash => 'Tiền hiện tại';
+
+  @override
+  String get cashAvailableCash => 'Tiền khả dụng';
+
+  @override
+  String get cashReservedCash => 'Tiền khóa';
+
+  @override
+  String get cashBuyingPower => 'Sức mua';
+
+  @override
+  String get cashLeverageUsage => 'Mức dùng đòn bẩy';
+
+  @override
+  String get cashUnsettledFunds => 'Tiền chưa thanh toán';
+
+  @override
+  String get cashDeposit => 'Nạp tiền';
+
+  @override
+  String get cashWithdraw => 'Rút tiền';
+
+  @override
+  String get cashReconcile => 'Đối soát';
+
+  @override
+  String get cashTransactionsTitle => 'Giao dịch tiền';
+
+  @override
+  String get cashFilterAll => 'Tất cả';
+
+  @override
+  String get cashFilterDeposit => 'Nạp';
+
+  @override
+  String get cashFilterWithdrawal => 'Rút';
+
+  @override
+  String get cashFilterFee => 'Phí';
+
+  @override
+  String get cashFilterDividend => 'Cổ tức';
+
+  @override
+  String get cashNoTransactions => 'Chưa có giao dịch tiền.';
+
+  @override
+  String get cashConfirm => 'Xác nhận';
+
+  @override
+  String get cashTransactionDetail => 'Chi tiết giao dịch';
+
+  @override
+  String get cashReservedDetailsTitle => 'Chi tiết tiền khóa';
+
+  @override
+  String get cashNoReservedCash => 'Không có tiền khóa đang hoạt động.';
+
+  @override
+  String get cashPendingOrder => 'Lệnh chờ';
+
+  @override
+  String get cashAmount => 'Số tiền';
+
+  @override
+  String get cashReconciliationTitle => 'Đối soát broker';
+
+  @override
+  String get cashLastSync => 'Lần sync gần nhất';
+
+  @override
+  String get cashSyncNow => 'Sync ngay';
+
+  @override
+  String get cashSettlementTrackingTitle => 'Theo dõi thanh toán';
+
+  @override
+  String get cashDepositTitle => 'Tạo nạp tiền';
+
+  @override
+  String get cashWithdrawalTitle => 'Tạo rút tiền';
+
+  @override
+  String get cashDepositType => 'Loại nạp tiền';
+
+  @override
+  String get cashSubmitFailed => 'Tạo yêu cầu tiền thất bại. Vui lòng kiểm tra dữ liệu.';
+
+  @override
+  String get cashInsufficientAvailable => 'Không đủ tiền khả dụng.';
+
+  @override
+  String get cashType => 'Loại';
+
+  @override
+  String get cashStatus => 'Trạng thái';
+
+  @override
+  String get cashBrokerReference => 'Mã broker';
+
+  @override
+  String get cashCreatedAt => 'Thời điểm tạo';
+
+  @override
+  String get cashSettledAt => 'Thời điểm settle';
+
+  @override
+  String get cashCreatedBy => 'Người tạo';
 
   @override
   String get workInProgressTitle => 'Đang phát triển';

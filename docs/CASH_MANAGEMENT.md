@@ -123,3 +123,32 @@ Frontend UX status:
 - Multi-currency storage is supported at the balance/movement boundary, but
   there is no FX conversion service and no base-currency reporting conversion.
 - Margin leverage, maintenance margin and unsettled funds are not yet computed.
+
+## Update 2026-05-06 (Cash Screen Upgrade)
+
+Delivered in this slice:
+
+- Added dedicated `Cash Management` navigation tab in `AppShell`.
+- Added cash dashboard screen with cards for: current cash, available cash,
+  reserved cash, buying power, leverage usage, unsettled funds.
+- Added action bar: Deposit, Withdraw, Reconcile.
+- Added deposit and withdrawal modal flows with validator-backed checks.
+- Added transaction list with filters: all/deposit/withdrawal/fee/dividend.
+- Added pending transaction confirmation action to complete movement by broker
+  reference.
+- Added transaction detail sheet with amount/status/reference/timestamps/actor.
+- Added reserved-cash section for pending-order reservation details.
+- Added reconciliation and settlement tracking cards in the cash screen.
+
+Architecture notes:
+
+- Extended `PortfolioRepository` with backward-compatible read methods for
+  reservations and activity logs, plus `completeCashMovement` contract.
+- Kept all changes inside existing Flutter + Hive architecture; no backend API
+  assumptions introduced.
+
+Known gaps after this UI upgrade:
+
+- Reconciliation is still a local/manual flow (no broker API approval workflow).
+- Settlement tracking currently uses pending movements as local unsettled proxy;
+  dedicated settlement table/status engine is still pending.

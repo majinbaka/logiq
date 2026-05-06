@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logiq/features/account/presentation/views/account_settings_view.dart';
+import 'package:logiq/features/cash_management/presentation/views/cash_management_view.dart';
 import 'package:logiq/features/daily_journal/presentation/views/daily_journal_view.dart';
 import 'package:logiq/features/insights/presentation/views/insights_view.dart';
 import 'package:logiq/features/portfolio/presentation/views/portfolio_crud_view.dart';
@@ -11,11 +12,7 @@ import 'package:logiq/core/seed/seed_fixtures.dart';
 import 'package:logiq/repositories/local/local_account_repository.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({
-    super.key,
-    this.locale,
-    this.onLocaleChanged,
-  });
+  const AppShell({super.key, this.locale, this.onLocaleChanged});
 
   final Locale? locale;
   final ValueChanged<Locale>? onLocaleChanged;
@@ -57,8 +54,8 @@ class _AppShellState extends State<AppShell> {
               ? _fallbackAccountId
               : _selectedAccountId,
           onAddActionChanged: _bindTradesAddAction,
-          onMissingAccount: () => setState(() => _currentIndex = 6),
-          onMissingInitialDeposit: () => setState(() => _currentIndex = 1),
+          onMissingAccount: () => setState(() => _currentIndex = 7),
+          onMissingInitialDeposit: () => setState(() => _currentIndex = 6),
           onMissingRiskRule: () => setState(() => _currentIndex = 2),
         ),
       ),
@@ -108,6 +105,16 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.insights_outlined,
         body: InsightsView(
           key: ValueKey<String>('insights_$_selectedAccountId'),
+          accountId: _selectedAccountId.isEmpty
+              ? _fallbackAccountId
+              : _selectedAccountId,
+        ),
+      ),
+      _ShellTab(
+        label: l10n.navCashManagement,
+        icon: Icons.account_balance_wallet_outlined,
+        body: CashManagementView(
+          key: ValueKey<String>('cash_$_selectedAccountId'),
           accountId: _selectedAccountId.isEmpty
               ? _fallbackAccountId
               : _selectedAccountId,

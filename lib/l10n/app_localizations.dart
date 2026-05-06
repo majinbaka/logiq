@@ -137,11 +137,269 @@ abstract class AppLocalizations {
   /// **'Insights'**
   String get navInsights;
 
+  /// No description provided for @navCashManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get navCashManagement;
+
   /// No description provided for @navAccountSettings.
   ///
   /// In en, this message translates to:
   /// **'Accounts'**
   String get navAccountSettings;
+
+  /// No description provided for @cashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash Management'**
+  String get cashTitle;
+
+  /// No description provided for @cashSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track cash lifecycle, reservations, and buying power.'**
+  String get cashSubtitle;
+
+  /// No description provided for @cashLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load cash data'**
+  String get cashLoadErrorTitle;
+
+  /// No description provided for @cashLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please retry loading cash information.'**
+  String get cashLoadErrorBody;
+
+  /// No description provided for @cashRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get cashRetry;
+
+  /// No description provided for @cashCurrentCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Cash'**
+  String get cashCurrentCash;
+
+  /// No description provided for @cashAvailableCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Cash'**
+  String get cashAvailableCash;
+
+  /// No description provided for @cashReservedCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserved Cash'**
+  String get cashReservedCash;
+
+  /// No description provided for @cashBuyingPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Buying Power'**
+  String get cashBuyingPower;
+
+  /// No description provided for @cashLeverageUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Leverage Usage'**
+  String get cashLeverageUsage;
+
+  /// No description provided for @cashUnsettledFunds.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsettled Funds'**
+  String get cashUnsettledFunds;
+
+  /// No description provided for @cashDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get cashDeposit;
+
+  /// No description provided for @cashWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get cashWithdraw;
+
+  /// No description provided for @cashReconcile.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconcile'**
+  String get cashReconcile;
+
+  /// No description provided for @cashTransactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get cashTransactionsTitle;
+
+  /// No description provided for @cashFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get cashFilterAll;
+
+  /// No description provided for @cashFilterDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get cashFilterDeposit;
+
+  /// No description provided for @cashFilterWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal'**
+  String get cashFilterWithdrawal;
+
+  /// No description provided for @cashFilterFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get cashFilterFee;
+
+  /// No description provided for @cashFilterDividend.
+  ///
+  /// In en, this message translates to:
+  /// **'Dividend'**
+  String get cashFilterDividend;
+
+  /// No description provided for @cashNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No cash transactions yet.'**
+  String get cashNoTransactions;
+
+  /// No description provided for @cashConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get cashConfirm;
+
+  /// No description provided for @cashTransactionDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction detail'**
+  String get cashTransactionDetail;
+
+  /// No description provided for @cashReservedDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserved Cash Details'**
+  String get cashReservedDetailsTitle;
+
+  /// No description provided for @cashNoReservedCash.
+  ///
+  /// In en, this message translates to:
+  /// **'No active reservations.'**
+  String get cashNoReservedCash;
+
+  /// No description provided for @cashPendingOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending order'**
+  String get cashPendingOrder;
+
+  /// No description provided for @cashAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get cashAmount;
+
+  /// No description provided for @cashReconciliationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Broker Reconciliation'**
+  String get cashReconciliationTitle;
+
+  /// No description provided for @cashLastSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync'**
+  String get cashLastSync;
+
+  /// No description provided for @cashSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get cashSyncNow;
+
+  /// No description provided for @cashSettlementTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Tracking'**
+  String get cashSettlementTrackingTitle;
+
+  /// No description provided for @cashDepositTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Deposit'**
+  String get cashDepositTitle;
+
+  /// No description provided for @cashWithdrawalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Withdrawal'**
+  String get cashWithdrawalTitle;
+
+  /// No description provided for @cashDepositType.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit type'**
+  String get cashDepositType;
+
+  /// No description provided for @cashSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash request failed. Please validate input.'**
+  String get cashSubmitFailed;
+
+  /// No description provided for @cashInsufficientAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient available cash.'**
+  String get cashInsufficientAvailable;
+
+  /// No description provided for @cashType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get cashType;
+
+  /// No description provided for @cashStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get cashStatus;
+
+  /// No description provided for @cashBrokerReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Broker reference'**
+  String get cashBrokerReference;
+
+  /// No description provided for @cashCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get cashCreatedAt;
+
+  /// No description provided for @cashSettledAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled at'**
+  String get cashSettledAt;
+
+  /// No description provided for @cashCreatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Created by'**
+  String get cashCreatedBy;
 
   /// No description provided for @workInProgressTitle.
   ///

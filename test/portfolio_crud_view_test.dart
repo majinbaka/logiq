@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logiq/core/database/models/account_balance_model.dart';
+import 'package:logiq/core/database/models/account_activity_log_model.dart';
 import 'package:logiq/core/database/models/cash_ledger_model.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/cash_reservation_model.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
 import 'package:logiq/core/database/models/position_snapshot_model.dart';
 import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
@@ -16,7 +18,9 @@ import 'package:logiq/repositories/contracts/instrument_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 
 void main() {
-  testWidgets('portfolio shows empty state when no snapshot exists', (tester) async {
+  testWidgets('portfolio shows empty state when no snapshot exists', (
+    tester,
+  ) async {
     final repo = _FakePortfolioRepository();
     await _pumpPortfolio(tester, repo);
 
@@ -43,8 +47,14 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('portfolio_form_date')), '2026-05-01');
-    await tester.enterText(find.byKey(const Key('portfolio_form_note')), 'first');
+    await tester.enterText(
+      find.byKey(const Key('portfolio_form_date')),
+      '2026-05-01',
+    );
+    await tester.enterText(
+      find.byKey(const Key('portfolio_form_note')),
+      'first',
+    );
     await tester.tap(find.byKey(const Key('portfolio_form_save')));
     await tester.pumpAndSettle();
 
@@ -57,7 +67,10 @@ void main() {
     );
     await tester.tap(find.byIcon(Icons.edit_outlined).first);
     await tester.pumpAndSettle();
-    await tester.enterText(find.byKey(const Key('portfolio_form_note')), 'updated');
+    await tester.enterText(
+      find.byKey(const Key('portfolio_form_note')),
+      'updated',
+    );
     await tester.tap(find.byKey(const Key('portfolio_form_save')));
     await tester.pumpAndSettle();
 
@@ -138,7 +151,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
   final Map<String, PortfolioSnapshotModel> _snapshots = {};
 
   @override
-  Future<List<PortfolioHolding>> buildHoldings(String accountId, DateTime asOf) async {
+  Future<List<PortfolioHolding>> buildHoldings(
+    String accountId,
+    DateTime asOf,
+  ) async {
     return const [];
   }
 
@@ -191,7 +207,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<List<PositionSnapshotModel>> listPositionSnapshots(String snapshotId) async {
+  Future<List<PositionSnapshotModel>> listPositionSnapshots(
+    String snapshotId,
+  ) async {
     return const [];
   }
 
@@ -228,7 +246,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
   Future<void> upsertCashMovement(CashMovementModel movement) async {}
 
   @override
-  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {}
+  Future<void> upsertCashLedger(
+    CashLedgerModel ledger, {
+    String? currency,
+  }) async {}
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}
@@ -268,6 +289,30 @@ class _FakePortfolioRepository implements PortfolioRepository {
     required String reservedAmount,
     required DateTime at,
   }) async {}
+
+  @override
+  Future<void> completeCashMovement({
+    required String movementId,
+    required String brokerReference,
+    String actorId = 'broker',
+    DateTime? completedAt,
+  }) async {}
+
+  @override
+  Future<List<CashReservationModel>> listCashReservations(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<AccountActivityLogModel>> listAccountActivityLogs(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
 
   @override
   Future<void> realizeTradeCloseProceeds({

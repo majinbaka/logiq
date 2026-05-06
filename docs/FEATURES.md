@@ -558,3 +558,20 @@ Cap nhat UI va validate de phan anh dung luong funding/trading:
   account activity audit logs on reserve/release/fill.
 - Cash movement history now reads persisted movement currency instead of
   reconstructing rows with a hardcoded currency.
+
+## 16. Cash Management Screen (2026-05-06)
+
+Muc tieu: gom tat ca luong tien vao mot man hinh rieng de trader theo doi nhanh
+cash state va xu ly deposit/withdrawal.
+
+Da bo sung:
+
+- Tab dieu huong `Cash` trong app shell.
+- Dashboard card hien thi: current cash, available cash, reserved cash, buying
+  power, leverage usage, unsettled funds.
+- Action bar: Deposit, Withdraw, Reconcile.
+- Modal Deposit/Rut tien voi validate amount + available cash.
+- Danh sach giao dich tien co bo loc theo loai.
+- Bottom sheet chi tiet giao dich tien.
+- Khu vuc theo doi reserved cash cho pending orders.
+- The hien thong tin doi soat broker va settlement tracking tren cung man hinh.
