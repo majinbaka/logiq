@@ -98,7 +98,7 @@ void main() {
     );
   });
 
-  testWidgets('header add button opens account create dialog on account tab', (
+  testWidgets('account tab no longer shows header add button', (
     tester,
   ) async {
     addTearDown(() async {
@@ -112,13 +112,10 @@ void main() {
     await tester.tap(find.byIcon(Icons.manage_accounts_outlined).last);
     await tester.pump(const Duration(milliseconds: 300));
 
-    await tester.tap(find.byTooltip('Add Account'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.byTooltip('Add Account'), findsNothing);
   });
 
-  testWidgets('header add button opens trade create sheet on trades tab', (
+  testWidgets('header add button is shown on trades tab', (
     tester,
   ) async {
     addTearDown(() async {
@@ -129,38 +126,10 @@ void main() {
     await tester.pumpWidget(const MainApp());
     await tester.pumpAndSettle(const Duration(milliseconds: 800));
 
-    await tester.tap(find.byIcon(Icons.manage_accounts_outlined).last);
-    await tester.pumpAndSettle();
-
-    var appBarAddButton = find.descendant(
-      of: find.byType(AppBar),
-      matching: find.byType(IconButton),
-    );
-    await tester.tap(appBarAddButton.first);
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextFormField).first, 'Test Account');
-    final dialogSaveButton = find.descendant(
-      of: find.byType(AlertDialog),
-      matching: find.byType(FilledButton),
-    );
-    await tester.tap(dialogSaveButton.first);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byIcon(Icons.candlestick_chart).last);
-    await tester.pumpAndSettle();
-
-    appBarAddButton = find.descendant(
-      of: find.byType(AppBar),
-      matching: find.byType(IconButton),
-    );
-    await tester.tap(appBarAddButton.first);
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('trade_form_save')), findsOneWidget);
+    expect(find.byTooltip('Add Trade'), findsOneWidget);
   });
 
-  testWidgets('header add button opens snapshot create sheet on portfolio tab', (
+  testWidgets('header add button is shown on portfolio tab', (
     tester,
   ) async {
     addTearDown(() async {
@@ -174,13 +143,6 @@ void main() {
     await tester.tap(find.byIcon(Icons.pie_chart_outline).last);
     await tester.pump(const Duration(milliseconds: 300));
 
-    final appBarAddButton = find.descendant(
-      of: find.byType(AppBar),
-      matching: find.byType(IconButton),
-    );
-    await tester.tap(appBarAddButton.first);
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('portfolio_form_save')), findsOneWidget);
+    expect(find.byTooltip('Add Snapshot'), findsOneWidget);
   });
 }

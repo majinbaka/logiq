@@ -16,7 +16,6 @@ class AccountSettingsView extends StatefulWidget {
     super.key,
     required this.selectedAccountId,
     required this.onSelectedAccountChanged,
-    this.onAddActionChanged,
     this.locale,
     this.onLocaleChanged,
     AccountRepository? accountRepository,
@@ -25,7 +24,6 @@ class AccountSettingsView extends StatefulWidget {
 
   final String selectedAccountId;
   final ValueChanged<String> onSelectedAccountChanged;
-  final ValueChanged<VoidCallback?>? onAddActionChanged;
   final Locale? locale;
   final ValueChanged<Locale>? onLocaleChanged;
   final AccountRepository? _accountRepository;
@@ -42,6 +40,10 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
   bool _isLoading = false;
   bool _isResetting = false;
   String? _error;
+  String? _editingId;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _currencyController = TextEditingController();
+  String _status = 'active';
 
   @override
   void initState() {
@@ -53,13 +55,13 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
           riskRepository: LocalRiskRepository(),
           strategyRepository: LocalStrategyRepository(),
         );
-    widget.onAddActionChanged?.call(_handleAddAction);
     _loadAccounts();
   }
 
   @override
   void dispose() {
-    widget.onAddActionChanged?.call(null);
+    _nameController.dispose();
+    _currencyController.dispose();
     super.dispose();
   }
 
@@ -83,20 +85,31 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
     }
   }
 
-  Future<void> _upsertAccount({TradingAccountModel? existing}) async {
+  Future<void> _saveEditingAccount() async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await showDialog<_AccountFormResult>(
-      context: context,
-      builder: (context) => _AccountFormDialog(existing: existing),
-    );
-    if (result == null) return;
+    final editingId = _editingId;
+    if (editingId == null) return;
+    if (_nameController.text.trim().isEmpty ||
+        _currencyController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.tradesRequiredFieldValidationError)),
+      );
+      return;
+    }
 
+    TradingAccountModel? existing;
+    for (final item in _accounts) {
+      if (item.id == editingId) {
+        existing = item;
+        break;
+      }
+    }
     final now = DateTime.now().toUtc();
     final account = TradingAccountModel(
       id: existing?.id ?? 'acc_${now.microsecondsSinceEpoch}',
-      name: result.name,
-      baseCurrency: result.baseCurrency,
-      status: result.status,
+      name: _nameController.text.trim(),
+      baseCurrency: _currencyController.text.trim().toUpperCase(),
+      status: _status,
       brokerName: existing?.brokerName,
       accountType: existing?.accountType,
       createdAt: existing?.createdAt ?? now,
@@ -110,16 +123,56 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
 
     if (existing == null || widget.selectedAccountId == existing.id) {
       widget.onSelectedAccountChanged(account.id);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.accountSettingsSavedMessage)),
-      );
     }
+    if (!mounted) return;
+    setState(() => _editingId = null);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.accountSettingsSavedMessage)));
   }
 
-  void _handleAddAction() {
-    if (_isLoading || _isResetting) return;
-    _upsertAccount();
+  void _startCreate() {
+    final now = DateTime.now().toUtc();
+    setState(() {
+      _editingId = 'new_${now.microsecondsSinceEpoch}';
+      _nameController.text = '';
+      _currencyController.text = 'VND';
+      _status = 'active';
+    });
+  }
+
+  void _startEdit(TradingAccountModel account) {
+    setState(() {
+      _editingId = account.id;
+      _nameController.text = account.name;
+      _currencyController.text = account.baseCurrency;
+      _status = account.status ?? 'active';
+    });
+  }
+
+  void _cancelEditing() {
+    setState(() => _editingId = null);
+  }
+
+  Future<void> _deleteAccount(TradingAccountModel account) async {
+    final now = DateTime.now().toUtc();
+    await _accountRepository.upsert(
+      TradingAccountModel(
+        id: account.id,
+        name: account.name,
+        baseCurrency: account.baseCurrency,
+        status: account.status,
+        brokerName: account.brokerName,
+        accountType: account.accountType,
+        createdAt: account.createdAt,
+        updatedAt: now,
+        deletedAt: now,
+      ),
+    );
+    await _loadAccounts();
+    if (widget.selectedAccountId == account.id && _accounts.isNotEmpty) {
+      widget.onSelectedAccountChanged(_accounts.first.id);
+    }
   }
 
   Future<void> _resetAllData() async {
@@ -239,34 +292,64 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
               actionLabel: l10n.accountSettingsRetry,
               onAction: _loadAccounts,
             )
-          else if (_accounts.isEmpty)
-            TradingStateView(
-              title: l10n.accountSettingsEmptyTitle,
-              message: l10n.accountSettingsEmptyBody,
-              icon: Icons.account_balance_wallet_outlined,
-              actionLabel: l10n.accountSettingsAddButton,
-              onAction: _upsertAccount,
-            )
           else
-            ..._accounts.map(
-              (account) => Card(
-                child: ListTile(
-                  title: Text(account.name),
-                  subtitle: Text(
-                    '${l10n.accountSettingsCurrencyLabel}: ${account.baseCurrency} • '
-                    '${l10n.accountSettingsStatusLabel}: ${account.status ?? 'active'}',
-                  ),
-                  onTap: () => widget.onSelectedAccountChanged(account.id),
-                  leading: Icon(
-                    account.id == widget.selectedAccountId
-                        ? Icons.check_circle
-                        : Icons.circle_outlined,
-                  ),
-                  trailing: IconButton(
-                    tooltip: l10n.accountSettingsEditTooltip,
-                    onPressed: () => _upsertAccount(existing: account),
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(TradingUiSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_accounts.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: TradingUiSpacing.sm),
+                        child: Text(l10n.accountSettingsEmptyBody),
+                      ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columns: [
+                          DataColumn(label: Text(l10n.accountSettingsNameLabel)),
+                          DataColumn(
+                            label: Text(l10n.accountSettingsCurrencyLabel),
+                          ),
+                          DataColumn(label: Text(l10n.accountSettingsStatusLabel)),
+                          const DataColumn(label: Text('')),
+                        ],
+                        rows: [
+                          ..._accounts.map((account) {
+                            final isEditing = _editingId == account.id;
+                            return DataRow(
+                              selected: account.id == widget.selectedAccountId,
+                              onSelectChanged: (_) =>
+                                  widget.onSelectedAccountChanged(account.id),
+                              cells: _buildRowCells(
+                                l10n: l10n,
+                                account: account,
+                                isEditing: isEditing,
+                              ),
+                            );
+                          }),
+                          if (_editingId != null &&
+                              !_accounts.any((item) => item.id == _editingId))
+                            DataRow(
+                              cells: _buildRowCells(
+                                l10n: l10n,
+                                account: null,
+                                isEditing: true,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: TradingUiSpacing.sm),
+                    FilledButton.icon(
+                      onPressed: _editingId != null || _isResetting
+                          ? null
+                          : _startCreate,
+                      icon: const Icon(Icons.add_rounded),
+                      label: Text(l10n.accountSettingsAddButton),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -274,82 +357,45 @@ class _AccountSettingsViewState extends State<AccountSettingsView> {
       ),
     );
   }
-}
-
-class _AccountFormDialog extends StatefulWidget {
-  const _AccountFormDialog({this.existing});
-
-  final TradingAccountModel? existing;
-
-  @override
-  State<_AccountFormDialog> createState() => _AccountFormDialogState();
-}
-
-class _AccountFormDialogState extends State<_AccountFormDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameController;
-  late final TextEditingController _currencyController;
-  late String _status;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.existing?.name ?? '');
-    _currencyController = TextEditingController(
-      text: widget.existing?.baseCurrency ?? 'VND',
-    );
-    _status = widget.existing?.status ?? 'active';
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _currencyController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return AlertDialog(
-      title: Text(
-        widget.existing == null
-            ? l10n.accountSettingsCreateTitle
-            : l10n.accountSettingsEditTitle,
-      ),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
+  List<DataCell> _buildRowCells({
+    required AppLocalizations l10n,
+    required TradingAccountModel? account,
+    required bool isEditing,
+  }) {
+    final statusValue = _status;
+    if (isEditing) {
+      return [
+        DataCell(
+          SizedBox(
+            width: 220,
+            child: TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: l10n.accountSettingsNameLabel),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return l10n.tradesRequiredFieldValidationError;
-                }
-                return null;
-              },
+              decoration: InputDecoration(hintText: l10n.accountSettingsNameLabel),
             ),
-            const SizedBox(height: TradingUiSpacing.sm),
-            TextFormField(
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            width: 130,
+            child: TextField(
               controller: _currencyController,
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
-                labelText: l10n.accountSettingsCurrencyLabel,
+                hintText: l10n.accountSettingsCurrencyLabel,
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return l10n.tradesRequiredFieldValidationError;
-                }
-                return null;
-              },
             ),
-            const SizedBox(height: TradingUiSpacing.sm),
-            DropdownButtonFormField<String>(
-              initialValue: _status,
-              decoration: InputDecoration(labelText: l10n.accountSettingsStatusLabel),
+          ),
+        ),
+        DataCell(
+          SizedBox(
+            width: 130,
+            child: DropdownButton<String>(
+              value: statusValue,
+              isExpanded: true,
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => _status = value);
+              },
               items: [
                 DropdownMenuItem(
                   value: 'active',
@@ -360,45 +406,58 @@ class _AccountFormDialogState extends State<_AccountFormDialog> {
                   child: Text(l10n.accountSettingsStatusInactive),
                 ),
               ],
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _status = value);
-              },
+            ),
+          ),
+        ),
+        DataCell(
+          Row(
+            children: [
+              IconButton(
+                tooltip: l10n.tradesSave,
+                onPressed: _saveEditingAccount,
+                icon: const Icon(Icons.check_rounded),
+              ),
+              IconButton(
+                tooltip: l10n.tradesCancel,
+                onPressed: _cancelEditing,
+                icon: const Icon(Icons.close_rounded),
+              ),
+            ],
+          ),
+        ),
+      ];
+    }
+
+    return [
+      DataCell(Text(account?.name ?? '')),
+      DataCell(Text(account?.baseCurrency ?? '')),
+      DataCell(
+        Text(
+          (account?.status ?? 'active') == 'inactive'
+              ? l10n.accountSettingsStatusInactive
+              : l10n.accountSettingsStatusActive,
+        ),
+      ),
+      DataCell(
+        Row(
+          children: [
+            IconButton(
+              tooltip: l10n.accountSettingsEditTooltip,
+              onPressed: _editingId == null && account != null
+                  ? () => _startEdit(account)
+                  : null,
+              icon: const Icon(Icons.edit_outlined),
+            ),
+            IconButton(
+              tooltip: l10n.tradesDeleteTooltip,
+              onPressed: _editingId == null && account != null
+                  ? () => _deleteAccount(account)
+                  : null,
+              icon: const Icon(Icons.delete_outline),
             ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.tradesCancel),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) return;
-            Navigator.of(context).pop(
-              _AccountFormResult(
-                name: _nameController.text.trim(),
-                baseCurrency: _currencyController.text.trim().toUpperCase(),
-                status: _status,
-              ),
-            );
-          },
-          child: Text(l10n.tradesSave),
-        ),
-      ],
-    );
+    ];
   }
-}
-
-class _AccountFormResult {
-  const _AccountFormResult({
-    required this.name,
-    required this.baseCurrency,
-    required this.status,
-  });
-
-  final String name;
-  final String baseCurrency;
-  final String status;
 }

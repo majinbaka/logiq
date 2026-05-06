@@ -30,7 +30,6 @@ class _AppShellState extends State<AppShell> {
   String _selectedAccountId = '';
   VoidCallback? _onTradesAdd;
   VoidCallback? _onPortfolioAdd;
-  VoidCallback? _onAccountAdd;
   String get _fallbackAccountId => SeedFixtures.account().id;
 
   @override
@@ -119,7 +118,6 @@ class _AppShellState extends State<AppShell> {
         icon: Icons.manage_accounts_outlined,
         body: AccountSettingsView(
           selectedAccountId: _selectedAccountId,
-          onAddActionChanged: _bindAccountAddAction,
           locale: widget.locale,
           onLocaleChanged: widget.onLocaleChanged,
           onSelectedAccountChanged: (accountId) {
@@ -162,10 +160,6 @@ class _AppShellState extends State<AppShell> {
     final config = switch (_currentIndex) {
       0 => (tooltip: l10n.tradesAddButton, icon: Icons.add_rounded),
       1 => (tooltip: l10n.portfolioAddButton, icon: Icons.add_chart_rounded),
-      6 => (
-        tooltip: l10n.accountSettingsAddButton,
-        icon: Icons.person_add_alt_1_rounded,
-      ),
       _ => null,
     };
     if (config == null) {
@@ -198,15 +192,10 @@ class _AppShellState extends State<AppShell> {
     _onPortfolioAdd = action;
   }
 
-  void _bindAccountAddAction(VoidCallback? action) {
-    _onAccountAdd = action;
-  }
-
   void _invokeCurrentAddAction() {
     final callback = switch (_currentIndex) {
       0 => _onTradesAdd,
       1 => _onPortfolioAdd,
-      6 => _onAccountAdd,
       _ => null,
     };
     callback?.call();
