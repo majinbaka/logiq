@@ -126,8 +126,6 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
-    String? planNote,
-    String? reviewNote,
   }) async {
     final normalizedDirection = direction.toLowerCase();
     await _validateQuantityBeforeSave(
@@ -159,8 +157,6 @@ class TradesCrudViewModel extends ChangeNotifier {
       avgExitPrice: avgExitPrice,
       totalFee: totalFee,
       totalTax: totalTax,
-      planNote: planNote,
-      reviewNote: reviewNote,
       grossPnl: draft.grossPnl,
       netPnl: draft.netPnl,
       pnlPercent: draft.pnlPercent,
@@ -188,8 +184,6 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
-    String? planNote,
-    String? reviewNote,
   }) async {
     final normalizedStatus = status.toLowerCase();
     final normalizedDirection = direction.toLowerCase();
@@ -218,8 +212,6 @@ class TradesCrudViewModel extends ChangeNotifier {
       avgExitPrice: avgExitPrice,
       totalFee: totalFee,
       totalTax: totalTax,
-      planNote: planNote,
-      reviewNote: reviewNote,
       grossPnl: trade.grossPnl,
       netPnl: trade.netPnl,
       pnlPercent: trade.pnlPercent,

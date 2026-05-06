@@ -522,3 +522,58 @@ Neu dung Hive truoc, van giu cung logical model:
   nguoi dung co the them tag custom sau.
 - Notes, lessons va journal la du lieu rieng tu. Khi co export/sync/backup,
   can co thiet ke bao mat rieng truoc khi trien khai.
+
+## ERD-Code Mapping Audit Checklist (2026-05-06)
+
+Pham vi doi chieu:
+
+- ERD trong tai lieu nay.
+- Model map trong `lib/core/database/models/*_model.dart`.
+- Luong su dung thuc te trong `lib/repositories/` va `lib/features/`.
+
+### 1) Kiem tra map field ERD <-> model
+
+- [x] Tat ca field trong ERD da co map trong code model (`missing = 0`).
+- [x] Da loai bo 2 field khong thuoc ERD khoi code:
+  - `TRADE.plan_note`
+  - `TRADE.review_note`
+
+### 2) Kiem tra map quan he (relationship) theo ERD
+
+- [x] Cac quan he cot loi da co du FK field trong model (account_id, instrument_id, strategy_version_id, ...).
+- [ ] Hoan thien luong CRUD cho `TRADE_ORDER` (hien chua co repository/contract su dung).
+- [ ] Hoan thien luong CRUD cho `TRADE_PLAN_TARGET` (hien chua co repository/contract su dung).
+- [ ] Bo sung write path ro rang cho `TRADE_PLAN` (hien chu yeu duoc doc boi analytics/insight).
+- [ ] Bo sung write path ro rang cho `TRADE_REVIEW` (hien chu yeu duoc doc boi analytics/insight).
+- [ ] Bo sung write path ro rang cho `TRADE_CONTEXT` (hien chu yeu duoc doc boi analytics/insight).
+- [ ] Them validate lien ket `TRADE_FILL.order_id -> TRADE_ORDER.id` khi co order flow.
+
+### 3) Checklist field ERD co map nhung chua duoc dung trong luong nghiep vu chinh
+
+- [ ] `TRADE_ORDER.*` (toan bo field dang chua co luong su dung app).
+- [ ] `TRADE_PLAN_TARGET.*` (toan bo field dang chua co luong su dung app).
+- [ ] `RISK_RULE.max_weekly_loss_amount`
+- [ ] `RISK_RULE.max_monthly_loss_amount`
+- [ ] `RISK_RULE.stop_trading_rule`
+- [ ] `TRADE_FILL.order_id`
+- [ ] `TRADE_FILL.gross_value`
+- [ ] `TRADE_CONTEXT.trend_direction`
+- [ ] `TRADE_CONTEXT.volatility_level`
+- [ ] `TRADE_CONTEXT.timeframe`
+- [ ] `TRADE_CONTEXT.setup_quality_score`
+- [ ] `TRADE_REVIEW.exit_reason`
+- [ ] `TRADE_REVIEW.mistake_summary`
+- [ ] `TRADE_REVIEW.lesson`
+- [ ] `TRADE_REVIEW.self_review`
+- [ ] `TRADE_PLAN.entry_zone_low`
+- [ ] `TRADE_PLAN.entry_zone_high`
+- [ ] `TRADE_PLAN.stop_loss_price`
+- [ ] `TRADE_PLAN.confidence_percent`
+- [ ] `TRADE_PLAN.invalidation_note`
+
+Ghi chu:
+
+- Danh sach tren la "chua dung trong luong nghiep vu chinh" (UI/VM/Repository runtime),
+  khong phai "thieu trong model map".
+- Cac field analytics co the duoc phep chua hien thi tren UI ngay, mien la build/rebuild
+  analytics van hoat dong tu du lieu goc.

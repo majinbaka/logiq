@@ -86,14 +86,6 @@ class TradeDetailView extends StatelessWidget {
           ),
           _DetailRow(label: l10n.tradesFeeLabel, value: trade.totalFee ?? '-'),
           _DetailRow(label: l10n.tradesTaxLabel, value: trade.totalTax ?? '-'),
-          _DetailRow(
-            label: l10n.tradesPlanLabel,
-            value: trade.planNote ?? l10n.tradesPlanPending,
-          ),
-          _DetailRow(
-            label: l10n.tradesReviewLabel,
-            value: trade.reviewNote ?? l10n.tradesReviewPending,
-          ),
           _DetailRow(label: l10n.tradesRiskStatusLabel, value: riskStatus),
           _DetailRow(label: l10n.tradesRiskReasonLabel, value: riskReason),
         ],

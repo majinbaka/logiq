@@ -21,8 +21,6 @@ class TradeFormResult {
     required this.avgExitPrice,
     required this.totalFee,
     required this.totalTax,
-    required this.planNote,
-    required this.reviewNote,
   });
 
   final String accountId;
@@ -36,8 +34,6 @@ class TradeFormResult {
   final String? avgExitPrice;
   final String? totalFee;
   final String? totalTax;
-  final String? planNote;
-  final String? reviewNote;
 }
 
 class TradeFormSheet extends StatefulWidget {
@@ -72,8 +68,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
   late final TextEditingController _exitController;
   late final TextEditingController _feeController;
   late final TextEditingController _taxController;
-  late final TextEditingController _planController;
-  late final TextEditingController _reviewController;
 
   late List<InstrumentModel> _instruments;
   late String _accountId;
@@ -112,12 +106,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
     _taxController = TextEditingController(
       text: widget.existing?.totalTax ?? '',
     );
-    _planController = TextEditingController(
-      text: widget.existing?.planNote ?? '',
-    );
-    _reviewController = TextEditingController(
-      text: widget.existing?.reviewNote ?? '',
-    );
     _quantityController.addListener(_revalidateSellQuantity);
     _openedAtController.addListener(_revalidateSellQuantity);
     _revalidateSellQuantity();
@@ -131,8 +119,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
     _exitController.dispose();
     _feeController.dispose();
     _taxController.dispose();
-    _planController.dispose();
-    _reviewController.dispose();
     _quantityController.removeListener(_revalidateSellQuantity);
     _openedAtController.removeListener(_revalidateSellQuantity);
     super.dispose();
@@ -369,26 +355,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
                       suffixText: l10n.tradesUnitCurrency,
                       nonNegative: true,
                     ),
-                    const SizedBox(height: TradingUiSpacing.sm),
-                    TextFormField(
-                      key: const Key('trade_form_plan'),
-                      controller: _planController,
-                      decoration: InputDecoration(
-                        labelText: l10n.tradesPlanLabel,
-                      ),
-                      minLines: 2,
-                      maxLines: 4,
-                    ),
-                    const SizedBox(height: TradingUiSpacing.sm),
-                    TextFormField(
-                      key: const Key('trade_form_review'),
-                      controller: _reviewController,
-                      decoration: InputDecoration(
-                        labelText: l10n.tradesReviewLabel,
-                      ),
-                      minLines: 2,
-                      maxLines: 4,
-                    ),
                   ],
                 ),
               ),
@@ -442,8 +408,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
         avgExitPrice: _asNullableDecimal(_exitController.text),
         totalFee: _asNullableDecimal(_feeController.text),
         totalTax: _asNullableDecimal(_taxController.text),
-        planNote: _asNullableText(_planController.text),
-        reviewNote: _asNullableText(_reviewController.text),
       ),
     );
   }
@@ -510,11 +474,6 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
 
   String? _asNullableDecimal(String value) {
     final trimmed = FormattedNumberInput.normalizeNumberText(value);
-    return trimmed.isEmpty ? null : trimmed;
-  }
-
-  String? _asNullableText(String value) {
-    final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
   }
 

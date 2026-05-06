@@ -93,8 +93,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Trade detail'), findsOneWidget);
-    expect(find.text('Plan'), findsOneWidget);
-    expect(find.text('Review'), findsOneWidget);
     expect(find.text('Risk status'), findsWidgets);
     expect(find.text('Violation'), findsWidgets);
     expect(find.text('Risk amount exceeds configured limit'), findsWidgets);
