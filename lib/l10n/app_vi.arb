@@ -23,6 +23,7 @@
   "tradesAccountLabel": "Tài khoản",
   "tradesInstrumentLabel": "Mã instrument",
   "tradesStrategyVersionLabel": "Phiên bản chiến lược",
+  "tradesRiskRuleLabel": "Quy tắc rủi ro",
   "tradesStrategyNoneOption": "Không chọn chiến lược",
   "tradesDirectionLabel": "Chiều lệnh",
   "tradesDirectionBuy": "BUY",

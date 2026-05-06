@@ -220,6 +220,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           trades: _viewModel.trades,
           onCreateInstrument: _viewModel.createInstrument,
           strategyVersionOptions: _viewModel.strategyVersionOptions,
+          riskRuleOptionsForAccount: _viewModel.riskRuleOptionsForAccount,
           formatDateInput: _formatDateInput,
         );
       },
@@ -242,6 +243,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           avgExitPrice: result.avgExitPrice,
           totalFee: result.totalFee,
           totalTax: result.totalTax,
+          riskRuleId: result.riskRuleId,
         );
         return;
       }
@@ -259,6 +261,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
         avgExitPrice: result.avgExitPrice,
         totalFee: result.totalFee,
         totalTax: result.totalTax,
+        riskRuleId: result.riskRuleId,
       );
     } on TradeQuantityValidationException catch (error) {
       if (!mounted) return;

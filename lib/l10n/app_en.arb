@@ -26,6 +26,7 @@
   "tradesAccountLabel": "Account",
   "tradesInstrumentLabel": "Instrument ID",
   "tradesStrategyVersionLabel": "Strategy version",
+  "tradesRiskRuleLabel": "Risk rule",
   "tradesStrategyNoneOption": "No strategy",
   "tradesDirectionLabel": "Direction",
   "tradesDirectionBuy": "BUY",

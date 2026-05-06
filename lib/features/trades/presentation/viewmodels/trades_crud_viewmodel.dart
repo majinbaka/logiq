@@ -25,6 +25,13 @@ class TradeStrategyVersionOption {
   final String label;
 }
 
+class TradeRiskRuleOption {
+  const TradeRiskRuleOption({required this.id, required this.label});
+
+  final String id;
+  final String label;
+}
+
 class TradeQuantityValidationException implements Exception {
   const TradeQuantityValidationException({
     required this.requestedQuantity,
@@ -85,6 +92,7 @@ class TradesCrudViewModel extends ChangeNotifier {
   List<TradingAccountModel> _accounts = const [];
   List<InstrumentModel> _instruments = const [];
   List<TradeStrategyVersionOption> _strategyVersionOptions = const [];
+  Map<String, List<TradeRiskRuleOption>> _riskRuleOptionsByAccount = const {};
   Map<String, String> _strategyVersionLabels = const {};
   AccountBalanceModel? _accountBalance;
   RiskRuleModel? _activeRiskRule;
@@ -99,6 +107,8 @@ class TradesCrudViewModel extends ChangeNotifier {
   List<InstrumentModel> get instruments => _instruments;
   List<TradeStrategyVersionOption> get strategyVersionOptions =>
       _strategyVersionOptions;
+  List<TradeRiskRuleOption> riskRuleOptionsForAccount(String accountId) =>
+      _riskRuleOptionsByAccount[accountId] ?? const [];
   String? strategyLabelForVersionId(String? strategyVersionId) {
     if (strategyVersionId == null) return null;
     return _strategyVersionLabels[strategyVersionId];
@@ -127,6 +137,7 @@ class TradesCrudViewModel extends ChangeNotifier {
       _accounts = await _accountRepository.listActive();
       _instruments = await _instrumentRepository.listActive();
       await _loadStrategyVersionOptions();
+      await _loadRiskRuleOptions();
       try {
         await _loadFlowState();
       } catch (_) {
@@ -168,10 +179,15 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
+    required String riskRuleId,
   }) async {
     if (enforceTradeFlowValidation) {
       await _assertTradeFlowReady(accountId: accountId);
     }
+    final selectedRiskRule = await _resolveSelectedRiskRule(
+      accountId: accountId,
+      riskRuleId: riskRuleId,
+    );
     await _validateAvailableCashForTrade(
       accountId: accountId,
       direction: direction,
@@ -217,6 +233,11 @@ class TradesCrudViewModel extends ChangeNotifier {
       deletedAt: null,
     );
     await _repository.upsertTrade(createdTrade);
+    await _upsertRiskCheckForTrade(
+      tradeId: createdTrade.id,
+      riskRule: selectedRiskRule,
+      existingCheck: _riskChecksByTradeId[createdTrade.id],
+    );
     await _rebuildAnalyticsForTrade(createdTrade);
 
     await loadTrades();
@@ -268,10 +289,15 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? avgExitPrice,
     String? totalFee,
     String? totalTax,
+    required String riskRuleId,
   }) async {
     if (enforceTradeFlowValidation) {
       await _assertTradeFlowReady(accountId: accountId);
     }
+    final selectedRiskRule = await _resolveSelectedRiskRule(
+      accountId: accountId,
+      riskRuleId: riskRuleId,
+    );
     final normalizedStatus = status.toLowerCase();
     final normalizedDirection = direction.toLowerCase();
     await _validateQuantityBeforeSave(
@@ -309,6 +335,11 @@ class TradesCrudViewModel extends ChangeNotifier {
     );
     await _realizeCloseProceedsIfNeeded(previous: trade, next: updatedTrade);
     await _repository.upsertTrade(updatedTrade);
+    await _upsertRiskCheckForTrade(
+      tradeId: updatedTrade.id,
+      riskRule: selectedRiskRule,
+      existingCheck: _riskChecksByTradeId[updatedTrade.id],
+    );
     await _rebuildAnalyticsForTrade(updatedTrade);
 
     await loadTrades();
@@ -421,13 +452,7 @@ class TradesCrudViewModel extends ChangeNotifier {
   Future<void> _loadFlowState() async {
     final accountId = activeAccountId;
     _accountBalance = await _portfolioRepository.getAccountBalance(accountId);
-    final ledger = await _portfolioRepository.listCashLedgerEntries(accountId, limit: 500);
-    _hasInitialDeposit = ledger.any((entry) {
-      final type = entry.movementType.trim().toLowerCase();
-      final amount = _toDouble(entry.amount);
-      return amount > 0 &&
-          (type == 'initial_deposit' || type == 'deposit');
-    });
+    _hasInitialDeposit = await _hasInitialDepositForAccount(accountId);
     _activeRiskRule = await _riskRepository.findApplicableRiskRule(
       accountId: accountId,
       at: DateTime.now().toUtc(),
@@ -443,13 +468,82 @@ class TradesCrudViewModel extends ChangeNotifier {
     if (hasExistingTrade) {
       return;
     }
-    final hasDeposit = _hasInitialDeposit;
+    final hasDeposit = await _hasInitialDepositForAccount(accountId);
     if (!hasDeposit) {
       throw const TradeFlowValidationException('missing_initial_deposit');
     }
-    if (_activeRiskRule == null) {
+    final applicableRiskRule = await _riskRepository.findApplicableRiskRule(
+      accountId: accountId,
+      at: DateTime.now().toUtc(),
+    );
+    if (applicableRiskRule == null) {
       throw const TradeFlowValidationException('missing_risk_rule');
     }
+  }
+
+  Future<bool> _hasInitialDepositForAccount(String accountId) async {
+    final ledger = await _portfolioRepository.listCashLedgerEntries(
+      accountId,
+      limit: 500,
+    );
+    return ledger.any((entry) {
+      final type = entry.movementType.trim().toLowerCase();
+      final amount = _toDouble(entry.amount);
+      return amount > 0 && (type == 'initial_deposit' || type == 'deposit');
+    });
+  }
+
+  Future<void> _loadRiskRuleOptions() async {
+    final next = <String, List<TradeRiskRuleOption>>{};
+    final now = DateTime.now().toUtc();
+    for (final account in _accounts) {
+      final rules = await _riskRepository.listRiskRulesByAccount(account.id);
+      final filtered = rules.where((rule) {
+        if (!rule.isActive) return false;
+        if (rule.effectiveFrom != null && now.isBefore(rule.effectiveFrom!)) {
+          return false;
+        }
+        if (rule.effectiveTo != null && now.isAfter(rule.effectiveTo!)) {
+          return false;
+        }
+        return true;
+      }).toList(growable: false);
+      filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      next[account.id] = filtered
+          .map((rule) => TradeRiskRuleOption(id: rule.id, label: rule.name))
+          .toList(growable: false);
+    }
+    _riskRuleOptionsByAccount = next;
+  }
+
+  Future<RiskRuleModel> _resolveSelectedRiskRule({
+    required String accountId,
+    required String riskRuleId,
+  }) async {
+    final rules = await _riskRepository.listRiskRulesByAccount(accountId);
+    for (final rule in rules) {
+      if (rule.id == riskRuleId && rule.isActive) {
+        return rule;
+      }
+    }
+    throw const TradeFlowValidationException('missing_risk_rule');
+  }
+
+  Future<void> _upsertRiskCheckForTrade({
+    required String tradeId,
+    required RiskRuleModel riskRule,
+    RiskCheckModel? existingCheck,
+  }) async {
+    final now = DateTime.now().toUtc();
+    await _riskRepository.upsertRiskCheck(
+      RiskCheckModel(
+        id: existingCheck?.id ?? 'rchk_$tradeId',
+        tradeId: tradeId,
+        riskRuleId: riskRule.id,
+        createdAt: existingCheck?.createdAt ?? now,
+        updatedAt: now,
+      ),
+    );
   }
 
   Future<void> _syncOrderReserveCash({

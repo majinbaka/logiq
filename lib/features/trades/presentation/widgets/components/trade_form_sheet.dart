@@ -21,6 +21,7 @@ class TradeFormResult {
     required this.avgExitPrice,
     required this.totalFee,
     required this.totalTax,
+    required this.riskRuleId,
   });
 
   final String accountId;
@@ -34,6 +35,7 @@ class TradeFormResult {
   final String? avgExitPrice;
   final String? totalFee;
   final String? totalTax;
+  final String riskRuleId;
 }
 
 class TradeFormSheet extends StatefulWidget {
@@ -45,6 +47,7 @@ class TradeFormSheet extends StatefulWidget {
     required this.trades,
     required this.onCreateInstrument,
     required this.strategyVersionOptions,
+    required this.riskRuleOptionsForAccount,
     required this.formatDateInput,
   });
 
@@ -54,6 +57,8 @@ class TradeFormSheet extends StatefulWidget {
   final List<TradeModel> trades;
   final Future<InstrumentModel> Function(String symbol) onCreateInstrument;
   final List<TradeStrategyVersionOption> strategyVersionOptions;
+  final List<TradeRiskRuleOption> Function(String accountId)
+  riskRuleOptionsForAccount;
   final String Function(DateTime value) formatDateInput;
 
   @override
@@ -73,6 +78,7 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
   late String _accountId;
   String? _instrumentId;
   String? _strategyVersionId;
+  String? _riskRuleId;
   late String _direction;
   late String _status;
   String? _sellQuantityError;
@@ -86,6 +92,7 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
         widget.existing?.instrumentId ??
         (_instruments.isEmpty ? null : _instruments.first.id);
     _strategyVersionId = _initialStrategyVersionId();
+    _riskRuleId = _initialRiskRuleId();
     _direction = widget.existing?.direction.toLowerCase() ?? 'buy';
     _status = widget.existing?.status.toLowerCase() ?? 'open';
     _openedAtController = TextEditingController(
@@ -164,11 +171,43 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
                           .toList(growable: false),
                       onChanged: (value) {
                         if (value == null) return;
-                        setState(() => _accountId = value);
+                        setState(() {
+                          _accountId = value;
+                          final options = widget.riskRuleOptionsForAccount(
+                            _accountId,
+                          );
+                          _riskRuleId = options.isEmpty ? null : options.first.id;
+                        });
                         _revalidateSellQuantity();
                       },
                       decoration: InputDecoration(
                         labelText: _requiredLabel(l10n.tradesAccountLabel),
+                      ),
+                    ),
+                    const SizedBox(height: TradingUiSpacing.sm),
+                    DropdownButtonFormField<String>(
+                      initialValue: _riskRuleId,
+                      items: widget
+                          .riskRuleOptionsForAccount(_accountId)
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item.id,
+                              child: Text(item.label),
+                            ),
+                          )
+                          .toList(growable: false),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() => _riskRuleId = value);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return l10n.tradesRequiredFieldValidationError;
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: _requiredLabel(l10n.tradesRiskRuleLabel),
                       ),
                     ),
                     const SizedBox(height: TradingUiSpacing.sm),
@@ -408,6 +447,7 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
         avgExitPrice: _asNullableDecimal(_exitController.text),
         totalFee: _asNullableDecimal(_feeController.text),
         totalTax: _asNullableDecimal(_taxController.text),
+        riskRuleId: _riskRuleId!,
       ),
     );
   }
@@ -486,6 +526,12 @@ class _TradeFormSheetState extends State<TradeFormSheet> {
       if (item.id == existing) return existing;
     }
     return null;
+  }
+
+  String? _initialRiskRuleId() {
+    final options = widget.riskRuleOptionsForAccount(_accountId);
+    if (options.isEmpty) return null;
+    return options.first.id;
   }
 
   Future<void> _pickOpenedAtDate() async {

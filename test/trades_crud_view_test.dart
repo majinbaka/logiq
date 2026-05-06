@@ -55,6 +55,14 @@ void main() {
       'violation_reason': 'Risk amount exceeds configured limit',
       'created_at': DateTime.utc(2026, 1, 2).toIso8601String(),
     });
+    await Hive.box<Map>(StorageBoxes.riskRules).put('rr_1', {
+      'id': 'rr_1',
+      'account_id': 'acc_1',
+      'name': 'Standard Risk',
+      'is_active': true,
+      'effective_from': DateTime.utc(2026, 1, 1).toIso8601String(),
+      'created_at': DateTime.utc(2026, 1, 1).toIso8601String(),
+    });
   });
 
   tearDown(() async {
@@ -123,7 +131,9 @@ void main() {
 
     tester.testTextInput.hide();
     await tester.pump(const Duration(milliseconds: 200));
-    await tester.tap(find.byKey(const Key('trade_form_save')));
+    final saveButton = find.byKey(const Key('trade_form_save'));
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
     await tester.pump(const Duration(seconds: 1));
 
     final trades = Hive.box<Map>(StorageBoxes.trades);

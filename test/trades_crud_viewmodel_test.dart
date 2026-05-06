@@ -44,6 +44,7 @@ void main() {
       instrumentId: 'ins_fpt',
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
+      riskRuleId: 'rr_1',
     );
     expect(vm.trades.length, 1);
     expect(vm.trades.first.direction, 'buy');
@@ -56,6 +57,7 @@ void main() {
       direction: 'sell',
       status: 'closed',
       openedAt: DateTime.utc(2026, 5, 2),
+      riskRuleId: 'rr_1',
     );
     expect(vm.trades.length, 1);
     expect(vm.trades.first.instrumentId, 'ins_vnm');
@@ -84,6 +86,7 @@ void main() {
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
       quantityOpened: '10',
+      riskRuleId: 'rr_1',
     );
 
     await expectLater(
@@ -93,6 +96,7 @@ void main() {
         direction: 'sell',
         openedAt: DateTime.utc(2026, 5, 2),
         quantityOpened: '20',
+        riskRuleId: 'rr_1',
       ),
       throwsA(isA<TradeQuantityValidationException>()),
     );
@@ -120,6 +124,7 @@ void main() {
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
       quantityOpened: '1',
+      riskRuleId: 'rr_1',
     );
     final trade = vm.trades.first;
 
@@ -156,6 +161,7 @@ void main() {
         instrumentId: 'ins_fpt',
         direction: 'buy',
         openedAt: DateTime.utc(2026, 5, 1),
+        riskRuleId: 'rr_1',
       ),
       throwsA(isA<TradeInsufficientCashException>()),
     );
@@ -180,6 +186,7 @@ void main() {
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
       quantityOpened: '1',
+      riskRuleId: 'rr_1',
     );
     final trade = vm.trades.first;
 
@@ -221,6 +228,7 @@ void main() {
       direction: 'buy',
       openedAt: DateTime.utc(2026, 5, 1),
       quantityOpened: '1',
+      riskRuleId: 'rr_1',
     );
     final trade = vm.trades.first;
     await vm.saveOrder(
@@ -262,6 +270,7 @@ void main() {
       openedAt: DateTime.utc(2026, 5, 1),
       quantityOpened: '10',
       avgEntryPrice: '100',
+      riskRuleId: 'rr_1',
     );
     final created = vm.trades.first;
     await vm.updateTrade(
@@ -276,6 +285,7 @@ void main() {
       avgExitPrice: '120',
       totalFee: '5',
       totalTax: '5',
+      riskRuleId: 'rr_1',
     );
 
     expect(portfolioRepo.realizedProceeds, ['1190']);
@@ -283,18 +293,26 @@ void main() {
 }
 
 class _FakeRiskRepository implements RiskRepository {
+  final RiskRuleModel _rule = RiskRuleModel(
+    id: 'rr_1',
+    accountId: 'acc_1',
+    name: 'Default',
+    isActive: true,
+    createdAt: DateTime.utc(2026, 1, 1),
+  );
+
   @override
   Future<RiskRuleModel?> findApplicableRiskRule({
     required String accountId,
     required DateTime at,
-  }) async => null;
+  }) async => accountId == _rule.accountId ? _rule : null;
 
   @override
   Future<List<RiskCheckModel>> listRiskChecks() async => const [];
 
   @override
   Future<List<RiskRuleModel>> listRiskRulesByAccount(String accountId) async =>
-      const [];
+      accountId == _rule.accountId ? [_rule] : const [];
 
   @override
   Future<void> upsertRiskCheck(RiskCheckModel check) async {}

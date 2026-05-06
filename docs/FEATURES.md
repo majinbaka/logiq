@@ -273,6 +273,16 @@ Da bo sung nen tang cho feature phase tiep theo:
   - Breakout, Pullback, Mean Reversion, Momentum, Swing Trend
   - Gap Trading, Support / Resistance, Breakdown Short
   - Dividend / Value, News Catalyst
+
+## 13. Trade Flow Risk Rule Selection (Option B) + Multi-account Fix (2026-05-06)
+
+- Form tao/sua Trade da bo sung truong bat buoc chon `Risk Rule`.
+- Danh sach rule duoc loc theo account dang chon trong form.
+- Khi luu trade, he thong luu lien ket `risk_rule_id` vao `risk_check` theo trade de truy vet rule da ap dung.
+- Da sua validation tao trade/order theo dung account duoc thao tac:
+  - Kiem tra `initial_deposit` theo account duoc chon.
+  - Kiem tra `applicable risk rule` theo account duoc chon.
+- Muc tieu: tranh false validation khi lam viec multi-account va lam ro logic "user chon rule nao cho trade nay".
 - App shell co dieu huong placeholder cho module va da noi dia hoa (EN/VI) bang ARB.
 - Da khai bao repository contracts cho account/instrument/strategy/trade/portfolio/journal/psychology/instrument-note/risk/analytics/insight.
 - Da co local repository implementation dua tren Hive box va map boundary `toMap/fromMap`.

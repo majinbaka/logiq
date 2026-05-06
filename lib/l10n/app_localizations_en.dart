@@ -78,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tradesStrategyVersionLabel => 'Strategy version';
 
   @override
+  String get tradesRiskRuleLabel => 'Risk rule';
+
+  @override
   String get tradesStrategyNoneOption => 'No strategy';
 
   @override

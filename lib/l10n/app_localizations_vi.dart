@@ -78,6 +78,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tradesStrategyVersionLabel => 'Phiên bản chiến lược';
 
   @override
+  String get tradesRiskRuleLabel => 'Quy tắc rủi ro';
+
+  @override
   String get tradesStrategyNoneOption => 'Không chọn chiến lược';
 
   @override

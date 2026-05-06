@@ -233,6 +233,12 @@ abstract class AppLocalizations {
   /// **'Strategy version'**
   String get tradesStrategyVersionLabel;
 
+  /// No description provided for @tradesRiskRuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk rule'**
+  String get tradesRiskRuleLabel;
+
   /// No description provided for @tradesStrategyNoneOption.
   ///
   /// In en, this message translates to:
