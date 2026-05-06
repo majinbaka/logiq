@@ -24,7 +24,7 @@ void main() {
     await StorageInitializer.instance.initialize();
 
     expect(Hive.isBoxOpen(StorageBoxes.trades), isTrue);
-    expect(Hive.box(StorageBoxes.schema).get('version'), 1);
+    expect(Hive.box(StorageBoxes.schema).get('version'), 2);
   });
 
   test('upgrades older schema version and preserves existing data', () async {
@@ -41,7 +41,7 @@ void main() {
       Hive.box<Map>(StorageBoxes.trades).get('trade_1'),
       {'id': 'trade_1', 'symbol': 'BTCUSDT'},
     );
-    expect(Hive.box(StorageBoxes.schema).get('version'), 1);
+    expect(Hive.box(StorageBoxes.schema).get('version'), 2);
   });
 
   test('throws when stored schema version is newer than app schema', () async {

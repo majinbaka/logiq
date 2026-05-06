@@ -17,7 +17,7 @@ class StorageInitializer {
   static final StorageInitializer instance = StorageInitializer._internal();
   factory StorageInitializer() => instance;
 
-  static const int schemaVersion = 1;
+  static const int schemaVersion = 2;
   static const String _schemaVersionKey = 'version';
   static const String _hiveDirectoryName = 'hive';
   bool _initialized = false;
@@ -136,6 +136,10 @@ class StorageInitializer {
     for (var version = fromVersion + 1; version <= toVersion; version++) {
       switch (version) {
         case 1:
+          break;
+        case 2:
+          // New Hive boxes are opened through StorageBoxes.all; existing maps
+          // remain backward-compatible because new cash fields are nullable.
           break;
       }
     }

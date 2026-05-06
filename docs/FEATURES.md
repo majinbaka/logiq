@@ -546,3 +546,15 @@ Cap nhat UI va validate de phan anh dung luong funding/trading:
 - Bo sung bo chon ngon ngu ngay trong tab `Accounts`.
 - User co the chuyen doi truc tiep giua `English` va `Tieng Viet`.
 - App cap nhat locale ngay lap tuc sau khi chon.
+
+## 14. Cash Management Hardening (2026-05-06)
+
+- Cash movement records now support pending/completed lifecycle metadata for
+  broker confirmation and idempotency.
+- Pending cash movements are persisted but do not update account balance.
+- Broker-confirmed completed cash movements update account balance through the
+  centralized balance sync service.
+- Order cash reservations are stored as durable reservation records and produce
+  account activity audit logs on reserve/release/fill.
+- Cash movement history now reads persisted movement currency instead of
+  reconstructing rows with a hardcoded currency.

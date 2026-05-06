@@ -61,3 +61,10 @@
 - **Description:** After changing selected account, trade creation/edit form still allowed selecting a different account, and primary seeded account could miss master data initialization compared with newly created accounts.
 - **Root cause:** Trade form received full account list instead of active account scope; master-data seeding was only guaranteed on account-create flow, not consistently on seed/reset/upsert paths.
 - **Fix / workaround:** Pinned trade form account list to active account (or trade account when editing), always ran account master-data seeding after account upsert, and seeded primary account master data during storage initialize/reset.
+
+## [OPEN] Cash Management backend and realtime gaps  (STATUS: OPEN)
+- **Date found:** 2026-05-06
+- **Affected files:** docs/CASH_MANAGEMENT.md, lib/repositories/local/local_portfolio_repository.dart
+- **Description:** The repository contains a Flutter/Hive local trading journal architecture, not backend API controllers, SQL migrations, RBAC, broker reconciliation services, FX services, or realtime WebSocket/SSE infrastructure.
+- **Root cause:** Current product scope is local Flutter storage with repository abstractions; production trading-platform backend modules are not present in this codebase.
+- **Fix / workaround:** Added backward-compatible local cash movement status/idempotency metadata, activity logs, reservation records, and documentation. Backend/realtime/margin/reconciliation work remains open.

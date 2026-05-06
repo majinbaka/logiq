@@ -9,6 +9,11 @@ class CashMovementModel {
     required this.amount,
     required this.currency,
     this.note,
+    this.status = 'completed',
+    this.idempotencyKey,
+    this.brokerReference,
+    this.createdBy,
+    this.settledAt,
     required this.createdAt,
     this.updatedAt,
   });
@@ -20,6 +25,11 @@ class CashMovementModel {
   final DbDecimal amount;
   final String currency;
   final String? note;
+  final String status;
+  final String? idempotencyKey;
+  final String? brokerReference;
+  final String? createdBy;
+  final DateTime? settledAt;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -31,6 +41,11 @@ class CashMovementModel {
     amount: parseDecimal(map['amount']) ?? '0',
     currency: map['currency'] as String,
     note: parseString(map['note']),
+    status: parseString(map['status']) ?? 'completed',
+    idempotencyKey: parseString(map['idempotency_key']),
+    brokerReference: parseString(map['broker_reference']),
+    createdBy: parseString(map['created_by']),
+    settledAt: parseDateTime(map['settled_at']),
     createdAt: parseRequiredDateTime(map['created_at'], 'created_at'),
     updatedAt: parseDateTime(map['updated_at']),
   );
@@ -43,6 +58,11 @@ class CashMovementModel {
     'amount': amount,
     'currency': currency,
     'note': note,
+    'status': status,
+    'idempotency_key': idempotencyKey,
+    'broker_reference': brokerReference,
+    'created_by': createdBy,
+    'settled_at': settledAt?.toIso8601String(),
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
   };
