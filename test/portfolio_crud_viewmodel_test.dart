@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logiq/core/database/models/account_balance_model.dart';
+import 'package:logiq/core/database/models/account_activity_log_model.dart';
 import 'package:logiq/core/database/models/cash_ledger_model.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/cash_reservation_model.dart';
 import 'package:logiq/core/database/models/position_snapshot_model.dart';
 import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
 import 'package:logiq/core/database/models/price_quote_model.dart';
@@ -136,7 +138,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
     String accountId, {
     int limit = 20,
   }) async {
-    return cashMovements.where((item) => item.accountId == accountId).take(limit).toList();
+    return cashMovements
+        .where((item) => item.accountId == accountId)
+        .take(limit)
+        .toList();
   }
 
   @override
@@ -171,7 +176,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {}
+  Future<void> upsertCashLedger(
+    CashLedgerModel ledger, {
+    String? currency,
+  }) async {}
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}
@@ -217,6 +225,39 @@ class _FakePortfolioRepository implements PortfolioRepository {
     required String executionCost,
     required String reservedAmount,
     required DateTime at,
+  }) async {}
+
+  @override
+  Future<void> completeCashMovement({
+    required String movementId,
+    required String brokerReference,
+    String actorId = 'broker',
+    DateTime? completedAt,
+  }) async {}
+
+  @override
+  Future<List<CashReservationModel>> listCashReservations(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<AccountActivityLogModel>> listAccountActivityLogs(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
   }) async {}
 
   @override

@@ -19,6 +19,8 @@ abstract final class StorageBoxes {
   static const portfolioSnapshots = 'portfolio_snapshots';
   static const positionSnapshots = 'position_snapshots';
   static const accountBalances = 'account_balances';
+  static const accountActivityLogs = 'account_activity_logs';
+  static const cashReservations = 'cash_reservations';
   static const cashLedgers = 'cash_ledgers';
   static const cashMovements = 'cash_movements';
   static const priceQuotes = 'price_quotes';
@@ -49,6 +51,8 @@ abstract final class StorageBoxes {
     portfolioSnapshots,
     positionSnapshots,
     accountBalances,
+    accountActivityLogs,
+    cashReservations,
     cashLedgers,
     cashMovements,
     priceQuotes,

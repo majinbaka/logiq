@@ -1,6 +1,8 @@
 import '../../core/database/models/account_balance_model.dart';
+import '../../core/database/models/account_activity_log_model.dart';
 import '../../core/database/models/cash_ledger_model.dart';
 import '../../core/database/models/cash_movement_model.dart';
+import '../../core/database/models/cash_reservation_model.dart';
 import '../../core/database/models/position_snapshot_model.dart';
 import '../../core/database/models/portfolio_snapshot_model.dart';
 import '../../core/database/models/price_quote_model.dart';
@@ -44,11 +46,32 @@ abstract class PortfolioRepository {
     String accountId, {
     int limit = 20,
   });
+  Future<List<CashReservationModel>> listCashReservations(
+    String accountId, {
+    int limit = 50,
+  });
+  Future<List<AccountActivityLogModel>> listAccountActivityLogs(
+    String accountId, {
+    int limit = 50,
+  });
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId,
+    String? note,
+  });
   Future<AccountBalanceModel?> getAccountBalance(
     String accountId, {
     String? currency,
   });
   Future<void> upsertCashMovement(CashMovementModel movement);
+  Future<void> completeCashMovement({
+    required String movementId,
+    required String brokerReference,
+    String actorId,
+    DateTime? completedAt,
+  });
   Future<void> upsertPriceQuote(PriceQuoteModel quote);
   Future<void> reserveCashForOrder({
     required String accountId,

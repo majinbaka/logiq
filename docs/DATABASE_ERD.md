@@ -597,3 +597,51 @@ Ghi chu:
   UI nghiep vu chi tiet cho chung co the tiep tuc bo sung sau.
 - Cac field analytics co the duoc phep chua hien thi tren UI ngay, mien la build/rebuild
   analytics van hoat dong tu du lieu goc.
+
+## Cash Management Extension (2026-05-06)
+
+The local Hive schema has been extended in a backward-compatible way for cash
+management hardening:
+
+```mermaid
+erDiagram
+    CASH_MOVEMENT {
+        string status
+        string idempotency_key
+        string broker_reference
+        string created_by
+        datetime settled_at
+    }
+
+    CASH_RESERVATION {
+        string id PK
+        string account_id FK
+        string currency
+        string order_id
+        decimal amount
+        string status
+        string reason
+        datetime created_at
+        datetime released_at
+    }
+
+    ACCOUNT_ACTIVITY_LOG {
+        string id PK
+        string account_id FK
+        string actor_id
+        string action
+        decimal before_value
+        decimal after_value
+        string reason
+        string source
+        string correlation_id
+        datetime created_at
+    }
+```
+
+Rules:
+
+- Only `CASH_MOVEMENT.status = completed` affects `ACCOUNT_BALANCE`.
+- Pending movements, reservations, releases and fills must create audit records.
+- Reservation records are keyed by order id in local storage to keep order
+  reserve/release idempotent for the current app architecture.

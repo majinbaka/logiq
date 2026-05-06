@@ -30,7 +30,221 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navInsights => 'Insights';
 
   @override
+  String get navCashManagement => 'Cash';
+
+  @override
   String get navAccountSettings => 'Accounts';
+
+  @override
+  String get cashTitle => 'Cash Management';
+
+  @override
+  String get cashSubtitle => 'Track cash lifecycle, reservations, and buying power.';
+
+  @override
+  String get cashLoadErrorTitle => 'Could not load cash data';
+
+  @override
+  String get cashLoadErrorBody => 'Please retry loading cash information.';
+
+  @override
+  String get cashRetry => 'Retry';
+
+  @override
+  String get cashCurrentCash => 'Current Cash';
+
+  @override
+  String get cashAvailableCash => 'Available Cash';
+
+  @override
+  String get cashReservedCash => 'Reserved Cash';
+
+  @override
+  String get cashBuyingPower => 'Buying Power';
+
+  @override
+  String get cashLeverageUsage => 'Leverage Usage';
+
+  @override
+  String get cashUnsettledFunds => 'Unsettled Funds';
+
+  @override
+  String get cashDeposit => 'Deposit';
+
+  @override
+  String get cashWithdraw => 'Withdraw';
+
+  @override
+  String get cashReconcile => 'Reconcile';
+
+  @override
+  String get cashTransactionsTitle => 'Transactions';
+
+  @override
+  String get cashFilterAll => 'All';
+
+  @override
+  String get cashFilterDeposit => 'Deposit';
+
+  @override
+  String get cashFilterWithdrawal => 'Withdrawal';
+
+  @override
+  String get cashFilterFee => 'Fee';
+
+  @override
+  String get cashFilterDividend => 'Dividend';
+
+  @override
+  String get cashNoTransactions => 'No cash transactions yet.';
+
+  @override
+  String get cashConfirm => 'Confirm';
+
+  @override
+  String get cashTransactionDetail => 'Transaction detail';
+
+  @override
+  String get cashReservedDetailsTitle => 'Reserved Cash Details';
+
+  @override
+  String get cashNoReservedCash => 'No active reservations.';
+
+  @override
+  String get cashPendingOrder => 'Pending order';
+
+  @override
+  String get cashAmount => 'Amount';
+
+  @override
+  String get cashReconciliationTitle => 'Broker Reconciliation';
+
+  @override
+  String get cashLastSync => 'Last sync';
+
+  @override
+  String get cashSyncNow => 'Sync now';
+
+  @override
+  String get cashSettlementTrackingTitle => 'Settlement Tracking';
+
+  @override
+  String get cashDepositTitle => 'Create Deposit';
+
+  @override
+  String get cashWithdrawalTitle => 'Create Withdrawal';
+
+  @override
+  String get cashDepositType => 'Deposit type';
+
+  @override
+  String get cashCreateConfirmTitle => 'Confirm transaction impact';
+
+  @override
+  String get cashCreateConfirmAmount => 'Transaction amount';
+
+  @override
+  String get cashCreateConfirmAvailableAfter => 'Available cash after create';
+
+  @override
+  String get cashCreateConfirmCurrentAfter => 'Current cash after create';
+
+  @override
+  String get cashCreateConfirmPendingAfter => 'Unsettled funds after create';
+
+  @override
+  String get cashSubmitFailed => 'Cash request failed. Please validate input.';
+
+  @override
+  String get cashSubmitRetry => 'Cash request failed. Please try again.';
+
+  @override
+  String get cashInsufficientAvailable => 'Insufficient available cash.';
+
+  @override
+  String get cashValidationFailed => 'Invalid cash request. Please review your input.';
+
+  @override
+  String get cashPendingInflow => 'Pending Inflow';
+
+  @override
+  String get cashPendingOutflow => 'Pending Outflow';
+
+  @override
+  String get cashNetPendingCash => 'Net Pending Cash';
+
+  @override
+  String get cashExpectedAfterCompletion => 'Expected Cash After Completion';
+
+  @override
+  String get cashBalanceUpdateAfterCompletion => 'Balance updates after completion/broker confirmation.';
+
+  @override
+  String get cashType => 'Type';
+
+  @override
+  String get cashStatus => 'Status';
+
+  @override
+  String get cashTypeDeposit => 'Deposit';
+
+  @override
+  String get cashTypeWithdrawal => 'Withdrawal';
+
+  @override
+  String get cashTypeInitialDeposit => 'Initial Deposit';
+
+  @override
+  String get cashTypeDividend => 'Dividend';
+
+  @override
+  String get cashTypeFee => 'Fee';
+
+  @override
+  String get cashTypeFeeAdjustment => 'Fee Adjustment';
+
+  @override
+  String get cashTypeBrokerFee => 'Broker Fee';
+
+  @override
+  String get cashTypeCommission => 'Commission';
+
+  @override
+  String get cashTypeAdjustment => 'Adjustment';
+
+  @override
+  String cashTypeUnknown(String raw) {
+    return 'Unknown ($raw)';
+  }
+
+  @override
+  String get cashStatusPending => 'Pending';
+
+  @override
+  String get cashStatusCompleted => 'Completed';
+
+  @override
+  String get cashStatusFailed => 'Failed';
+
+  @override
+  String get cashStatusCancelled => 'Cancelled';
+
+  @override
+  String cashStatusUnknown(String raw) {
+    return 'Unknown ($raw)';
+  }
+
+  @override
+  String get cashBrokerReference => 'Broker reference';
+
+  @override
+  String get cashCreatedAt => 'Created at';
+
+  @override
+  String get cashSettledAt => 'Settled at';
+
+  @override
+  String get cashCreatedBy => 'Created by';
 
   @override
   String get workInProgressTitle => 'Work in progress';

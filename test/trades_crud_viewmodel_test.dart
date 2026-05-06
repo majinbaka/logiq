@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/database/models/account_activity_log_model.dart';
 import 'package:logiq/core/database/models/account_balance_model.dart';
 import 'package:logiq/core/database/models/cash_ledger_model.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/cash_reservation_model.dart';
 import 'package:logiq/core/database/models/position_snapshot_model.dart';
 import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
 import 'package:logiq/core/database/models/price_quote_model.dart';
@@ -649,7 +651,10 @@ class _FakePortfolioRepository implements PortfolioRepository {
   Future<void> deleteSnapshot(String snapshotId) async {}
 
   @override
-  Future<List<PortfolioHolding>> buildHoldings(String accountId, DateTime asOf) async {
+  Future<List<PortfolioHolding>> buildHoldings(
+    String accountId,
+    DateTime asOf,
+  ) async {
     return const [];
   }
 
@@ -705,7 +710,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<List<PositionSnapshotModel>> listPositionSnapshots(String snapshotId) async {
+  Future<List<PositionSnapshotModel>> listPositionSnapshots(
+    String snapshotId,
+  ) async {
     return const [];
   }
 
@@ -715,10 +722,21 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {}
+  Future<void> upsertCashLedger(
+    CashLedgerModel ledger, {
+    String? currency,
+  }) async {}
 
   @override
   Future<void> upsertCashMovement(CashMovementModel movement) async {}
+
+  @override
+  Future<void> completeCashMovement({
+    required String movementId,
+    required String brokerReference,
+    String actorId = 'broker',
+    DateTime? completedAt,
+  }) async {}
 
   @override
   Future<void> reserveCashForOrder({
@@ -774,4 +792,29 @@ class _FakePortfolioRepository implements PortfolioRepository {
 
   @override
   Future<void> upsertSnapshot(PortfolioSnapshotModel snapshot) async {}
+
+  @override
+  Future<List<CashReservationModel>> listCashReservations(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<AccountActivityLogModel>> listAccountActivityLogs(
+    String accountId, {
+    int limit = 50,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<void> recordBrokerReconciliation({
+    required String accountId,
+    required String currency,
+    required DateTime at,
+    String actorId = 'system',
+    String? note,
+  }) async {}
 }
