@@ -127,6 +127,9 @@ class StrategyRiskViewModel extends ChangeNotifier {
     required DateTime effectiveFrom,
     String? riskPercentPerTrade,
     String? maxDailyLoss,
+    String? maxWeeklyLoss,
+    String? maxMonthlyLoss,
+    String? stopTradingRule,
   }) async {
     final now = DateTime.now().toUtc();
     final rule = RiskRuleModel(
@@ -135,6 +138,9 @@ class StrategyRiskViewModel extends ChangeNotifier {
       name: name,
       riskPercentPerTrade: riskPercentPerTrade,
       maxDailyLossAmount: maxDailyLoss,
+      maxWeeklyLossAmount: maxWeeklyLoss,
+      maxMonthlyLossAmount: maxMonthlyLoss,
+      stopTradingRule: stopTradingRule,
       isActive: true,
       effectiveFrom: effectiveFrom,
       createdAt: now,

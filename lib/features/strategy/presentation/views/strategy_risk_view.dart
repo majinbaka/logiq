@@ -186,10 +186,19 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
                     l10n.riskRuleSummary(
                       rule.riskPercentPerTrade ?? '-',
                       rule.maxDailyLossAmount ?? '-',
-                    ),
+                      rule.maxWeeklyLossAmount ?? '-',
+                      rule.maxMonthlyLossAmount ?? '-',
                     ),
                   ),
+                  isThreeLine: (rule.stopTradingRule ?? '').trim().isNotEmpty,
+                  trailing: (rule.stopTradingRule ?? '').trim().isEmpty
+                      ? null
+                      : Tooltip(
+                          message: l10n.riskRuleStopTradingLabel,
+                          child: const Icon(Icons.shield_outlined),
+                        ),
                 ),
+              ),
             const SizedBox(height: TradingUiSpacing.sm),
             Text(
               l10n.riskChecksTitle,
@@ -392,6 +401,9 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
     final nameController = TextEditingController();
     final riskPercentController = TextEditingController();
     final maxDailyLossController = TextEditingController();
+    final maxWeeklyLossController = TextEditingController();
+    final maxMonthlyLossController = TextEditingController();
+    final stopTradingRuleController = TextEditingController();
     final effectiveController = TextEditingController(text: _dateNow());
 
     final isSaved = await _openCommonFormSheet(
@@ -418,6 +430,26 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
               _validateOptionalNonNegativeNumber(value, l10n: l10n),
         ),
         _FormFieldConfig(
+          label: l10n.riskRuleWeeklyLossLabel,
+          controller: maxWeeklyLossController,
+          suffixText: l10n.riskRuleDailyLossUnit,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (value) =>
+              _validateOptionalNonNegativeNumber(value, l10n: l10n),
+        ),
+        _FormFieldConfig(
+          label: l10n.riskRuleMonthlyLossLabel,
+          controller: maxMonthlyLossController,
+          suffixText: l10n.riskRuleDailyLossUnit,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (value) =>
+              _validateOptionalNonNegativeNumber(value, l10n: l10n),
+        ),
+        _FormFieldConfig(
+          label: l10n.riskRuleStopTradingLabel,
+          controller: stopTradingRuleController,
+        ),
+        _FormFieldConfig(
           label: l10n.strategyEffectiveFromLabel,
           controller: effectiveController,
           hintText: l10n.dateFormatHint,
@@ -439,6 +471,9 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
         nameController,
         riskPercentController,
         maxDailyLossController,
+        maxWeeklyLossController,
+        maxMonthlyLossController,
+        stopTradingRuleController,
         effectiveController,
       ]);
       return;
@@ -455,6 +490,9 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
         nameController,
         riskPercentController,
         maxDailyLossController,
+        maxWeeklyLossController,
+        maxMonthlyLossController,
+        stopTradingRuleController,
         effectiveController,
       ]);
       return;
@@ -469,12 +507,24 @@ class _StrategyRiskViewState extends State<StrategyRiskView> {
       maxDailyLoss: maxDailyLossController.text.trim().isEmpty
           ? null
           : maxDailyLossController.text.trim(),
+      maxWeeklyLoss: maxWeeklyLossController.text.trim().isEmpty
+          ? null
+          : maxWeeklyLossController.text.trim(),
+      maxMonthlyLoss: maxMonthlyLossController.text.trim().isEmpty
+          ? null
+          : maxMonthlyLossController.text.trim(),
+      stopTradingRule: stopTradingRuleController.text.trim().isEmpty
+          ? null
+          : stopTradingRuleController.text.trim(),
     );
 
     _disposeControllers([
       nameController,
       riskPercentController,
       maxDailyLossController,
+      maxWeeklyLossController,
+      maxMonthlyLossController,
+      stopTradingRuleController,
       effectiveController,
     ]);
   }

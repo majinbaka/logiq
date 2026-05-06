@@ -152,7 +152,24 @@ class LocalTradeRepository implements TradeRepository {
       }
     }
 
-    await _fillBox.put(fill.id, fill.toMap());
+    final normalizedFill = fill.grossValue == null
+        ? TradeFillModel(
+            id: fill.id,
+            tradeId: fill.tradeId,
+            orderId: fill.orderId,
+            executedAt: fill.executedAt,
+            price: fill.price,
+            quantity: fill.quantity,
+            fee: fill.fee,
+            tax: fill.tax,
+            grossValue: _computeGrossValue(fill.price, fill.quantity),
+            netCashFlow: fill.netCashFlow,
+            source: fill.source,
+            createdAt: fill.createdAt,
+          )
+        : fill;
+
+    await _fillBox.put(normalizedFill.id, normalizedFill.toMap());
   }
 
   @override
@@ -331,5 +348,12 @@ class LocalTradeRepository implements TradeRepository {
       }
     }
     return latest;
+  }
+
+  String _computeGrossValue(String price, String quantity) {
+    final parsedPrice = double.tryParse(price) ?? 0;
+    final parsedQuantity = double.tryParse(quantity) ?? 0;
+    final value = parsedPrice * parsedQuantity;
+    return value.toStringAsFixed(8).replaceFirst(RegExp(r'\.?0+$'), '');
   }
 }

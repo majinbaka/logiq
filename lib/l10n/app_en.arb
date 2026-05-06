@@ -181,7 +181,7 @@
       }
     }
   },
-  "riskRuleSummary": "Risk/trade: {riskPercent} | Max daily loss: {maxDailyLoss}",
+  "riskRuleSummary": "Risk/trade: {riskPercent} | Daily: {maxDailyLoss} | Weekly: {maxWeeklyLoss} | Monthly: {maxMonthlyLoss}",
   "@riskRuleSummary": {
     "description": "Risk rule quick summary",
     "placeholders": {
@@ -189,6 +189,12 @@
         "type": "String"
       },
       "maxDailyLoss": {
+        "type": "String"
+      },
+      "maxWeeklyLoss": {
+        "type": "String"
+      },
+      "maxMonthlyLoss": {
         "type": "String"
       }
     }
@@ -199,6 +205,9 @@
   "riskRulePercentUnit": "%",
   "riskRulePercentRangeError": "Please enter a value from 0 to 100.",
   "riskRuleDailyLossLabel": "Max daily loss",
+  "riskRuleWeeklyLossLabel": "Max weekly loss",
+  "riskRuleMonthlyLossLabel": "Max monthly loss",
+  "riskRuleStopTradingLabel": "Stop trading rule",
   "riskRuleDailyLossUnit": "VND",
   "riskRuleValidationMessage": "Please enter a rule name and a valid effective date.",
   "riskChecksTitle": "Risk checks",

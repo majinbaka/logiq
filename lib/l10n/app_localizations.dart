@@ -1004,8 +1004,8 @@ abstract class AppLocalizations {
   /// Risk rule quick summary
   ///
   /// In en, this message translates to:
-  /// **'Risk/trade: {riskPercent} | Max daily loss: {maxDailyLoss}'**
-  String riskRuleSummary(String riskPercent, String maxDailyLoss);
+  /// **'Risk/trade: {riskPercent} | Daily: {maxDailyLoss} | Weekly: {maxWeeklyLoss} | Monthly: {maxMonthlyLoss}'**
+  String riskRuleSummary(String riskPercent, String maxDailyLoss, String maxWeeklyLoss, String maxMonthlyLoss);
 
   /// No description provided for @riskRuleCreateTitle.
   ///
@@ -1042,6 +1042,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Max daily loss'**
   String get riskRuleDailyLossLabel;
+
+  /// No description provided for @riskRuleWeeklyLossLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max weekly loss'**
+  String get riskRuleWeeklyLossLabel;
+
+  /// No description provided for @riskRuleMonthlyLossLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max monthly loss'**
+  String get riskRuleMonthlyLossLabel;
+
+  /// No description provided for @riskRuleStopTradingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop trading rule'**
+  String get riskRuleStopTradingLabel;
 
   /// No description provided for @riskRuleDailyLossUnit.
   ///

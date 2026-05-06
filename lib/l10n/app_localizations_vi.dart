@@ -468,8 +468,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String riskRuleSummary(String riskPercent, String maxDailyLoss) {
-    return 'Rủi ro/lệnh: $riskPercent | Lỗ ngày tối đa: $maxDailyLoss';
+  String riskRuleSummary(String riskPercent, String maxDailyLoss, String maxWeeklyLoss, String maxMonthlyLoss) {
+    return 'Rủi ro/lệnh: $riskPercent | Ngày: $maxDailyLoss | Tuần: $maxWeeklyLoss | Tháng: $maxMonthlyLoss';
   }
 
   @override
@@ -489,6 +489,15 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get riskRuleDailyLossLabel => 'Lỗ ngày tối đa';
+
+  @override
+  String get riskRuleWeeklyLossLabel => 'Lỗ tuần tối đa';
+
+  @override
+  String get riskRuleMonthlyLossLabel => 'Lỗ tháng tối đa';
+
+  @override
+  String get riskRuleStopTradingLabel => 'Quy tắc dừng giao dịch';
 
   @override
   String get riskRuleDailyLossUnit => 'VND';

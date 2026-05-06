@@ -552,11 +552,11 @@ Pham vi doi chieu:
 
 - [ ] `TRADE_ORDER.*` (da co contract/repository, nhung chua co luong nghiep vu UI chinh).
 - [ ] `TRADE_PLAN_TARGET.*` (da co contract/repository, nhung chua co luong nghiep vu UI chinh).
-- [ ] `RISK_RULE.max_weekly_loss_amount`
-- [ ] `RISK_RULE.max_monthly_loss_amount`
-- [ ] `RISK_RULE.stop_trading_rule`
+- [x] `RISK_RULE.max_weekly_loss_amount`
+- [x] `RISK_RULE.max_monthly_loss_amount`
+- [x] `RISK_RULE.stop_trading_rule`
 - [x] `TRADE_FILL.order_id`
-- [ ] `TRADE_FILL.gross_value`
+- [x] `TRADE_FILL.gross_value`
 - [x] `TRADE_CONTEXT.trend_direction`
 - [x] `TRADE_CONTEXT.volatility_level`
 - [x] `TRADE_CONTEXT.timeframe`

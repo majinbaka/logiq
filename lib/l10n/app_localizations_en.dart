@@ -468,8 +468,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String riskRuleSummary(String riskPercent, String maxDailyLoss) {
-    return 'Risk/trade: $riskPercent | Max daily loss: $maxDailyLoss';
+  String riskRuleSummary(String riskPercent, String maxDailyLoss, String maxWeeklyLoss, String maxMonthlyLoss) {
+    return 'Risk/trade: $riskPercent | Daily: $maxDailyLoss | Weekly: $maxWeeklyLoss | Monthly: $maxMonthlyLoss';
   }
 
   @override
@@ -489,6 +489,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get riskRuleDailyLossLabel => 'Max daily loss';
+
+  @override
+  String get riskRuleWeeklyLossLabel => 'Max weekly loss';
+
+  @override
+  String get riskRuleMonthlyLossLabel => 'Max monthly loss';
+
+  @override
+  String get riskRuleStopTradingLabel => 'Stop trading rule';
 
   @override
   String get riskRuleDailyLossUnit => 'VND';
