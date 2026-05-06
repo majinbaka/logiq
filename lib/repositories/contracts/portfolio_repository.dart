@@ -50,6 +50,35 @@ abstract class PortfolioRepository {
   });
   Future<void> upsertCashMovement(CashMovementModel movement);
   Future<void> upsertPriceQuote(PriceQuoteModel quote);
+  Future<void> reserveCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  });
+  Future<void> releaseReservedCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  });
+  Future<void> settleReservedCashOnFill({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String executionCost,
+    required String reservedAmount,
+    required DateTime at,
+  });
+  Future<void> realizeTradeCloseProceeds({
+    required String accountId,
+    required String currency,
+    required String tradeId,
+    required String proceeds,
+    required DateTime at,
+  });
   Future<void> deleteCashMovement(String movementId);
   Future<void> deletePriceQuote(String quoteId);
   Future<List<CashMovementModel>> listCashMovements(

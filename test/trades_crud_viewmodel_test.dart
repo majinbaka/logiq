@@ -97,6 +97,83 @@ void main() {
       throwsA(isA<TradeQuantityValidationException>()),
     );
   });
+
+  test('reject pending order when buying power is insufficient', () async {
+    final repo = _FakeTradeRepository();
+    final portfolioRepo = _FakePortfolioRepository(
+      buyingPower: '1000',
+      availableCash: '1000',
+    );
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: portfolioRepo,
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
+    );
+
+    await vm.createTrade(
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '1',
+    );
+    final trade = vm.trades.first;
+
+    await expectLater(
+      () => vm.saveOrder(
+        trade: trade,
+        status: 'pending',
+        plannedPrice: '180',
+        quantity: '10',
+      ),
+      throwsA(isA<TradeInsufficientCashException>()),
+    );
+  });
+
+  test('reserve then release cash when pending order is canceled', () async {
+    final repo = _FakeTradeRepository();
+    final portfolioRepo = _FakePortfolioRepository();
+    final vm = TradesCrudViewModel(
+      repository: repo,
+      accountRepository: _FakeAccountRepository(),
+      instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: portfolioRepo,
+      riskRepository: _FakeRiskRepository(),
+      strategyRepository: _FakeStrategyRepository(),
+      defaultAccountId: 'acc_1',
+    );
+
+    await vm.createTrade(
+      accountId: 'acc_1',
+      instrumentId: 'ins_fpt',
+      direction: 'buy',
+      openedAt: DateTime.utc(2026, 5, 1),
+      quantityOpened: '1',
+    );
+    final trade = vm.trades.first;
+
+    await vm.saveOrder(
+      trade: trade,
+      status: 'pending',
+      plannedPrice: '180',
+      quantity: '100',
+    );
+    final createdOrder = (await vm.listOrdersByTrade(trade.id)).first;
+    expect(portfolioRepo.reservedAmounts, ['18000']);
+
+    await vm.saveOrder(
+      trade: trade,
+      existing: createdOrder,
+      status: 'canceled',
+      plannedPrice: '180',
+      quantity: '100',
+    );
+    expect(portfolioRepo.releasedAmounts, ['18000']);
+  });
 }
 
 class _FakeRiskRepository implements RiskRepository {
@@ -422,6 +499,16 @@ class _FakeStrategyRepository implements StrategyRepository {
 }
 
 class _FakePortfolioRepository implements PortfolioRepository {
+  _FakePortfolioRepository({
+    this.buyingPower = '1000000000',
+    this.availableCash = '1000000000',
+  });
+
+  final String buyingPower;
+  final String availableCash;
+  final List<String> reservedAmounts = [];
+  final List<String> releasedAmounts = [];
+
   @override
   Future<void> deleteCashLedger(String ledgerId) async {}
 
@@ -458,9 +545,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
       accountId: accountId,
       currency: currency ?? 'VND',
       currentCashBalance: '1000000000',
-      availableCash: '1000000000',
+      availableCash: availableCash,
       reservedCash: '0',
-      buyingPower: '1000000000',
+      buyingPower: buyingPower,
       updatedAt: DateTime.utc(2026, 5, 1),
     );
   }
@@ -505,6 +592,47 @@ class _FakePortfolioRepository implements PortfolioRepository {
 
   @override
   Future<void> upsertCashMovement(CashMovementModel movement) async {}
+
+  @override
+  Future<void> reserveCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {
+    reservedAmounts.add(amount);
+  }
+
+  @override
+  Future<void> releaseReservedCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {
+    releasedAmounts.add(amount);
+  }
+
+  @override
+  Future<void> settleReservedCashOnFill({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String executionCost,
+    required String reservedAmount,
+    required DateTime at,
+  }) async {}
+
+  @override
+  Future<void> realizeTradeCloseProceeds({
+    required String accountId,
+    required String currency,
+    required String tradeId,
+    required String proceeds,
+    required DateTime at,
+  }) async {}
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}

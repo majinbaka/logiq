@@ -152,6 +152,110 @@ class LocalPortfolioRepository implements PortfolioRepository {
   }
 
   @override
+  Future<void> reserveCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {
+    final balance = await _getOrCreateBalance(accountId, currency, at);
+    final reserveAmount = _toDouble(amount);
+    if (reserveAmount <= 0) return;
+    final available = _toDouble(balance.availableCash);
+    if (available + 1e-9 < reserveAmount) return;
+    final current = _toDouble(balance.currentCashBalance);
+    final reserved = _toDouble(balance.reservedCash);
+    final nextReserved = reserved + reserveAmount;
+    final nextAvailable = current - nextReserved;
+    await _upsertBalance(
+      balance,
+      currentCash: current,
+      reservedCash: nextReserved,
+      availableCash: nextAvailable,
+      buyingPower: nextAvailable,
+      updatedAt: at,
+    );
+  }
+
+  @override
+  Future<void> releaseReservedCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {
+    final balance = await _getOrCreateBalance(accountId, currency, at);
+    final releaseAmount = _toDouble(amount);
+    if (releaseAmount <= 0) return;
+    final current = _toDouble(balance.currentCashBalance);
+    final reserved = _toDouble(balance.reservedCash);
+    final nextReserved = (reserved - releaseAmount).clamp(0, double.infinity).toDouble();
+    final nextAvailable = current - nextReserved;
+    await _upsertBalance(
+      balance,
+      currentCash: current,
+      reservedCash: nextReserved,
+      availableCash: nextAvailable,
+      buyingPower: nextAvailable,
+      updatedAt: at,
+    );
+  }
+
+  @override
+  Future<void> settleReservedCashOnFill({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String executionCost,
+    required String reservedAmount,
+    required DateTime at,
+  }) async {
+    final balance = await _getOrCreateBalance(accountId, currency, at);
+    final execution = _toDouble(executionCost);
+    final reservedRelease = _toDouble(reservedAmount);
+    final current = _toDouble(balance.currentCashBalance);
+    final reserved = _toDouble(balance.reservedCash);
+    final nextCurrent = current - execution;
+    final nextReserved = (reserved - reservedRelease).clamp(0, double.infinity).toDouble();
+    final nextAvailable = nextCurrent - nextReserved;
+    await _upsertBalance(
+      balance,
+      currentCash: nextCurrent,
+      reservedCash: nextReserved,
+      availableCash: nextAvailable,
+      buyingPower: nextAvailable,
+      updatedAt: at,
+    );
+  }
+
+  @override
+  Future<void> realizeTradeCloseProceeds({
+    required String accountId,
+    required String currency,
+    required String tradeId,
+    required String proceeds,
+    required DateTime at,
+  }) async {
+    final balance = await _getOrCreateBalance(accountId, currency, at);
+    final amount = _toDouble(proceeds);
+    if (amount <= 0) return;
+    final current = _toDouble(balance.currentCashBalance);
+    final reserved = _toDouble(balance.reservedCash);
+    final nextCurrent = current + amount;
+    final nextAvailable = nextCurrent - reserved;
+    await _upsertBalance(
+      balance,
+      currentCash: nextCurrent,
+      reservedCash: reserved,
+      availableCash: nextAvailable,
+      buyingPower: nextAvailable,
+      updatedAt: at,
+    );
+  }
+
+  @override
   Future<void> deleteCashMovement(String movementId) async {
     await _cashMovementBox.delete(movementId);
     await deleteCashLedger(movementId);
@@ -211,6 +315,46 @@ class LocalPortfolioRepository implements PortfolioRepository {
     final raw = _accountBalanceBox.get(key);
     if (raw == null) return null;
     return AccountBalanceModel.fromMap(toDbJson(raw));
+  }
+
+  Future<AccountBalanceModel> _getOrCreateBalance(
+    String accountId,
+    String currency,
+    DateTime at,
+  ) async {
+    final existing = await getAccountBalance(accountId, currency: currency);
+    if (existing != null) return existing;
+    return AccountBalanceModel(
+      id: '${accountId}_${currency.trim()}',
+      accountId: accountId,
+      currency: currency.trim(),
+      currentCashBalance: '0',
+      availableCash: '0',
+      reservedCash: '0',
+      buyingPower: '0',
+      updatedAt: at,
+    );
+  }
+
+  Future<void> _upsertBalance(
+    AccountBalanceModel balance, {
+    required double currentCash,
+    required double reservedCash,
+    required double availableCash,
+    required double buyingPower,
+    required DateTime updatedAt,
+  }) {
+    final next = AccountBalanceModel(
+      id: balance.id,
+      accountId: balance.accountId,
+      currency: balance.currency,
+      currentCashBalance: _fmt(currentCash),
+      availableCash: _fmt(availableCash),
+      reservedCash: _fmt(reservedCash),
+      buyingPower: _fmt(buyingPower),
+      updatedAt: updatedAt,
+    );
+    return _accountBalanceBox.put(next.id, next.toMap());
   }
 
   @override

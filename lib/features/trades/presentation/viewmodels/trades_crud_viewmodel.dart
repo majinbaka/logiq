@@ -264,19 +264,28 @@ class TradesCrudViewModel extends ChangeNotifier {
       plannedPrice: plannedPrice,
       quantity: quantity,
       status: status,
+      existing: existing,
     );
     final now = DateTime.now().toUtc();
     final normalizedStatus = status.toLowerCase().trim();
+    final nextPlannedPrice =
+        _toNullableDecimal(plannedPrice) ?? existing?.plannedPrice;
+    final nextQuantity = _toNullableDecimal(quantity) ?? existing?.quantity;
+    final nextRequiredCash = _requiredCash(nextPlannedPrice, nextQuantity);
+    final prevRequiredCash = _requiredCash(
+      existing?.plannedPrice,
+      existing?.quantity,
+    );
     final order = TradeOrderModel(
       id: existing?.id ?? 'ord_${trade.id}_${now.microsecondsSinceEpoch}',
       tradeId: trade.id,
       orderSide: existing?.orderSide ?? trade.direction.toLowerCase(),
       orderType: existing?.orderType ?? 'limit',
       intent: existing?.intent ?? 'entry',
-      plannedPrice: _toNullableDecimal(plannedPrice) ?? existing?.plannedPrice,
+      plannedPrice: nextPlannedPrice,
       stopPrice: existing?.stopPrice,
       limitPrice: existing?.limitPrice,
-      quantity: _toNullableDecimal(quantity) ?? existing?.quantity,
+      quantity: nextQuantity,
       status: normalizedStatus,
       placedAt: existing?.placedAt,
       createdAt: existing?.createdAt ?? now,
@@ -284,6 +293,14 @@ class TradesCrudViewModel extends ChangeNotifier {
       deletedAt: existing?.deletedAt,
     );
     await _repository.upsertOrder(order);
+    await _syncOrderReserveCash(
+      trade: trade,
+      order: order,
+      existing: existing,
+      previousRequiredCash: prevRequiredCash,
+      nextRequiredCash: nextRequiredCash,
+      at: now,
+    );
   }
 
   Future<void> _validateAvailableCashForOrder({
@@ -291,10 +308,12 @@ class TradesCrudViewModel extends ChangeNotifier {
     required String? plannedPrice,
     required String? quantity,
     required String status,
+    required TradeOrderModel? existing,
   }) async {
     final normalizedStatus = status.trim().toLowerCase();
     final isPendingOrder = normalizedStatus == 'pending' || normalizedStatus == 'open';
-    final isEntrySide = trade.direction.trim().toLowerCase() == 'long';
+    final tradeDirection = trade.direction.trim().toLowerCase();
+    final isEntrySide = tradeDirection == 'long' || tradeDirection == 'buy';
     if (!isPendingOrder || !isEntrySide) return;
 
     final orderPrice = _toDouble(_toNullableDecimal(plannedPrice));
@@ -303,13 +322,76 @@ class TradesCrudViewModel extends ChangeNotifier {
 
     final requiredCash = orderPrice * orderQty;
     final balance = await _portfolioRepository.getAccountBalance(trade.accountId);
-    final availableCash = _toDouble(balance?.availableCash);
-    if (availableCash + 1e-9 < requiredCash) {
+    final buyingPower = _toDouble(balance?.buyingPower);
+    final currentOrderReserved = existing == null
+        ? 0
+        : _requiredCash(existing.plannedPrice, existing.quantity);
+    final requiredDelta = requiredCash - currentOrderReserved;
+    if (requiredDelta <= 0) return;
+    if (buyingPower + 1e-9 < requiredDelta) {
       throw TradeInsufficientCashException(
         requiredCash: requiredCash,
-        availableCash: availableCash,
+        availableCash: buyingPower,
       );
     }
+  }
+
+  Future<void> _syncOrderReserveCash({
+    required TradeModel trade,
+    required TradeOrderModel order,
+    required TradeOrderModel? existing,
+    required double previousRequiredCash,
+    required double nextRequiredCash,
+    required DateTime at,
+  }) async {
+    final tradeDirection = trade.direction.trim().toLowerCase();
+    final isEntrySide = tradeDirection == 'long' || tradeDirection == 'buy';
+    if (!isEntrySide) return;
+    final accountCurrency = _accountCurrency(trade.accountId);
+    final previousPending = _isPendingOrderStatus(existing?.status);
+    final nextPending = _isPendingOrderStatus(order.status);
+    if (nextPending) {
+      final delta = nextRequiredCash - (previousPending ? previousRequiredCash : 0);
+      if (delta > 0) {
+        await _portfolioRepository.reserveCashForOrder(
+          accountId: trade.accountId,
+          currency: accountCurrency,
+          orderId: order.id,
+          amount: _fmt(delta),
+          at: at,
+        );
+      } else if (delta < 0) {
+        await _portfolioRepository.releaseReservedCashForOrder(
+          accountId: trade.accountId,
+          currency: accountCurrency,
+          orderId: order.id,
+          amount: _fmt(delta.abs()),
+          at: at,
+        );
+      }
+      return;
+    }
+    if (previousPending && previousRequiredCash > 0) {
+      await _portfolioRepository.releaseReservedCashForOrder(
+        accountId: trade.accountId,
+        currency: accountCurrency,
+        orderId: order.id,
+        amount: _fmt(previousRequiredCash),
+        at: at,
+      );
+    }
+  }
+
+  bool _isPendingOrderStatus(String? status) {
+    final normalized = (status ?? '').trim().toLowerCase();
+    return normalized == 'pending' || normalized == 'open';
+  }
+
+  double _requiredCash(String? price, String? quantity) {
+    final parsedPrice = _toDouble(price);
+    final parsedQuantity = _toDouble(quantity);
+    if (parsedPrice <= 0 || parsedQuantity <= 0) return 0;
+    return parsedPrice * parsedQuantity;
   }
 
   Future<void> deleteOrder(String orderId) {
@@ -551,6 +633,20 @@ class TradesCrudViewModel extends ChangeNotifier {
     final trimmed = value.trim();
     if (trimmed.isEmpty) return null;
     return trimmed;
+  }
+
+  String _accountCurrency(String accountId) {
+    for (final account in _accounts) {
+      if (account.id == accountId) return account.baseCurrency;
+    }
+    return 'VND';
+  }
+
+  String _fmt(double value) {
+    return value
+        .toStringAsFixed(8)
+        .replaceFirst(RegExp(r'0+$'), '')
+        .replaceFirst(RegExp(r'\.$'), '');
   }
 
   Future<TradePlanModel> _ensurePlanForTrade(TradeModel trade, DateTime now) async {

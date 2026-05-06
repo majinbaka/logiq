@@ -240,4 +240,41 @@ class _FakePortfolioRepository implements PortfolioRepository {
   Future<void> upsertSnapshot(PortfolioSnapshotModel snapshot) async {
     _snapshots[snapshot.id] = snapshot;
   }
+
+  @override
+  Future<void> reserveCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {}
+
+  @override
+  Future<void> releaseReservedCashForOrder({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String amount,
+    required DateTime at,
+  }) async {}
+
+  @override
+  Future<void> settleReservedCashOnFill({
+    required String accountId,
+    required String currency,
+    required String orderId,
+    required String executionCost,
+    required String reservedAmount,
+    required DateTime at,
+  }) async {}
+
+  @override
+  Future<void> realizeTradeCloseProceeds({
+    required String accountId,
+    required String currency,
+    required String tradeId,
+    required String proceeds,
+    required DateTime at,
+  }) async {}
 }
