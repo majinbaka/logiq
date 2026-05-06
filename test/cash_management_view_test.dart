@@ -65,7 +65,17 @@ void main() {
       ],
     );
     await _pumpCash(tester, portfolioRepository: repository);
-    await tester.tap(find.byKey(const Key('cash_delete_cm_1')));
+    await tester.tap(find.byKey(const Key('cash_transactions_expand')));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('cash_delete_cm_1')),
+      120,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final deleteButton = tester.widget<IconButton>(
+      find.byKey(const Key('cash_delete_cm_1')),
+    );
+    deleteButton.onPressed!.call();
     await tester.pumpAndSettle();
 
     expect(repository.deletedMovementId, 'cm_1');
@@ -101,6 +111,7 @@ void main() {
     await tester.tap(find.byKey(const Key('cash_action_withdraw')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('cash_withdraw_amount')), '2000');
+    await tester.ensureVisible(find.byKey(const Key('cash_withdraw_save')));
     await tester.tap(find.byKey(const Key('cash_withdraw_save')));
     await tester.pumpAndSettle();
 
@@ -121,8 +132,10 @@ void main() {
     await tester.tap(find.byKey(const Key('cash_action_withdraw')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('cash_withdraw_amount')), '1000');
+    await tester.ensureVisible(find.byKey(const Key('cash_withdraw_save')));
     await tester.tap(find.byKey(const Key('cash_withdraw_save')));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('cash_create_confirm_submit')));
     await tester.tap(find.byKey(const Key('cash_create_confirm_submit')));
     await tester.pumpAndSettle();
 
@@ -145,6 +158,8 @@ void main() {
       ],
     );
     await _pumpCash(tester, portfolioRepository: repository);
+    await tester.tap(find.byKey(const Key('cash_transactions_expand')));
+    await tester.pumpAndSettle();
 
     expect(find.textContaining('Fee Adjustment • 100 USD'), findsOneWidget);
     expect(find.textContaining('Pending • '), findsOneWidget);
@@ -155,6 +170,9 @@ Future<void> _pumpCash(
   WidgetTester tester, {
   required PortfolioRepository portfolioRepository,
 }) async {
+  await tester.binding.setSurfaceSize(const Size(1200, 1400));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
   await tester.pumpWidget(
     MaterialApp(
       localizationsDelegates: const [

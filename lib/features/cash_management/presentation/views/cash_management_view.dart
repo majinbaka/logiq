@@ -12,6 +12,8 @@ import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 import 'package:logiq/repositories/local/local_account_repository.dart';
 import 'package:logiq/repositories/local/local_portfolio_repository.dart';
+part 'cash_management_view_ui_helpers.dart';
+part 'cash_management_view_actions.dart';
 
 class CashManagementView extends StatefulWidget {
   const CashManagementView({
@@ -30,20 +32,33 @@ class CashManagementView extends StatefulWidget {
   State<CashManagementView> createState() => _CashManagementViewState();
 }
 
-class _CashManagementViewState extends State<CashManagementView> {
+class _CashManagementViewState extends State<CashManagementView> with _CashManagementViewUiHelpers, _CashManagementViewActions {
+  @override
   late final CashManagementViewModel _viewModel;
+  @override
   final GlobalKey<FormState> _depositFormKey = GlobalKey<FormState>();
+  @override
   final GlobalKey<FormState> _withdrawFormKey = GlobalKey<FormState>();
+  @override
   late final TextEditingController _depositAmountController;
+  @override
   late final TextEditingController _depositNoteController;
+  @override
   late final TextEditingController _withdrawAmountController;
+  @override
   late final TextEditingController _withdrawNoteController;
+  @override
   CashMovementType _depositType = CashMovementType.deposit;
+  @override
   bool _isDepositExpanded = false;
+  @override
   bool _isWithdrawExpanded = false;
+  bool _isTransactionsExpanded = false;
+  bool _isAuditLogExpanded = false;
+  @override
   late final ScrollController _scrollController;
+  @override
   int _visibleMovementCount = 30;
-  static const int _visibleMovementStep = 30;
 
   @override
   void initState() {
@@ -106,6 +121,8 @@ class _CashManagementViewState extends State<CashManagementView> {
               title: l10n.cashTitle,
               subtitle: l10n.cashSubtitle,
             ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            _buildDailyRiskBanner(),
             const SizedBox(height: TradingUiSpacing.md),
             Wrap(
               spacing: TradingUiSpacing.sm,
@@ -187,91 +204,6 @@ class _CashManagementViewState extends State<CashManagementView> {
             ],
             const SizedBox(height: TradingUiSpacing.md),
             Text(
-              l10n.cashTransactionsTitle,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: TradingUiSpacing.sm),
-            Wrap(
-              spacing: TradingUiSpacing.xs,
-              children: [
-                _filterChip(l10n.cashFilterAll, CashMovementFilter.all),
-                _filterChip(l10n.cashFilterDeposit, CashMovementFilter.deposit),
-                _filterChip(
-                  l10n.cashFilterWithdrawal,
-                  CashMovementFilter.withdrawal,
-                ),
-                _filterChip(l10n.cashFilterFee, CashMovementFilter.fee),
-                _filterChip(
-                  l10n.cashFilterDividend,
-                  CashMovementFilter.dividend,
-                ),
-              ],
-            ),
-            const SizedBox(height: TradingUiSpacing.xs),
-            Wrap(
-              spacing: TradingUiSpacing.xs,
-              children: [
-                _dateFilterChip(l10n.cashFilterTimeAll, CashMovementDateFilter.all),
-                _dateFilterChip(l10n.cashFilterTime7d, CashMovementDateFilter.last7Days),
-                _dateFilterChip(l10n.cashFilterTime30d, CashMovementDateFilter.last30Days),
-                _dateFilterChip(l10n.cashFilterTime90d, CashMovementDateFilter.last90Days),
-              ],
-            ),
-            const SizedBox(height: TradingUiSpacing.sm),
-            if (filteredMovements.isEmpty)
-              Text(l10n.cashNoTransactions)
-            else
-              ...visibleMovements.map((movement) {
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      '${_displayMovementType(movement.movementType)} • ${movement.amount} ${movement.currency}',
-                    ),
-                    subtitle: Text(
-                      '${_displayMovementStatus(movement.status)} • ${_fmtDateTime(movement.movementDate)}',
-                    ),
-                    trailing: Wrap(
-                      spacing: TradingUiSpacing.xs,
-                      children: [
-                        if (movement.status.toLowerCase() == 'pending')
-                          IconButton(
-                            key: Key('cash_confirm_${movement.id}'),
-                            onPressed: _viewModel.isSubmitting
-                                ? null
-                                : () => _confirmMovement(movement),
-                            icon: const Icon(Icons.check_circle_outline),
-                            tooltip: l10n.cashConfirm,
-                          ),
-                        IconButton(
-                          onPressed: () => _openTransactionDetail(movement),
-                          icon: const Icon(Icons.info_outline),
-                          tooltip: l10n.cashTransactionDetail,
-                        ),
-                        IconButton(
-                          key: Key('cash_delete_${movement.id}'),
-                          onPressed: _viewModel.isSubmitting
-                              ? null
-                              : () => _deleteMovement(movement),
-                          icon: const Icon(Icons.delete_outline),
-                          tooltip: l10n.tradesDeleteTooltip,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            if (visibleMovements.length < filteredMovements.length)
-              Padding(
-                padding: const EdgeInsets.only(top: TradingUiSpacing.sm),
-                child: Center(
-                  child: Text(
-                    l10n.cashLoadingMoreTransactions,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ),
-            const SizedBox(height: TradingUiSpacing.md),
-            Text(
               l10n.cashReservedDetailsTitle,
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -293,8 +225,117 @@ class _CashManagementViewState extends State<CashManagementView> {
                   ),
                 );
               }),
-            const SizedBox(height: TradingUiSpacing.sm),
-            _buildDailyRiskBanner(),
+            const SizedBox(height: TradingUiSpacing.md),
+            ExpansionTile(
+              key: const Key('cash_transactions_expand'),
+              title: Text(
+                l10n.cashTransactionsTitle,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              initiallyExpanded: _isTransactionsExpanded,
+              onExpansionChanged: (expanded) {
+                setState(() => _isTransactionsExpanded = expanded);
+              },
+              childrenPadding: const EdgeInsets.symmetric(
+                horizontal: TradingUiSpacing.sm,
+              ),
+              children: [
+                Wrap(
+                  spacing: TradingUiSpacing.xs,
+                  children: [
+                    _filterChip(l10n.cashFilterAll, CashMovementFilter.all),
+                    _filterChip(l10n.cashFilterDeposit, CashMovementFilter.deposit),
+                    _filterChip(
+                      l10n.cashFilterWithdrawal,
+                      CashMovementFilter.withdrawal,
+                    ),
+                    _filterChip(l10n.cashFilterFee, CashMovementFilter.fee),
+                    _filterChip(
+                      l10n.cashFilterDividend,
+                      CashMovementFilter.dividend,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: TradingUiSpacing.xs),
+                Wrap(
+                  spacing: TradingUiSpacing.xs,
+                  children: [
+                    _dateFilterChip(
+                      l10n.cashFilterTimeAll,
+                      CashMovementDateFilter.all,
+                    ),
+                    _dateFilterChip(
+                      l10n.cashFilterTime7d,
+                      CashMovementDateFilter.last7Days,
+                    ),
+                    _dateFilterChip(
+                      l10n.cashFilterTime30d,
+                      CashMovementDateFilter.last30Days,
+                    ),
+                    _dateFilterChip(
+                      l10n.cashFilterTime90d,
+                      CashMovementDateFilter.last90Days,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: TradingUiSpacing.sm),
+                if (filteredMovements.isEmpty)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.cashNoTransactions),
+                  )
+                else
+                  ...visibleMovements.map((movement) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(
+                          '${_displayMovementType(movement.movementType)} • ${movement.amount} ${movement.currency}',
+                        ),
+                        subtitle: Text(
+                          '${_displayMovementStatus(movement.status)} • ${_fmtDateTime(movement.movementDate)}',
+                        ),
+                        trailing: Wrap(
+                          spacing: TradingUiSpacing.xs,
+                          children: [
+                            if (movement.status.toLowerCase() == 'pending')
+                              IconButton(
+                                key: Key('cash_confirm_${movement.id}'),
+                                onPressed: _viewModel.isSubmitting
+                                    ? null
+                                    : () => _confirmMovement(movement),
+                                icon: const Icon(Icons.check_circle_outline),
+                                tooltip: l10n.cashConfirm,
+                              ),
+                            IconButton(
+                              onPressed: () => _openTransactionDetail(movement),
+                              icon: const Icon(Icons.info_outline),
+                              tooltip: l10n.cashTransactionDetail,
+                            ),
+                            IconButton(
+                              key: Key('cash_delete_${movement.id}'),
+                              onPressed: _viewModel.isSubmitting
+                                  ? null
+                                  : () => _deleteMovement(movement),
+                              icon: const Icon(Icons.delete_outline),
+                              tooltip: l10n.tradesDeleteTooltip,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                if (visibleMovements.length < filteredMovements.length)
+                  Padding(
+                    padding: const EdgeInsets.only(top: TradingUiSpacing.sm),
+                    child: Center(
+                      child: Text(
+                        l10n.cashLoadingMoreTransactions,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: TradingUiSpacing.md),
             Card(
               child: ListTile(
@@ -323,577 +364,42 @@ class _CashManagementViewState extends State<CashManagementView> {
               ),
             ),
             const SizedBox(height: TradingUiSpacing.md),
-            Text(
-              l10n.cashAuditLogTitle,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: TradingUiSpacing.sm),
-            if (_viewModel.activityLogs.isEmpty)
-              Text(l10n.cashAuditLogEmpty)
-            else
-              ..._viewModel.activityLogs.take(10).map((item) {
-                return ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(_displayActivityAction(item.action)),
-                  subtitle: Text(
-                    '${item.actorId} • ${_fmtDateTime(item.createdAt)}',
-                  ),
-                  trailing: Text('${item.beforeValue} → ${item.afterValue}'),
-                );
-              }),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _metricCard(String label, String value, {String? tooltip}) {
-    final content = Padding(
-      padding: const EdgeInsets.all(TradingUiSpacing.sm),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.labelMedium),
-          const SizedBox(height: TradingUiSpacing.xs),
-          Text(value, style: Theme.of(context).textTheme.titleMedium),
-        ],
-      ),
-    );
-    return SizedBox(
-      width: 180,
-      child: Card(
-        child: tooltip == null ? content : Tooltip(message: tooltip, child: content),
-      ),
-    );
-  }
-
-  Widget _buildDailyRiskBanner() {
-    final l10n = AppLocalizations.of(context)!;
-    final state = _viewModel.dailyRiskState();
-    final used = _viewModel.dailyLossUsed();
-    final limit = _viewModel.dailyLossLimit();
-    final usagePercent = (_viewModel.dailyLossUsageRatio() * 100).clamp(0, 999);
-    final colorScheme = Theme.of(context).colorScheme;
-    final (bgColor, fgColor, statusLabel) = switch (state) {
-      CashRiskState.ok => (
-        colorScheme.secondaryContainer,
-        colorScheme.onSecondaryContainer,
-        l10n.cashRiskStatusOk,
-      ),
-      CashRiskState.warning => (
-        colorScheme.tertiaryContainer,
-        colorScheme.onTertiaryContainer,
-        l10n.cashRiskStatusWarning,
-      ),
-      CashRiskState.breach => (
-        colorScheme.errorContainer,
-        colorScheme.onErrorContainer,
-        l10n.cashRiskStatusBreach,
-      ),
-    };
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(TradingUiSpacing.sm),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${l10n.cashDailyLossLabel}: ${used.toStringAsFixed(2)} / ${limit.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(color: fgColor),
-          ),
-          const SizedBox(height: TradingUiSpacing.xs),
-          Text(
-            '${l10n.cashRiskStatusLabel}: $statusLabel • ${usagePercent.toStringAsFixed(1)}%',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: fgColor),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSyncHealthChip() {
-    final l10n = AppLocalizations.of(context)!;
-    final health = _viewModel.syncHealth();
-    final colorScheme = Theme.of(context).colorScheme;
-    final (label, color) = switch (health) {
-      CashSyncHealth.live => (l10n.cashSyncHealthLive, colorScheme.primary),
-      CashSyncHealth.delayed => (l10n.cashSyncHealthDelayed, colorScheme.tertiary),
-      CashSyncHealth.failed => (l10n.cashSyncHealthFailed, colorScheme.error),
-    };
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
-        ),
-      ),
-    );
-  }
-
-  Widget _filterChip(String label, CashMovementFilter filter) {
-    return FilterChip(
-      label: Text(label),
-      selected: _viewModel.filter == filter,
-      onSelected: (_) {
-        _viewModel.setFilter(filter);
-        setState(() => _visibleMovementCount = _visibleMovementStep);
-      },
-    );
-  }
-
-  Widget _dateFilterChip(String label, CashMovementDateFilter filter) {
-    return FilterChip(
-      label: Text(label),
-      selected: _viewModel.dateFilter == filter,
-      onSelected: (_) {
-        _viewModel.setDateFilter(filter);
-        setState(() => _visibleMovementCount = _visibleMovementStep);
-      },
-    );
-  }
-
-  Widget _buildDepositForm() {
-    final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(TradingUiSpacing.md),
-        child: Form(
-          key: _depositFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.cashDepositTitle,
+            ExpansionTile(
+              key: const Key('cash_audit_log_expand'),
+              title: Text(
+                l10n.cashAuditLogTitle,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              FormattedNumberInput(
-                key: const Key('cash_deposit_amount'),
-                controller: _depositAmountController,
-                label: '${l10n.cashAmount} *',
-                required: true,
-                mustBePositive: true,
-                suffixText: _viewModel.currency,
-                requiredErrorText: l10n.portfolioRequiredFieldValidationError,
-                numberErrorText: l10n.portfolioNumberValidationError,
-                positiveNumberErrorText:
-                    l10n.portfolioPositiveNumberValidationError,
-                nonNegativeNumberErrorText:
-                    l10n.portfolioPositiveNumberValidationError,
+              initiallyExpanded: _isAuditLogExpanded,
+              onExpansionChanged: (expanded) {
+                setState(() => _isAuditLogExpanded = expanded);
+              },
+              childrenPadding: const EdgeInsets.symmetric(
+                horizontal: TradingUiSpacing.sm,
               ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              DropdownButtonFormField<CashMovementType>(
-                key: const Key('cash_deposit_type'),
-                initialValue: _depositType,
-                decoration: InputDecoration(labelText: l10n.cashDepositType),
-                items: [
-                  DropdownMenuItem(
-                    value: CashMovementType.initialDeposit,
-                    child: Text(_displayMovementType('initial_deposit')),
-                  ),
-                  DropdownMenuItem(
-                    value: CashMovementType.deposit,
-                    child: Text(_displayMovementType('deposit')),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() => _depositType = value);
-                },
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              TextFormField(
-                key: const Key('cash_deposit_note'),
-                controller: _depositNoteController,
-                decoration: InputDecoration(labelText: l10n.portfolioNoteLabel),
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _viewModel.isSubmitting
-                          ? null
-                          : () {
-                              _depositFormKey.currentState?.reset();
-                              _depositAmountController.clear();
-                              _depositNoteController.clear();
-                              setState(() => _isDepositExpanded = false);
-                            },
-                      child: Text(l10n.portfolioCancel),
-                    ),
-                  ),
-                  const SizedBox(width: TradingUiSpacing.sm),
-                  Expanded(
-                    child: FilledButton(
-                      key: const Key('cash_deposit_save'),
-                      onPressed: _viewModel.isSubmitting ? null : _submitDeposit,
-                      child: Text(l10n.portfolioSave),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWithdrawForm() {
-    final l10n = AppLocalizations.of(context)!;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(TradingUiSpacing.md),
-        child: Form(
-          key: _withdrawFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.cashWithdrawalTitle,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: TradingUiSpacing.xs),
-              Text(
-                '${l10n.cashAvailableCash}: ${_viewModel.balance?.availableCash ?? '0'} ${_viewModel.currency}',
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              FormattedNumberInput(
-                key: const Key('cash_withdraw_amount'),
-                controller: _withdrawAmountController,
-                label: '${l10n.cashAmount} *',
-                required: true,
-                mustBePositive: true,
-                suffixText: _viewModel.currency,
-                requiredErrorText: l10n.portfolioRequiredFieldValidationError,
-                numberErrorText: l10n.portfolioNumberValidationError,
-                positiveNumberErrorText:
-                    l10n.portfolioPositiveNumberValidationError,
-                nonNegativeNumberErrorText:
-                    l10n.portfolioPositiveNumberValidationError,
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              TextFormField(
-                key: const Key('cash_withdraw_note'),
-                controller: _withdrawNoteController,
-                decoration: InputDecoration(labelText: l10n.portfolioNoteLabel),
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _viewModel.isSubmitting
-                          ? null
-                          : () {
-                              _withdrawFormKey.currentState?.reset();
-                              _withdrawAmountController.clear();
-                              _withdrawNoteController.clear();
-                              setState(() => _isWithdrawExpanded = false);
-                            },
-                      child: Text(l10n.portfolioCancel),
-                    ),
-                  ),
-                  const SizedBox(width: TradingUiSpacing.sm),
-                  Expanded(
-                    child: FilledButton(
-                      key: const Key('cash_withdraw_save'),
-                      onPressed: _viewModel.isSubmitting ? null : _submitWithdraw,
-                      child: Text(l10n.portfolioSave),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _submitDeposit() async {
-    final l10n = AppLocalizations.of(context)!;
-    if (_depositFormKey.currentState?.validate() != true) return;
-    final amount = FormattedNumberInput.normalizeNumberText(
-      _depositAmountController.text,
-    );
-    final confirmed = await _confirmCreateTransaction(
-      amount: amount,
-      isDeposit: true,
-    );
-    if (!confirmed) return;
-    try {
-      await _viewModel.createDepositPending(
-        amount: amount,
-        movementType: _depositType.value,
-        note: _depositNoteController.text.trim().isEmpty
-            ? null
-            : _depositNoteController.text.trim(),
-      );
-      _depositFormKey.currentState?.reset();
-      _depositAmountController.clear();
-      _depositNoteController.clear();
-      if (!mounted) return;
-      setState(() => _isDepositExpanded = false);
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.cashSubmitFailed)));
-    }
-  }
-
-  Future<void> _submitWithdraw() async {
-    final l10n = AppLocalizations.of(context)!;
-    if (_withdrawFormKey.currentState?.validate() != true) return;
-    final amount = FormattedNumberInput.normalizeNumberText(
-      _withdrawAmountController.text,
-    );
-    final confirmed = await _confirmCreateTransaction(
-      amount: amount,
-      isDeposit: false,
-    );
-    if (!confirmed) return;
-    try {
-      await _viewModel.createWithdrawalPending(
-        amount: amount,
-        note: _withdrawNoteController.text.trim().isEmpty
-            ? null
-            : _withdrawNoteController.text.trim(),
-      );
-      _withdrawFormKey.currentState?.reset();
-      _withdrawAmountController.clear();
-      _withdrawNoteController.clear();
-      if (!mounted) return;
-      setState(() => _isWithdrawExpanded = false);
-    } on CashValidationException catch (error) {
-      final message = error.code == 'insufficient_available_cash'
-          ? l10n.cashInsufficientAvailable
-          : l10n.cashValidationFailed;
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    } catch (error, stackTrace) {
-      debugPrint('createWithdrawalPending failed: $error\n$stackTrace');
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.cashSubmitRetry)));
-    }
-  }
-
-  Future<void> _confirmMovement(CashMovementModel movement) async {
-    await _viewModel.confirmPendingMovement(movement);
-  }
-
-  Future<void> _reconcileNow() async {
-    await _viewModel.reconcileNow();
-  }
-
-  Future<void> _openTransactionDetail(CashMovementModel movement) async {
-    final l10n = AppLocalizations.of(context)!;
-    await showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(TradingUiSpacing.md),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.cashTransactionDetail,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: TradingUiSpacing.sm),
-              Text(
-                '${l10n.cashType}: ${_displayMovementType(movement.movementType)}',
-              ),
-              Text(
-                '${l10n.cashAmount}: ${movement.amount} ${movement.currency}',
-              ),
-              Text(
-                '${l10n.cashStatus}: ${_displayMovementStatus(movement.status)}',
-              ),
-              Text(
-                '${l10n.cashBrokerReference}: ${movement.brokerReference ?? '-'}',
-              ),
-              Text(
-                '${l10n.cashCreatedAt}: ${_fmtDateTime(movement.createdAt)}',
-              ),
-              Text(
-                '${l10n.cashSettledAt}: ${movement.settledAt == null ? '-' : _fmtDateTime(movement.settledAt!)}',
-              ),
-              Text('${l10n.cashCreatedBy}: ${movement.createdBy ?? '-'}'),
-              Text('${l10n.portfolioNoteLabel}: ${movement.note ?? '-'}'),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _deleteMovement(CashMovementModel movement) async {
-    await _viewModel.deleteMovement(movement.id);
-  }
-
-  Future<bool> _confirmCreateTransaction({
-    required String amount,
-    required bool isDeposit,
-  }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final value = _toDouble(amount);
-    final currentCash = _toDouble(_viewModel.balance?.currentCashBalance);
-    final availableCash = _toDouble(_viewModel.balance?.availableCash);
-    final nextPendingInflow = _viewModel.pendingInflow() + (isDeposit ? value : 0);
-    final nextPendingOutflow = _viewModel.pendingOutflow() + (isDeposit ? 0 : value);
-    final expectedAfterCompletion = isDeposit
-        ? currentCash + value
-        : currentCash - value;
-
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.cashCreateConfirmTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${l10n.cashCreateConfirmAmount}: $amount ${_viewModel.currency}'),
-              const SizedBox(height: TradingUiSpacing.xs),
-              Text('${l10n.cashCurrentCash}: ${currentCash.toStringAsFixed(2)}'),
-              Text(
-                '${l10n.cashPendingInflow}: +${nextPendingInflow.toStringAsFixed(2)}',
-              ),
-              Text(
-                '${l10n.cashPendingOutflow}: -${nextPendingOutflow.toStringAsFixed(2)}',
-              ),
-              Text(
-                '${l10n.cashExpectedAfterCompletion}: ${expectedAfterCompletion.toStringAsFixed(2)}',
-              ),
-              const SizedBox(height: TradingUiSpacing.xs),
-              Text('${l10n.cashAvailableCash}: ${availableCash.toStringAsFixed(2)}'),
-              Text(l10n.cashBalanceUpdateAfterCompletion),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l10n.portfolioCancel),
-            ),
-            FilledButton(
-              key: const Key('cash_create_confirm_submit'),
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.cashConfirm),
+              children: [
+                if (_viewModel.activityLogs.isEmpty)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(l10n.cashAuditLogEmpty),
+                  )
+                else
+                  ..._viewModel.activityLogs.take(10).map((item) {
+                    return ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(_displayActivityAction(item.action)),
+                      subtitle: Text(
+                        '${item.actorId} • ${_fmtDateTime(item.createdAt)}',
+                      ),
+                      trailing: Text('${item.beforeValue} → ${item.afterValue}'),
+                    );
+                  }),
+              ],
             ),
           ],
         );
       },
     );
-    return ok == true;
-  }
-
-  double _toDouble(String? value) => double.tryParse(value ?? '0') ?? 0;
-
-  String _displayMovementType(String raw) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (raw.trim().toLowerCase()) {
-      case 'deposit':
-        return l10n.cashTypeDeposit;
-      case 'withdrawal':
-        return l10n.cashTypeWithdrawal;
-      case 'initial_deposit':
-        return l10n.cashTypeInitialDeposit;
-      case 'dividend':
-        return l10n.cashTypeDividend;
-      case 'fee':
-        return l10n.cashTypeFee;
-      case 'fee_adjustment':
-        return l10n.cashTypeFeeAdjustment;
-      case 'broker_fee':
-        return l10n.cashTypeBrokerFee;
-      case 'commission':
-        return l10n.cashTypeCommission;
-      case 'adjustment':
-        return l10n.cashTypeAdjustment;
-      default:
-        return l10n.cashTypeUnknown(raw);
-    }
-  }
-
-  String _displayMovementStatus(String raw) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (raw.trim().toLowerCase()) {
-      case 'pending':
-        return l10n.cashStatusPending;
-      case 'completed':
-        return l10n.cashStatusCompleted;
-      case 'failed':
-        return l10n.cashStatusFailed;
-      case 'cancelled':
-      case 'canceled':
-        return l10n.cashStatusCancelled;
-      default:
-        return l10n.cashStatusUnknown(raw);
-    }
-  }
-
-  String _displayActivityAction(String raw) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (raw.trim().toLowerCase()) {
-      case 'cash_movement_created':
-        return l10n.cashAuditActionMovementCreated;
-      case 'cash_movement_completed':
-        return l10n.cashAuditActionMovementCompleted;
-      case 'cash_reserved':
-        return l10n.cashAuditActionReserved;
-      case 'cash_released':
-        return l10n.cashAuditActionReleased;
-      case 'cash_deducted_on_fill':
-        return l10n.cashAuditActionDeductedOnFill;
-      case 'broker_reconciliation_completed':
-        return l10n.cashAuditActionBrokerReconciled;
-      default:
-        return raw;
-    }
-  }
-
-  String _fmtDateTime(DateTime value) {
-    final local = value.toLocal();
-    final m = local.month.toString().padLeft(2, '0');
-    final d = local.day.toString().padLeft(2, '0');
-    final h = local.hour.toString().padLeft(2, '0');
-    final n = local.minute.toString().padLeft(2, '0');
-    return '${local.year}-$m-$d $h:$n';
-  }
-
-  Future<void> _onScroll() async {
-    if (!_scrollController.hasClients) return;
-    final position = _scrollController.position;
-    if (position.extentAfter > 480) return;
-    final movementCount = _viewModel.filteredMovements.length;
-    if (_visibleMovementCount < movementCount) {
-      if (!mounted) return;
-      setState(() {
-        _visibleMovementCount =
-            (_visibleMovementCount + _visibleMovementStep).clamp(0, movementCount);
-      });
-      return;
-    }
-    await _viewModel.loadMoreMovements();
   }
 }
