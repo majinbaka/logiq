@@ -383,6 +383,12 @@ abstract class AppLocalizations {
   /// **'Sell quantity {requested} exceeds available quantity {available}.'**
   String tradesSellQuantityExceedsAvailable(String requested, String available);
 
+  /// Shown when pending order requires more cash than account available cash.
+  ///
+  /// In en, this message translates to:
+  /// **'Required cash {required} exceeds available cash {available}.'**
+  String tradesInsufficientCash(String required, String available);
+
   /// No description provided for @tradesUnitQuantity.
   ///
   /// In en, this message translates to:

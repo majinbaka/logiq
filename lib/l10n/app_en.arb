@@ -62,6 +62,18 @@
       }
     }
   },
+  "tradesInsufficientCash": "Required cash {required} exceeds available cash {available}.",
+  "@tradesInsufficientCash": {
+    "description": "Shown when pending order requires more cash than account available cash.",
+    "placeholders": {
+      "required": {
+        "type": "String"
+      },
+      "available": {
+        "type": "String"
+      }
+    }
+  },
   "tradesUnitQuantity": "shares",
   "tradesUnitCurrency": "VND",
   "tradesMissingReferenceTitle": "Missing account or instrument",

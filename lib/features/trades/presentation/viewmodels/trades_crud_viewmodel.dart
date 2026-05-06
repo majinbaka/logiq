@@ -11,6 +11,7 @@ import 'package:logiq/core/database/models/trade_plan_target_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/instrument_repository.dart';
+import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 import 'package:logiq/repositories/contracts/risk_repository.dart';
 import 'package:logiq/repositories/contracts/strategy_repository.dart';
 import 'package:logiq/repositories/contracts/trade_repository.dart';
@@ -32,11 +33,22 @@ class TradeQuantityValidationException implements Exception {
   final double availableQuantity;
 }
 
+class TradeInsufficientCashException implements Exception {
+  const TradeInsufficientCashException({
+    required this.requiredCash,
+    required this.availableCash,
+  });
+
+  final double requiredCash;
+  final double availableCash;
+}
+
 class TradesCrudViewModel extends ChangeNotifier {
   TradesCrudViewModel({
     required TradeRepository repository,
     required AccountRepository accountRepository,
     required InstrumentRepository instrumentRepository,
+    required PortfolioRepository portfolioRepository,
     required RiskRepository riskRepository,
     required StrategyRepository strategyRepository,
     AnalyticsRebuildService? analyticsRebuildService,
@@ -44,6 +56,7 @@ class TradesCrudViewModel extends ChangeNotifier {
   }) : _repository = repository,
        _accountRepository = accountRepository,
        _instrumentRepository = instrumentRepository,
+       _portfolioRepository = portfolioRepository,
        _riskRepository = riskRepository,
        _strategyRepository = strategyRepository,
        _analyticsRebuildService = analyticsRebuildService;
@@ -51,6 +64,7 @@ class TradesCrudViewModel extends ChangeNotifier {
   final TradeRepository _repository;
   final AccountRepository _accountRepository;
   final InstrumentRepository _instrumentRepository;
+  final PortfolioRepository _portfolioRepository;
   final RiskRepository _riskRepository;
   final StrategyRepository _strategyRepository;
   final AnalyticsRebuildService? _analyticsRebuildService;
@@ -245,6 +259,12 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? quantity,
     TradeOrderModel? existing,
   }) async {
+    await _validateAvailableCashForOrder(
+      trade: trade,
+      plannedPrice: plannedPrice,
+      quantity: quantity,
+      status: status,
+    );
     final now = DateTime.now().toUtc();
     final normalizedStatus = status.toLowerCase().trim();
     final order = TradeOrderModel(
@@ -264,6 +284,32 @@ class TradesCrudViewModel extends ChangeNotifier {
       deletedAt: existing?.deletedAt,
     );
     await _repository.upsertOrder(order);
+  }
+
+  Future<void> _validateAvailableCashForOrder({
+    required TradeModel trade,
+    required String? plannedPrice,
+    required String? quantity,
+    required String status,
+  }) async {
+    final normalizedStatus = status.trim().toLowerCase();
+    final isPendingOrder = normalizedStatus == 'pending' || normalizedStatus == 'open';
+    final isEntrySide = trade.direction.trim().toLowerCase() == 'long';
+    if (!isPendingOrder || !isEntrySide) return;
+
+    final orderPrice = _toDouble(_toNullableDecimal(plannedPrice));
+    final orderQty = _toDouble(_toNullableDecimal(quantity));
+    if (orderPrice <= 0 || orderQty <= 0) return;
+
+    final requiredCash = orderPrice * orderQty;
+    final balance = await _portfolioRepository.getAccountBalance(trade.accountId);
+    final availableCash = _toDouble(balance?.availableCash);
+    if (availableCash + 1e-9 < requiredCash) {
+      throw TradeInsufficientCashException(
+        requiredCash: requiredCash,
+        availableCash: availableCash,
+      );
+    }
   }
 
   Future<void> deleteOrder(String orderId) {

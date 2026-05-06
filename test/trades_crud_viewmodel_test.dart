@@ -1,5 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
+import 'package:logiq/core/database/models/account_balance_model.dart';
+import 'package:logiq/core/database/models/cash_ledger_model.dart';
+import 'package:logiq/core/database/models/cash_movement_model.dart';
+import 'package:logiq/core/database/models/position_snapshot_model.dart';
+import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
+import 'package:logiq/core/database/models/price_quote_model.dart';
 import 'package:logiq/core/database/models/risk_check_model.dart';
 import 'package:logiq/core/database/models/risk_rule_model.dart';
 import 'package:logiq/core/database/models/strategy_model.dart';
@@ -15,6 +21,7 @@ import 'package:logiq/core/database/models/trading_account_model.dart';
 import 'package:logiq/features/trades/presentation/viewmodels/trades_crud_viewmodel.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/instrument_repository.dart';
+import 'package:logiq/repositories/contracts/portfolio_repository.dart';
 import 'package:logiq/repositories/contracts/risk_repository.dart';
 import 'package:logiq/repositories/contracts/strategy_repository.dart';
 import 'package:logiq/repositories/contracts/trade_repository.dart';
@@ -26,6 +33,7 @@ void main() {
       repository: repo,
       accountRepository: _FakeAccountRepository(),
       instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: _FakePortfolioRepository(),
       riskRepository: _FakeRiskRepository(),
       strategyRepository: _FakeStrategyRepository(),
       defaultAccountId: 'acc_1',
@@ -64,6 +72,7 @@ void main() {
       repository: repo,
       accountRepository: _FakeAccountRepository(),
       instrumentRepository: _FakeInstrumentRepository(),
+      portfolioRepository: _FakePortfolioRepository(),
       riskRepository: _FakeRiskRepository(),
       strategyRepository: _FakeStrategyRepository(),
       defaultAccountId: 'acc_1',
@@ -410,4 +419,99 @@ class _FakeStrategyRepository implements StrategyRepository {
 
   @override
   Future<void> upsertVersion(StrategyVersionModel version) async {}
+}
+
+class _FakePortfolioRepository implements PortfolioRepository {
+  @override
+  Future<void> deleteCashLedger(String ledgerId) async {}
+
+  @override
+  Future<void> deleteCashMovement(String movementId) async {}
+
+  @override
+  Future<void> deletePriceQuote(String quoteId) async {}
+
+  @override
+  Future<void> deleteSnapshot(String snapshotId) async {}
+
+  @override
+  Future<List<PortfolioHolding>> buildHoldings(String accountId, DateTime asOf) async {
+    return const [];
+  }
+
+  @override
+  Future<PortfolioSnapshotResult> generateSnapshot({
+    required String accountId,
+    required DateTime snapshotDate,
+    String? note,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AccountBalanceModel?> getAccountBalance(
+    String accountId, {
+    String? currency,
+  }) async {
+    return AccountBalanceModel(
+      id: '${accountId}_VND',
+      accountId: accountId,
+      currency: currency ?? 'VND',
+      currentCashBalance: '1000000000',
+      availableCash: '1000000000',
+      reservedCash: '0',
+      buyingPower: '1000000000',
+      updatedAt: DateTime.utc(2026, 5, 1),
+    );
+  }
+
+  @override
+  Future<List<CashLedgerModel>> listCashLedgerEntries(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<CashMovementModel>> listCashMovements(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<List<PortfolioSnapshotModel>> listPortfolioSnapshots(
+    String accountId,
+    DateTime start,
+    DateTime end,
+  ) async {
+    return const [];
+  }
+
+  @override
+  Future<List<PositionSnapshotModel>> listPositionSnapshots(String snapshotId) async {
+    return const [];
+  }
+
+  @override
+  Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20}) async {
+    return const [];
+  }
+
+  @override
+  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {}
+
+  @override
+  Future<void> upsertCashMovement(CashMovementModel movement) async {}
+
+  @override
+  Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}
+
+  @override
+  Future<void> upsertPriceQuote(PriceQuoteModel quote) async {}
+
+  @override
+  Future<void> upsertSnapshot(PortfolioSnapshotModel snapshot) async {}
 }

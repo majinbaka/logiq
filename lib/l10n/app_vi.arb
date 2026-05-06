@@ -48,6 +48,7 @@
   "tradesPositiveNumberValidationError": "Vui lòng nhập số lớn hơn 0.",
   "tradesNonNegativeNumberValidationError": "Vui lòng nhập số không âm.",
   "tradesSellQuantityExceedsAvailable": "Khối lượng bán {requested} vượt quá khối lượng hiện có {available}.",
+  "tradesInsufficientCash": "Tiền yêu cầu {required} vượt quá tiền khả dụng {available}.",
   "tradesUnitQuantity": "cổ phiếu",
   "tradesUnitCurrency": "VND",
   "tradesMissingReferenceTitle": "Thiếu tài khoản hoặc instrument",

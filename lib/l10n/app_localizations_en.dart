@@ -155,6 +155,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String tradesInsufficientCash(String required, String available) {
+    return 'Required cash $required exceeds available cash $available.';
+  }
+
+  @override
   String get tradesUnitQuantity => 'shares';
 
   @override

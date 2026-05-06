@@ -18,6 +18,7 @@ import 'package:logiq/repositories/local/local_account_repository.dart';
 import 'package:logiq/repositories/local/local_analytics_repository.dart';
 import 'package:logiq/repositories/local/local_instrument_repository.dart';
 import 'package:logiq/repositories/local/local_insight_repository.dart';
+import 'package:logiq/repositories/local/local_portfolio_repository.dart';
 import 'package:logiq/repositories/local/local_risk_repository.dart';
 import 'package:logiq/repositories/local/local_strategy_repository.dart';
 import 'package:logiq/repositories/local/local_trade_repository.dart';
@@ -48,6 +49,7 @@ class _TradesCrudViewState extends State<TradesCrudView> {
           repository: LocalTradeRepository(),
           accountRepository: LocalAccountRepository(),
           instrumentRepository: LocalInstrumentRepository(),
+          portfolioRepository: LocalPortfolioRepository(),
           riskRepository: LocalRiskRepository(),
           strategyRepository: LocalStrategyRepository(),
           analyticsRebuildService: AnalyticsRebuildService(
@@ -253,6 +255,13 @@ class _TradesCrudViewState extends State<TradesCrudView> {
             l10n.tradesSellQuantityExceedsAvailable(requested, available),
           ),
         ),
+      );
+    } on TradeInsufficientCashException catch (error) {
+      if (!mounted) return;
+      final required = _formatQuantity(error.requiredCash);
+      final available = _formatQuantity(error.availableCash);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.tradesInsufficientCash(required, available))),
       );
     }
   }

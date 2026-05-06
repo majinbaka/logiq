@@ -155,6 +155,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String tradesInsufficientCash(String required, String available) {
+    return 'Tiền yêu cầu $required vượt quá tiền khả dụng $available.';
+  }
+
+  @override
   String get tradesUnitQuantity => 'cổ phiếu';
 
   @override

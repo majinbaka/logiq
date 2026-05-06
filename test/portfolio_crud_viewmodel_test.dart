@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logiq/core/database/models/account_balance_model.dart';
+import 'package:logiq/core/database/models/cash_ledger_model.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
 import 'package:logiq/core/database/models/position_snapshot_model.dart';
 import 'package:logiq/core/database/models/portfolio_snapshot_model.dart';
@@ -77,6 +79,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
+  Future<void> deleteCashLedger(String ledgerId) async {}
+
+  @override
   Future<void> deletePriceQuote(String quoteId) async {
     quotes.removeWhere((item) => item.id == quoteId);
   }
@@ -135,6 +140,22 @@ class _FakePortfolioRepository implements PortfolioRepository {
   }
 
   @override
+  Future<List<CashLedgerModel>> listCashLedgerEntries(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Future<AccountBalanceModel?> getAccountBalance(
+    String accountId, {
+    String? currency,
+  }) async {
+    return null;
+  }
+
+  @override
   Future<List<PriceQuoteModel>> listPriceQuotes({int limit = 20}) async {
     return quotes.take(limit).toList();
   }
@@ -148,6 +169,9 @@ class _FakePortfolioRepository implements PortfolioRepository {
     }
     cashMovements.add(movement);
   }
+
+  @override
+  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {}
 
   @override
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot) async {}

@@ -472,6 +472,20 @@ Cap nhat tiep theo de chuan hoa enum:
 - `price_type` duoc gioi han theo tap co dinh: `last`, `close`, `bid`, `ask`, `mark` (cho phep de trong neu chua xac dinh).
 - ViewModel reject `movement_type` khong hop le de tranh du lieu lech schema.
 
+## 23. Fund Management Baseline (2026-05-06)
+
+Da nang cap luong tien theo huong ledger + balance:
+
+- `PortfolioRepository` bo sung `CASH_LEDGER` read/write API (`upsert/list/delete`) va API doc `ACCOUNT_BALANCE`.
+- Luong `upsertCashMovement` duoc giu de tuong thich UI hien tai, nhung backend ghi vao `CASH_LEDGER` lam nguon su that.
+- Them `AccountBalanceSyncService` de cap nhat `ACCOUNT_BALANCE` ngay khi co ledger entry moi (`status=completed`).
+- Trades bo sung rule truoc khi luu order pending/open: bat buoc `available_cash >= planned_price * quantity` (ap dung cho long-entry).
+
+He qua:
+
+- Co du lieu cash audit (`balance_before/after`) va so du dung cho buying-power check.
+- Ngan tao order vuot qua tien kha dung ngay tai UI flow.
+
 ## 11. Account Settings
 
 Muc tieu: cho phep user tao va cap nhat trading account ngay trong app, dong thoi chon account dang hoat dong de cac module su dung.

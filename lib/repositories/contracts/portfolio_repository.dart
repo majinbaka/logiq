@@ -1,3 +1,5 @@
+import '../../core/database/models/account_balance_model.dart';
+import '../../core/database/models/cash_ledger_model.dart';
 import '../../core/database/models/cash_movement_model.dart';
 import '../../core/database/models/position_snapshot_model.dart';
 import '../../core/database/models/portfolio_snapshot_model.dart';
@@ -36,6 +38,16 @@ class PortfolioSnapshotResult {
 abstract class PortfolioRepository {
   Future<void> upsertSnapshot(PortfolioSnapshotModel snapshot);
   Future<void> upsertPositionSnapshot(PositionSnapshotModel snapshot);
+  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency});
+  Future<void> deleteCashLedger(String ledgerId);
+  Future<List<CashLedgerModel>> listCashLedgerEntries(
+    String accountId, {
+    int limit = 20,
+  });
+  Future<AccountBalanceModel?> getAccountBalance(
+    String accountId, {
+    String? currency,
+  });
   Future<void> upsertCashMovement(CashMovementModel movement);
   Future<void> upsertPriceQuote(PriceQuoteModel quote);
   Future<void> deleteCashMovement(String movementId);

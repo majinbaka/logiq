@@ -1,3 +1,6 @@
+import 'package:logiq/core/database/models/account_balance_model.dart';
+import 'package:logiq/core/database/models/cash_ledger_model.dart';
+import 'package:logiq/core/fund/account_balance_sync_service.dart';
 import 'package:hive/hive.dart';
 
 import '../../core/database/models/cash_movement_model.dart';
@@ -17,6 +20,8 @@ class LocalPortfolioRepository implements PortfolioRepository {
     Box<Map>? snapshotBox,
     Box<Map>? positionSnapshotBox,
     Box<Map>? cashMovementBox,
+    Box<Map>? cashLedgerBox,
+    Box<Map>? accountBalanceBox,
     Box<Map>? quoteBox,
     Box<Map>? tradeBox,
     Box<Map>? fillBox,
@@ -27,20 +32,27 @@ class LocalPortfolioRepository implements PortfolioRepository {
            positionSnapshotBox ?? Hive.box(StorageBoxes.positionSnapshots),
        _cashMovementBox =
            cashMovementBox ?? Hive.box(StorageBoxes.cashMovements),
+       _cashLedgerBox = cashLedgerBox ?? Hive.box(StorageBoxes.cashLedgers),
+       _accountBalanceBox =
+           accountBalanceBox ?? Hive.box(StorageBoxes.accountBalances),
        _quoteBox = quoteBox ?? Hive.box(StorageBoxes.priceQuotes),
        _tradeBox = tradeBox ?? Hive.box(StorageBoxes.trades),
        _fillBox = fillBox ?? Hive.box(StorageBoxes.tradeFills),
        _instrumentBox = instrumentBox ?? Hive.box(StorageBoxes.instruments),
-       _clock = clock ?? const SystemClock();
+       _clock = clock ?? const SystemClock(),
+       _balanceSyncService = const AccountBalanceSyncService();
 
   final Box<Map> _snapshotBox;
   final Box<Map> _positionSnapshotBox;
   final Box<Map> _cashMovementBox;
+  final Box<Map> _cashLedgerBox;
+  final Box<Map> _accountBalanceBox;
   final Box<Map> _quoteBox;
   final Box<Map> _tradeBox;
   final Box<Map> _fillBox;
   final Box<Map> _instrumentBox;
   final Clock _clock;
+  final AccountBalanceSyncService _balanceSyncService;
 
   @override
   Future<List<PortfolioSnapshotModel>> listPortfolioSnapshots(
@@ -79,8 +91,50 @@ class LocalPortfolioRepository implements PortfolioRepository {
       _positionSnapshotBox.put(snapshot.id, snapshot.toMap());
 
   @override
-  Future<void> upsertCashMovement(CashMovementModel movement) =>
-      _cashMovementBox.put(movement.id, movement.toMap());
+  Future<void> upsertCashMovement(CashMovementModel movement) async {
+    // Backward-compatible facade: persist into CASH_LEDGER as source of truth.
+    final createdAt = movement.updatedAt ?? movement.createdAt;
+    final currentBalance = await getAccountBalance(
+      movement.accountId,
+      currency: movement.currency,
+    );
+    final balanceBefore = _toDouble(currentBalance?.currentCashBalance);
+    final amount = _toDouble(movement.amount);
+    final balanceAfter = balanceBefore + amount;
+    final ledger = CashLedgerModel(
+      id: movement.id,
+      accountId: movement.accountId,
+      movementType: movement.movementType,
+      amount: movement.amount,
+      balanceBefore: _fmt(balanceBefore),
+      balanceAfter: _fmt(balanceAfter),
+      referenceType: 'cash_movement',
+      referenceId: movement.id,
+      status: 'completed',
+      createdAt: createdAt,
+    );
+    await upsertCashLedger(ledger, currency: movement.currency);
+    await _cashMovementBox.put(movement.id, movement.toMap());
+  }
+
+  @override
+  Future<void> upsertCashLedger(CashLedgerModel ledger, {String? currency}) async {
+    await _cashLedgerBox.put(ledger.id, ledger.toMap());
+    final normalizedCurrency = (currency ?? 'VND').trim().isEmpty
+        ? 'VND'
+        : currency!.trim();
+    final current = await getAccountBalance(
+      ledger.accountId,
+      currency: normalizedCurrency,
+    );
+    final next = _balanceSyncService.applyLedger(
+      current: current,
+      accountId: ledger.accountId,
+      currency: normalizedCurrency,
+      ledger: ledger,
+    );
+    await _accountBalanceBox.put(next.id, next.toMap());
+  }
 
   @override
   Future<void> upsertPriceQuote(PriceQuoteModel quote) {
@@ -98,8 +152,13 @@ class LocalPortfolioRepository implements PortfolioRepository {
   }
 
   @override
-  Future<void> deleteCashMovement(String movementId) =>
-      _cashMovementBox.delete(movementId);
+  Future<void> deleteCashMovement(String movementId) async {
+    await _cashMovementBox.delete(movementId);
+    await deleteCashLedger(movementId);
+  }
+
+  @override
+  Future<void> deleteCashLedger(String ledgerId) => _cashLedgerBox.delete(ledgerId);
 
   @override
   Future<void> deletePriceQuote(String quoteId) => _quoteBox.delete(quoteId);
@@ -109,12 +168,49 @@ class LocalPortfolioRepository implements PortfolioRepository {
     String accountId, {
     int limit = 20,
   }) async {
-    final items = _cashMovementBox.values
-        .map((value) => CashMovementModel.fromMap(toDbJson(value)))
+    final ledgers = await listCashLedgerEntries(accountId, limit: limit);
+    return ledgers
+        .map(
+          (item) => CashMovementModel(
+            id: item.id,
+            accountId: item.accountId,
+            movementDate: item.createdAt,
+            movementType: item.movementType,
+            amount: item.amount,
+            currency: 'VND',
+            note: item.referenceType,
+            createdAt: item.createdAt,
+            updatedAt: null,
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Future<List<CashLedgerModel>> listCashLedgerEntries(
+    String accountId, {
+    int limit = 20,
+  }) async {
+    final items = _cashLedgerBox.values
+        .map((value) => CashLedgerModel.fromMap(toDbJson(value)))
         .where((item) => item.accountId == accountId)
         .toList(growable: false);
-    items.sort((a, b) => b.movementDate.compareTo(a.movementDate));
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return items.take(limit).toList(growable: false);
+  }
+
+  @override
+  Future<AccountBalanceModel?> getAccountBalance(
+    String accountId, {
+    String? currency,
+  }) async {
+    final normalizedCurrency = (currency ?? 'VND').trim().isEmpty
+        ? 'VND'
+        : currency!.trim();
+    final key = '${accountId}_$normalizedCurrency';
+    final raw = _accountBalanceBox.get(key);
+    if (raw == null) return null;
+    return AccountBalanceModel.fromMap(toDbJson(raw));
   }
 
   @override
