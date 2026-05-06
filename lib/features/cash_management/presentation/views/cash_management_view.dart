@@ -293,10 +293,17 @@ class _CashManagementViewState extends State<CashManagementView> {
                   ),
                 );
               }),
+            const SizedBox(height: TradingUiSpacing.sm),
+            _buildDailyRiskBanner(),
             const SizedBox(height: TradingUiSpacing.md),
             Card(
               child: ListTile(
-                title: Text(l10n.cashReconciliationTitle),
+                title: Row(
+                  children: [
+                    Expanded(child: Text(l10n.cashReconciliationTitle)),
+                    _buildSyncHealthChip(),
+                  ],
+                ),
                 subtitle: Text(
                   '${l10n.cashLastSync}: ${_viewModel.lastReconciledAt == null ? '-' : _fmtDateTime(_viewModel.lastReconciledAt!)}',
                 ),
@@ -315,6 +322,26 @@ class _CashManagementViewState extends State<CashManagementView> {
                 ),
               ),
             ),
+            const SizedBox(height: TradingUiSpacing.md),
+            Text(
+              l10n.cashAuditLogTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: TradingUiSpacing.sm),
+            if (_viewModel.activityLogs.isEmpty)
+              Text(l10n.cashAuditLogEmpty)
+            else
+              ..._viewModel.activityLogs.take(10).map((item) {
+                return ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(_displayActivityAction(item.action)),
+                  subtitle: Text(
+                    '${item.actorId} • ${_fmtDateTime(item.createdAt)}',
+                  ),
+                  trailing: Text('${item.beforeValue} → ${item.afterValue}'),
+                );
+              }),
           ],
         );
       },
@@ -337,6 +364,79 @@ class _CashManagementViewState extends State<CashManagementView> {
       width: 180,
       child: Card(
         child: tooltip == null ? content : Tooltip(message: tooltip, child: content),
+      ),
+    );
+  }
+
+  Widget _buildDailyRiskBanner() {
+    final l10n = AppLocalizations.of(context)!;
+    final state = _viewModel.dailyRiskState();
+    final used = _viewModel.dailyLossUsed();
+    final limit = _viewModel.dailyLossLimit();
+    final usagePercent = (_viewModel.dailyLossUsageRatio() * 100).clamp(0, 999);
+    final colorScheme = Theme.of(context).colorScheme;
+    final (bgColor, fgColor, statusLabel) = switch (state) {
+      CashRiskState.ok => (
+        colorScheme.secondaryContainer,
+        colorScheme.onSecondaryContainer,
+        l10n.cashRiskStatusOk,
+      ),
+      CashRiskState.warning => (
+        colorScheme.tertiaryContainer,
+        colorScheme.onTertiaryContainer,
+        l10n.cashRiskStatusWarning,
+      ),
+      CashRiskState.breach => (
+        colorScheme.errorContainer,
+        colorScheme.onErrorContainer,
+        l10n.cashRiskStatusBreach,
+      ),
+    };
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(TradingUiSpacing.sm),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${l10n.cashDailyLossLabel}: ${used.toStringAsFixed(2)} / ${limit.toStringAsFixed(2)}',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(color: fgColor),
+          ),
+          const SizedBox(height: TradingUiSpacing.xs),
+          Text(
+            '${l10n.cashRiskStatusLabel}: $statusLabel • ${usagePercent.toStringAsFixed(1)}%',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: fgColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSyncHealthChip() {
+    final l10n = AppLocalizations.of(context)!;
+    final health = _viewModel.syncHealth();
+    final colorScheme = Theme.of(context).colorScheme;
+    final (label, color) = switch (health) {
+      CashSyncHealth.live => (l10n.cashSyncHealthLive, colorScheme.primary),
+      CashSyncHealth.delayed => (l10n.cashSyncHealthDelayed, colorScheme.tertiary),
+      CashSyncHealth.failed => (l10n.cashSyncHealthFailed, colorScheme.error),
+    };
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+        ),
       ),
     );
   }
@@ -749,6 +849,26 @@ class _CashManagementViewState extends State<CashManagementView> {
         return l10n.cashStatusCancelled;
       default:
         return l10n.cashStatusUnknown(raw);
+    }
+  }
+
+  String _displayActivityAction(String raw) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (raw.trim().toLowerCase()) {
+      case 'cash_movement_created':
+        return l10n.cashAuditActionMovementCreated;
+      case 'cash_movement_completed':
+        return l10n.cashAuditActionMovementCompleted;
+      case 'cash_reserved':
+        return l10n.cashAuditActionReserved;
+      case 'cash_released':
+        return l10n.cashAuditActionReleased;
+      case 'cash_deducted_on_fill':
+        return l10n.cashAuditActionDeductedOnFill;
+      case 'broker_reconciliation_completed':
+        return l10n.cashAuditActionBrokerReconciled;
+      default:
+        return raw;
     }
   }
 

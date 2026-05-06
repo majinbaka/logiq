@@ -101,6 +101,9 @@ class _FakeAnalyticsRepository implements AnalyticsRepository {
   final List<String> calls = [];
 
   @override
+  Future<String?> getLatestDailyPnl(String accountId) async => null;
+
+  @override
   Future<void> clearAnalyticsFacts(String accountId) async {
     calls.add('clear:$accountId');
   }

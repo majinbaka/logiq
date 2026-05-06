@@ -262,6 +262,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashCreatedBy => 'Created by';
 
   @override
+  String get cashDailyLossLabel => 'Daily loss';
+
+  @override
+  String get cashRiskStatusLabel => 'Risk status';
+
+  @override
+  String get cashRiskStatusOk => 'OK';
+
+  @override
+  String get cashRiskStatusWarning => 'Warning';
+
+  @override
+  String get cashRiskStatusBreach => 'Breach';
+
+  @override
+  String get cashSyncHealthLive => 'Live';
+
+  @override
+  String get cashSyncHealthDelayed => 'Delayed';
+
+  @override
+  String get cashSyncHealthFailed => 'Failed';
+
+  @override
+  String get cashAuditLogTitle => 'Audit Log';
+
+  @override
+  String get cashAuditLogEmpty => 'No audit events yet.';
+
+  @override
+  String get cashAuditActionMovementCreated => 'Cash movement created';
+
+  @override
+  String get cashAuditActionMovementCompleted => 'Cash movement completed';
+
+  @override
+  String get cashAuditActionReserved => 'Cash reserved';
+
+  @override
+  String get cashAuditActionReleased => 'Cash released';
+
+  @override
+  String get cashAuditActionDeductedOnFill => 'Cash deducted on fill';
+
+  @override
+  String get cashAuditActionBrokerReconciled => 'Broker reconciliation completed';
+
+  @override
   String get workInProgressTitle => 'Work in progress';
 
   @override

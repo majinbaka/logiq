@@ -152,3 +152,20 @@ Known gaps after this UI upgrade:
 - Reconciliation is still a local/manual flow (no broker API approval workflow).
 - Settlement tracking currently uses pending movements as local unsettled proxy;
   dedicated settlement table/status engine is still pending.
+
+## Update 2026-05-06 (Risk Banner, Audit Log, Sync Health)
+
+Delivered in this slice:
+
+- Added daily-loss risk banner in `Cash Management` with status tiers:
+  `OK` (<80%), `Warning` (>=80%), `Breach` (>=100%) against
+  `maxDailyLossAmount` when available.
+- Added sync health chip to reconciliation card with stale thresholds:
+  `Live` (<=5m), `Delayed` (<=30m), `Failed` (>30m or never synced).
+- Added audit log section in cash screen showing recent account activity events
+  with actor, timestamp, and before/after values.
+
+Notes:
+
+- Risk banner safely degrades to `0 / 0` when analytics/risk sources are not
+  provided in the current runtime context.

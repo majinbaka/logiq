@@ -4,22 +4,32 @@ import 'package:logiq/core/database/models/account_balance_model.dart';
 import 'package:logiq/core/database/models/cash_movement_model.dart';
 import 'package:logiq/core/database/models/cash_reservation_model.dart';
 import 'package:logiq/core/fund/cash_request_validator.dart';
+import 'package:logiq/repositories/contracts/analytics_repository.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
+import 'package:logiq/repositories/contracts/risk_repository.dart';
 
 enum CashMovementFilter { all, deposit, withdrawal, fee, dividend }
 enum CashMovementDateFilter { all, last7Days, last30Days, last90Days }
+enum CashRiskState { ok, warning, breach }
+enum CashSyncHealth { live, delayed, failed }
 
 class CashManagementViewModel extends ChangeNotifier {
   CashManagementViewModel({
     required PortfolioRepository repository,
     required AccountRepository accountRepository,
     required this.accountId,
+    AnalyticsRepository? analyticsRepository,
+    RiskRepository? riskRepository,
   }) : _repository = repository,
-       _accountRepository = accountRepository;
+       _accountRepository = accountRepository,
+       _analyticsRepository = analyticsRepository,
+       _riskRepository = riskRepository;
 
   final PortfolioRepository _repository;
   final AccountRepository _accountRepository;
+  final AnalyticsRepository? _analyticsRepository;
+  final RiskRepository? _riskRepository;
   final String accountId;
   final CashRequestValidator _validator = const CashRequestValidator();
 
@@ -32,6 +42,8 @@ class CashManagementViewModel extends ChangeNotifier {
   List<CashReservationModel> _reservations = const [];
   List<AccountActivityLogModel> _activityLogs = const [];
   DateTime? _lastReconciledAt;
+  String? _latestDailyPnl;
+  String? _maxDailyLossAmount;
   CashMovementFilter _filter = CashMovementFilter.all;
   CashMovementDateFilter _dateFilter = CashMovementDateFilter.last30Days;
   int _movementFetchLimit = 100;
@@ -43,6 +55,7 @@ class CashManagementViewModel extends ChangeNotifier {
   String get currency => _currency;
   AccountBalanceModel? get balance => _balance;
   List<CashReservationModel> get reservations => _reservations;
+  List<AccountActivityLogModel> get activityLogs => _activityLogs;
   DateTime? get lastReconciledAt => _lastReconciledAt;
   CashMovementFilter get filter => _filter;
   CashMovementDateFilter get dateFilter => _dateFilter;
@@ -92,6 +105,12 @@ class CashManagementViewModel extends ChangeNotifier {
         accountId,
         limit: 200,
       );
+      _latestDailyPnl = await _analyticsRepository?.getLatestDailyPnl(accountId);
+      final applicableRiskRule = await _riskRepository?.findApplicableRiskRule(
+        accountId: accountId,
+        at: DateTime.now().toUtc(),
+      );
+      _maxDailyLossAmount = applicableRiskRule?.maxDailyLossAmount;
       _lastReconciledAt = _activityLogs
           .where((item) => item.action == 'broker_reconciliation_completed')
           .map((item) => item.createdAt)
@@ -245,6 +264,38 @@ class CashManagementViewModel extends ChangeNotifier {
     final buyingPower = _toDouble(_balance?.buyingPower);
     if (buyingPower <= 0) return 0;
     return (current / buyingPower) * 100;
+  }
+
+  double dailyPnl() => _toDouble(_latestDailyPnl);
+
+  double dailyLossUsed() {
+    final pnl = dailyPnl();
+    return pnl < 0 ? pnl.abs() : 0;
+  }
+
+  double dailyLossLimit() => _toDouble(_maxDailyLossAmount);
+
+  double dailyLossUsageRatio() {
+    final limit = dailyLossLimit();
+    if (limit <= 0) return 0;
+    return dailyLossUsed() / limit;
+  }
+
+  CashRiskState dailyRiskState() {
+    final usage = dailyLossUsageRatio();
+    if (usage >= 1) return CashRiskState.breach;
+    if (usage >= 0.8) return CashRiskState.warning;
+    return CashRiskState.ok;
+  }
+
+  CashSyncHealth syncHealth({DateTime? now}) {
+    final last = _lastReconciledAt;
+    if (last == null) return CashSyncHealth.failed;
+    final current = now ?? DateTime.now().toUtc();
+    final age = current.difference(last);
+    if (age <= const Duration(minutes: 5)) return CashSyncHealth.live;
+    if (age <= const Duration(minutes: 30)) return CashSyncHealth.delayed;
+    return CashSyncHealth.failed;
   }
 
   Future<void> _runSubmit(Future<void> Function() action) async {

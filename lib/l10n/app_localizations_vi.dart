@@ -262,6 +262,54 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cashCreatedBy => 'Người tạo';
 
   @override
+  String get cashDailyLossLabel => 'Lỗ trong ngày';
+
+  @override
+  String get cashRiskStatusLabel => 'Trạng thái rủi ro';
+
+  @override
+  String get cashRiskStatusOk => 'An toàn';
+
+  @override
+  String get cashRiskStatusWarning => 'Cảnh báo';
+
+  @override
+  String get cashRiskStatusBreach => 'Vi phạm';
+
+  @override
+  String get cashSyncHealthLive => 'Live';
+
+  @override
+  String get cashSyncHealthDelayed => 'Trễ';
+
+  @override
+  String get cashSyncHealthFailed => 'Lỗi';
+
+  @override
+  String get cashAuditLogTitle => 'Nhật ký kiểm toán';
+
+  @override
+  String get cashAuditLogEmpty => 'Chưa có sự kiện kiểm toán.';
+
+  @override
+  String get cashAuditActionMovementCreated => 'Tạo giao dịch tiền';
+
+  @override
+  String get cashAuditActionMovementCompleted => 'Hoàn tất giao dịch tiền';
+
+  @override
+  String get cashAuditActionReserved => 'Khóa tiền';
+
+  @override
+  String get cashAuditActionReleased => 'Giải phóng tiền khóa';
+
+  @override
+  String get cashAuditActionDeductedOnFill => 'Trừ tiền khi khớp lệnh';
+
+  @override
+  String get cashAuditActionBrokerReconciled => 'Hoàn tất đối soát broker';
+
+  @override
   String get workInProgressTitle => 'Đang phát triển';
 
   @override

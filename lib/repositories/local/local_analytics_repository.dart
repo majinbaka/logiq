@@ -55,6 +55,17 @@ class LocalAnalyticsRepository implements AnalyticsRepository {
   final AnalyticsDailyAccountFactBuilder _dailyFactBuilder;
 
   @override
+  Future<String?> getLatestDailyPnl(String accountId) async {
+    final facts = _dailyFactBox.values
+        .map((value) => AnalyticsDailyAccountFactModel.fromMap(toDbJson(value)))
+        .where((item) => item.accountId == accountId)
+        .toList(growable: false);
+    if (facts.isEmpty) return null;
+    facts.sort((a, b) => b.metricDate.compareTo(a.metricDate));
+    return facts.first.dailyPnl;
+  }
+
+  @override
   Future<void> clearAnalyticsFacts(String accountId) async {
     final tradeKeys = _tradeFactBox.keys
         .where((key) {

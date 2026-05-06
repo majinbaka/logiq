@@ -593,6 +593,102 @@ abstract class AppLocalizations {
   /// **'Created by'**
   String get cashCreatedBy;
 
+  /// No description provided for @cashDailyLossLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily loss'**
+  String get cashDailyLossLabel;
+
+  /// No description provided for @cashRiskStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk status'**
+  String get cashRiskStatusLabel;
+
+  /// No description provided for @cashRiskStatusOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get cashRiskStatusOk;
+
+  /// No description provided for @cashRiskStatusWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get cashRiskStatusWarning;
+
+  /// No description provided for @cashRiskStatusBreach.
+  ///
+  /// In en, this message translates to:
+  /// **'Breach'**
+  String get cashRiskStatusBreach;
+
+  /// No description provided for @cashSyncHealthLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get cashSyncHealthLive;
+
+  /// No description provided for @cashSyncHealthDelayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Delayed'**
+  String get cashSyncHealthDelayed;
+
+  /// No description provided for @cashSyncHealthFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get cashSyncHealthFailed;
+
+  /// No description provided for @cashAuditLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Log'**
+  String get cashAuditLogTitle;
+
+  /// No description provided for @cashAuditLogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No audit events yet.'**
+  String get cashAuditLogEmpty;
+
+  /// No description provided for @cashAuditActionMovementCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash movement created'**
+  String get cashAuditActionMovementCreated;
+
+  /// No description provided for @cashAuditActionMovementCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash movement completed'**
+  String get cashAuditActionMovementCompleted;
+
+  /// No description provided for @cashAuditActionReserved.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash reserved'**
+  String get cashAuditActionReserved;
+
+  /// No description provided for @cashAuditActionReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash released'**
+  String get cashAuditActionReleased;
+
+  /// No description provided for @cashAuditActionDeductedOnFill.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash deducted on fill'**
+  String get cashAuditActionDeductedOnFill;
+
+  /// No description provided for @cashAuditActionBrokerReconciled.
+  ///
+  /// In en, this message translates to:
+  /// **'Broker reconciliation completed'**
+  String get cashAuditActionBrokerReconciled;
+
   /// No description provided for @workInProgressTitle.
   ///
   /// In en, this message translates to:

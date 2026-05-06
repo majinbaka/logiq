@@ -1,4 +1,6 @@
 abstract class AnalyticsRepository {
+  Future<String?> getLatestDailyPnl(String accountId);
+
   Future<void> clearAnalyticsFacts(String accountId);
 
   Future<void> rebuildAllAnalyticsFacts(String accountId);
