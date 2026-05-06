@@ -389,6 +389,78 @@ abstract class AppLocalizations {
   /// **'Required cash {required} exceeds available cash {available}.'**
   String tradesInsufficientCash(String required, String available);
 
+  /// No description provided for @tradesFlowCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Funding & Trading Flow'**
+  String get tradesFlowCardTitle;
+
+  /// No description provided for @tradesFlowStepAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Trading account created'**
+  String get tradesFlowStepAccount;
+
+  /// No description provided for @tradesFlowStepInitialDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial deposit completed'**
+  String get tradesFlowStepInitialDeposit;
+
+  /// No description provided for @tradesFlowStepRiskRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk rule is active'**
+  String get tradesFlowStepRiskRule;
+
+  /// No description provided for @tradesFlowBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current cash'**
+  String get tradesFlowBalanceLabel;
+
+  /// No description provided for @tradesFlowAvailableLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Available cash'**
+  String get tradesFlowAvailableLabel;
+
+  /// No description provided for @tradesFlowReservedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserved cash'**
+  String get tradesFlowReservedLabel;
+
+  /// No description provided for @tradesFlowBuyingPowerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Buying power'**
+  String get tradesFlowBuyingPowerLabel;
+
+  /// No description provided for @tradesFlowMissingAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create/select a trading account before trading.'**
+  String get tradesFlowMissingAccount;
+
+  /// No description provided for @tradesFlowMissingInitialDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Add initial deposit before creating trade or order.'**
+  String get tradesFlowMissingInitialDeposit;
+
+  /// No description provided for @tradesFlowMissingRiskRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Set risk rules before creating trade or order.'**
+  String get tradesFlowMissingRiskRule;
+
+  /// No description provided for @tradesFlowValidationGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Funding flow validation failed.'**
+  String get tradesFlowValidationGeneric;
+
   /// No description provided for @tradesUnitQuantity.
   ///
   /// In en, this message translates to:

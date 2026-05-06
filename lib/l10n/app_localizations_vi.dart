@@ -160,6 +160,42 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get tradesFlowCardTitle => 'Luồng Nạp Vốn & Giao Dịch';
+
+  @override
+  String get tradesFlowStepAccount => 'Đã tạo tài khoản giao dịch';
+
+  @override
+  String get tradesFlowStepInitialDeposit => 'Đã nạp vốn ban đầu';
+
+  @override
+  String get tradesFlowStepRiskRule => 'Đã có quy tắc rủi ro hiệu lực';
+
+  @override
+  String get tradesFlowBalanceLabel => 'Tiền mặt hiện tại';
+
+  @override
+  String get tradesFlowAvailableLabel => 'Tiền khả dụng';
+
+  @override
+  String get tradesFlowReservedLabel => 'Tiền đang khóa';
+
+  @override
+  String get tradesFlowBuyingPowerLabel => 'Sức mua';
+
+  @override
+  String get tradesFlowMissingAccount => 'Hãy tạo/chọn tài khoản giao dịch trước khi giao dịch.';
+
+  @override
+  String get tradesFlowMissingInitialDeposit => 'Hãy nạp vốn ban đầu trước khi tạo trade hoặc order.';
+
+  @override
+  String get tradesFlowMissingRiskRule => 'Hãy thiết lập quy tắc rủi ro trước khi tạo trade hoặc order.';
+
+  @override
+  String get tradesFlowValidationGeneric => 'Kiểm tra luồng nạp vốn thất bại.';
+
+  @override
   String get tradesUnitQuantity => 'cổ phiếu';
 
   @override

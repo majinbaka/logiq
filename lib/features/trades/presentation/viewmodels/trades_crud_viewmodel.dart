@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logiq/core/analytics/analytics_rebuild_service.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
 import 'package:logiq/core/database/models/risk_check_model.dart';
+import 'package:logiq/core/database/models/risk_rule_model.dart';
 import 'package:logiq/core/database/models/strategy_model.dart';
 import 'package:logiq/core/database/models/strategy_version_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
@@ -9,6 +10,7 @@ import 'package:logiq/core/database/models/trade_order_model.dart';
 import 'package:logiq/core/database/models/trade_plan_model.dart';
 import 'package:logiq/core/database/models/trade_plan_target_model.dart';
 import 'package:logiq/core/database/models/trading_account_model.dart';
+import 'package:logiq/core/database/models/account_balance_model.dart';
 import 'package:logiq/repositories/contracts/account_repository.dart';
 import 'package:logiq/repositories/contracts/instrument_repository.dart';
 import 'package:logiq/repositories/contracts/portfolio_repository.dart';
@@ -43,6 +45,12 @@ class TradeInsufficientCashException implements Exception {
   final double availableCash;
 }
 
+class TradeFlowValidationException implements Exception {
+  const TradeFlowValidationException(this.reasonKey);
+
+  final String reasonKey;
+}
+
 class TradesCrudViewModel extends ChangeNotifier {
   TradesCrudViewModel({
     required TradeRepository repository,
@@ -53,6 +61,7 @@ class TradesCrudViewModel extends ChangeNotifier {
     required StrategyRepository strategyRepository,
     AnalyticsRebuildService? analyticsRebuildService,
     required this.defaultAccountId,
+    this.enforceTradeFlowValidation = false,
   }) : _repository = repository,
        _accountRepository = accountRepository,
        _instrumentRepository = instrumentRepository,
@@ -69,6 +78,7 @@ class TradesCrudViewModel extends ChangeNotifier {
   final StrategyRepository _strategyRepository;
   final AnalyticsRebuildService? _analyticsRebuildService;
   final String defaultAccountId;
+  final bool enforceTradeFlowValidation;
 
   List<TradeModel> _trades = const [];
   Map<String, RiskCheckModel> _riskChecksByTradeId = const {};
@@ -76,6 +86,9 @@ class TradesCrudViewModel extends ChangeNotifier {
   List<InstrumentModel> _instruments = const [];
   List<TradeStrategyVersionOption> _strategyVersionOptions = const [];
   Map<String, String> _strategyVersionLabels = const {};
+  AccountBalanceModel? _accountBalance;
+  RiskRuleModel? _activeRiskRule;
+  bool _hasInitialDeposit = false;
   bool _isLoading = false;
   String? _error;
 
@@ -93,6 +106,11 @@ class TradesCrudViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+  AccountBalanceModel? get accountBalance => _accountBalance;
+  bool get hasInitialDeposit => _hasInitialDeposit;
+  bool get hasActiveRiskRule => _activeRiskRule != null;
+  bool get canStartTradingFlow =>
+      _accounts.isNotEmpty && _hasInitialDeposit && _activeRiskRule != null;
 
   String get activeAccountId {
     if (_accounts.isEmpty) return defaultAccountId;
@@ -109,6 +127,13 @@ class TradesCrudViewModel extends ChangeNotifier {
       _accounts = await _accountRepository.listActive();
       _instruments = await _instrumentRepository.listActive();
       await _loadStrategyVersionOptions();
+      try {
+        await _loadFlowState();
+      } catch (_) {
+        _accountBalance = null;
+        _activeRiskRule = null;
+        _hasInitialDeposit = false;
+      }
 
       final now = DateTime.now().toUtc();
       final start = DateTime.utc(now.year - 1, now.month, now.day);
@@ -144,6 +169,9 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? totalFee,
     String? totalTax,
   }) async {
+    if (enforceTradeFlowValidation) {
+      await _assertTradeFlowReady(accountId: accountId);
+    }
     final normalizedDirection = direction.toLowerCase();
     await _validateQuantityBeforeSave(
       existingTradeId: null,
@@ -202,6 +230,9 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? totalFee,
     String? totalTax,
   }) async {
+    if (enforceTradeFlowValidation) {
+      await _assertTradeFlowReady(accountId: accountId);
+    }
     final normalizedStatus = status.toLowerCase();
     final normalizedDirection = direction.toLowerCase();
     await _validateQuantityBeforeSave(
@@ -260,6 +291,9 @@ class TradesCrudViewModel extends ChangeNotifier {
     String? quantity,
     TradeOrderModel? existing,
   }) async {
+    if (enforceTradeFlowValidation) {
+      await _assertTradeFlowReady(accountId: trade.accountId);
+    }
     await _validateAvailableCashForOrder(
       trade: trade,
       plannedPrice: plannedPrice,
@@ -339,9 +373,43 @@ class TradesCrudViewModel extends ChangeNotifier {
     if (requiredDelta <= 0) return;
     if (buyingPower + 1e-9 < requiredDelta) {
       throw TradeInsufficientCashException(
-        requiredCash: requiredCash,
+        requiredCash: requiredDelta,
         availableCash: buyingPower,
       );
+    }
+  }
+
+  Future<void> _loadFlowState() async {
+    final accountId = activeAccountId;
+    _accountBalance = await _portfolioRepository.getAccountBalance(accountId);
+    final ledger = await _portfolioRepository.listCashLedgerEntries(accountId, limit: 500);
+    _hasInitialDeposit = ledger.any((entry) {
+      final type = entry.movementType.trim().toLowerCase();
+      final amount = _toDouble(entry.amount);
+      return amount > 0 &&
+          (type == 'initial_deposit' || type == 'deposit');
+    });
+    _activeRiskRule = await _riskRepository.findApplicableRiskRule(
+      accountId: accountId,
+      at: DateTime.now().toUtc(),
+    );
+  }
+
+  Future<void> _assertTradeFlowReady({required String accountId}) async {
+    final selectedAccount = _accounts.any((item) => item.id == accountId);
+    if (!selectedAccount) {
+      throw const TradeFlowValidationException('missing_account');
+    }
+    final hasExistingTrade = _trades.any((item) => item.accountId == accountId);
+    if (hasExistingTrade) {
+      return;
+    }
+    final hasDeposit = _hasInitialDeposit;
+    if (!hasDeposit) {
+      throw const TradeFlowValidationException('missing_initial_deposit');
+    }
+    if (_activeRiskRule == null) {
+      throw const TradeFlowValidationException('missing_risk_rule');
     }
   }
 

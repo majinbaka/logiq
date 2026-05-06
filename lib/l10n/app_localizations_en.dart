@@ -160,6 +160,42 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tradesFlowCardTitle => 'Funding & Trading Flow';
+
+  @override
+  String get tradesFlowStepAccount => 'Trading account created';
+
+  @override
+  String get tradesFlowStepInitialDeposit => 'Initial deposit completed';
+
+  @override
+  String get tradesFlowStepRiskRule => 'Risk rule is active';
+
+  @override
+  String get tradesFlowBalanceLabel => 'Current cash';
+
+  @override
+  String get tradesFlowAvailableLabel => 'Available cash';
+
+  @override
+  String get tradesFlowReservedLabel => 'Reserved cash';
+
+  @override
+  String get tradesFlowBuyingPowerLabel => 'Buying power';
+
+  @override
+  String get tradesFlowMissingAccount => 'Create/select a trading account before trading.';
+
+  @override
+  String get tradesFlowMissingInitialDeposit => 'Add initial deposit before creating trade or order.';
+
+  @override
+  String get tradesFlowMissingRiskRule => 'Set risk rules before creating trade or order.';
+
+  @override
+  String get tradesFlowValidationGeneric => 'Funding flow validation failed.';
+
+  @override
   String get tradesUnitQuantity => 'shares';
 
   @override

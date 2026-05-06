@@ -496,3 +496,22 @@ Muc tieu: cho phep user tao va cap nhat trading account ngay trong app, dong tho
 - Tao account moi voi `name`, `baseCurrency`, `status`.
 - Sua account hien co voi cac field tren.
 - Chon account active de Trades va Portfolio dung account do thay vi mac dinh `acc_1`.
+
+## 12. Funding Flow Guardrails (2026-05-06)
+
+Cap nhat UI va validate de phan anh dung luong funding/trading:
+
+- Trades screen co them card `Funding & Trading Flow` hien thi:
+  - Trang thai account.
+  - Trang thai initial deposit.
+  - Trang thai risk rule.
+  - `current_cash_balance`, `available_cash`, `reserved_cash`, `buying_power`.
+- Order validation tiep tuc chot theo buying power:
+  - `required_cash = entry_price * quantity`.
+  - Khong du buying power thi chan voi thong bao `insufficient funds`.
+- Chuan hoa cash movement theo nghiep vu cash ledger:
+  - Bo sung movement type `initial_deposit`.
+  - Tu dong map dong tien:
+    - `deposit`, `initial_deposit`, `dividend`, `adjustment` => cong tien.
+    - `withdrawal`, `fee`, `tax` => tru tien.
+- Luong reserve/release/settle cash khi order pending/fill va realize proceeds khi close trade duoc giu nguyen.

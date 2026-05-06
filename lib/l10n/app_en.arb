@@ -74,6 +74,18 @@
       }
     }
   },
+  "tradesFlowCardTitle": "Funding & Trading Flow",
+  "tradesFlowStepAccount": "Trading account created",
+  "tradesFlowStepInitialDeposit": "Initial deposit completed",
+  "tradesFlowStepRiskRule": "Risk rule is active",
+  "tradesFlowBalanceLabel": "Current cash",
+  "tradesFlowAvailableLabel": "Available cash",
+  "tradesFlowReservedLabel": "Reserved cash",
+  "tradesFlowBuyingPowerLabel": "Buying power",
+  "tradesFlowMissingAccount": "Create/select a trading account before trading.",
+  "tradesFlowMissingInitialDeposit": "Add initial deposit before creating trade or order.",
+  "tradesFlowMissingRiskRule": "Set risk rules before creating trade or order.",
+  "tradesFlowValidationGeneric": "Funding flow validation failed.",
   "tradesUnitQuantity": "shares",
   "tradesUnitCurrency": "VND",
   "tradesMissingReferenceTitle": "Missing account or instrument",

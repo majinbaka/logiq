@@ -99,13 +99,16 @@ class LocalPortfolioRepository implements PortfolioRepository {
       currency: movement.currency,
     );
     final balanceBefore = _toDouble(currentBalance?.currentCashBalance);
-    final amount = _toDouble(movement.amount);
+    final amount = _normalizeCashMovementAmount(
+      movementType: movement.movementType,
+      rawAmount: movement.amount,
+    );
     final balanceAfter = balanceBefore + amount;
     final ledger = CashLedgerModel(
       id: movement.id,
       accountId: movement.accountId,
-      movementType: movement.movementType,
-      amount: movement.amount,
+        movementType: movement.movementType,
+      amount: _fmt(amount),
       balanceBefore: _fmt(balanceBefore),
       balanceAfter: _fmt(balanceAfter),
       referenceType: 'cash_movement',
@@ -762,6 +765,19 @@ class LocalPortfolioRepository implements PortfolioRepository {
         .toStringAsFixed(8)
         .replaceFirst(RegExp(r'0+$'), '')
         .replaceFirst(RegExp(r'\.$'), '');
+  }
+
+  double _normalizeCashMovementAmount({
+    required String movementType,
+    required String rawAmount,
+  }) {
+    final amount = _toDouble(rawAmount).abs();
+    final normalizedType = movementType.trim().toLowerCase();
+    final isOutflow =
+        normalizedType == 'withdrawal' ||
+        normalizedType == 'fee' ||
+        normalizedType == 'tax';
+    return isOutflow ? -amount : amount;
   }
 }
 

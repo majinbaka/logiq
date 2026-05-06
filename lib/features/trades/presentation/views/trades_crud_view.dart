@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logiq/core/database/models/account_balance_model.dart';
 import 'package:logiq/core/database/models/instrument_model.dart';
 import 'package:logiq/core/database/models/risk_check_model.dart';
 import 'package:logiq/core/database/models/trade_model.dart';
@@ -81,6 +82,13 @@ class _TradesCrudViewState extends State<TradesCrudView> {
               TradingSectionHeader(
                 title: l10n.tradesCrudTitle,
                 subtitle: l10n.tradesCrudSubtitle,
+              ),
+              const SizedBox(height: TradingUiSpacing.md),
+              _FundingFlowCard(
+                accountBalance: _viewModel.accountBalance,
+                hasAccount: _viewModel.accounts.isNotEmpty,
+                hasInitialDeposit: _viewModel.hasInitialDeposit,
+                hasRiskRule: _viewModel.hasActiveRiskRule,
               ),
               const SizedBox(height: TradingUiSpacing.md),
               if (_viewModel.isLoading)
@@ -263,6 +271,15 @@ class _TradesCrudViewState extends State<TradesCrudView> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.tradesInsufficientCash(required, available))),
       );
+    } on TradeFlowValidationException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.reasonKey) {
+        'missing_account' => l10n.tradesFlowMissingAccount,
+        'missing_initial_deposit' => l10n.tradesFlowMissingInitialDeposit,
+        'missing_risk_rule' => l10n.tradesFlowMissingRiskRule,
+        _ => l10n.tradesFlowValidationGeneric,
+      };
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -296,6 +313,88 @@ class _TradesCrudViewState extends State<TradesCrudView> {
       }
     }
     return null;
+  }
+}
+
+class _FundingFlowCard extends StatelessWidget {
+  const _FundingFlowCard({
+    required this.accountBalance,
+    required this.hasAccount,
+    required this.hasInitialDeposit,
+    required this.hasRiskRule,
+  });
+
+  final AccountBalanceModel? accountBalance;
+  final bool hasAccount;
+  final bool hasInitialDeposit;
+  final bool hasRiskRule;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final balance = accountBalance;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(TradingUiSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.tradesFlowCardTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: TradingUiSpacing.xs),
+            _FlowStepRow(label: l10n.tradesFlowStepAccount, passed: hasAccount),
+            _FlowStepRow(
+              label: l10n.tradesFlowStepInitialDeposit,
+              passed: hasInitialDeposit,
+            ),
+            _FlowStepRow(label: l10n.tradesFlowStepRiskRule, passed: hasRiskRule),
+            const Divider(),
+            Text(
+              '${l10n.tradesFlowBalanceLabel}: ${balance?.currentCashBalance ?? '0'}',
+            ),
+            Text(
+              '${l10n.tradesFlowAvailableLabel}: ${balance?.availableCash ?? '0'}',
+            ),
+            Text(
+              '${l10n.tradesFlowReservedLabel}: ${balance?.reservedCash ?? '0'}',
+            ),
+            Text(
+              '${l10n.tradesFlowBuyingPowerLabel}: ${balance?.buyingPower ?? '0'}',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FlowStepRow extends StatelessWidget {
+  const _FlowStepRow({required this.label, required this.passed});
+
+  final String label;
+  final bool passed;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = passed
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.error;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(
+            passed ? Icons.check_circle_outline : Icons.error_outline,
+            size: 16,
+            color: color,
+          ),
+          const SizedBox(width: TradingUiSpacing.xs),
+          Expanded(child: Text(label)),
+        ],
+      ),
+    );
   }
 }
 

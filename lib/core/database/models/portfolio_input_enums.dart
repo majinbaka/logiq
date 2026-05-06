@@ -1,4 +1,5 @@
 enum CashMovementType {
+  initialDeposit('initial_deposit'),
   deposit('deposit'),
   withdrawal('withdrawal'),
   dividend('dividend'),
