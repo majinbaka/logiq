@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart Change Workflow"
+  short_description: "Enforce intelligent post-change workflow"
+  default_prompt: "Apply the smart post-change workflow for this project change."

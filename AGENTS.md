@@ -192,3 +192,23 @@ If full test run is expensive, run targeted tests first, then broader suite befo
 - Use non-destructive git commands.
 - Avoid unrelated formatting churn.
 - Do not amend history unless explicitly requested.
+
+## 10) Smart Post-Change Workflow (Mandatory)
+
+After every file change, run a smart closure loop before declaring done:
+
+1. Classify impact from changed files (scope -> lane).
+2. Run verification at the right depth (narrow first, broaden when required).
+3. Update required docs/issues if behavior/schema/convention changed.
+4. Report command evidence + residual risk.
+
+Project skill to apply:
+
+- `.codex/skills/smart-change-workflow/SKILL.md`
+- Impact matrix: `.codex/skills/smart-change-workflow/references/change-impact-matrix.md`
+
+Skill coordination rules:
+
+- Use `code-change-test-check` for required post-edit verification.
+- Use `issue-debug-playbook` when failures need root-cause debugging.
+- Use `hive-test-stability` when Hive-related tests are flaky/hanging.
